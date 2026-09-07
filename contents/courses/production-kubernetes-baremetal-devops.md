@@ -7,7 +7,7 @@ category: "DevOps & Cloud"
 level: "Advanced"
 duration: "4 Months (16 Weeks)"
 totalLessons: 32
-language: "Bengali & English"
+language: "Bengali, Hindi & English"
 mode: "Live Mentorship"
 status: "Enrolling Now"
 currency: "₹"

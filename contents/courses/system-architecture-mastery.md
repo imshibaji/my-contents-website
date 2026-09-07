@@ -7,7 +7,7 @@ category: "System Architecture"
 level: "Advanced"
 duration: "12 Months (48 Weeks)"
 totalLessons: 96
-language: "Bengali & English"
+language: "Bengali, Hindi & English"
 mode: "Live Mentorship"
 status: "Enrolling Now"
 currency: "₹"

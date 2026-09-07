@@ -7,7 +7,7 @@ category: "DevOps & Cloud"
 level: "Beginner"
 duration: "1 Month (4 Weeks)"
 totalLessons: 8
-language: "Bengali & English"
+language: "Bengali, Hindi & English"
 mode: "Live Mentorship"
 status: "Enrolling Now"
 currency: "₹"

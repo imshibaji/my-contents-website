@@ -7,7 +7,7 @@ category: "Backend Engineering"
 level: "Advanced"
 duration: "6 Months (24 Weeks)"
 totalLessons: 48
-language: "Bengali & English"
+language: "Bengali, Hindi & English"
 mode: "Live Mentorship"
 status: "Enrolling Now"
 currency: "₹"
