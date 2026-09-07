@@ -1,10 +1,10 @@
 ---
+order: 9
 title: "Advanced React 19, Concurrency & Enterprise Design Systems"
 description: "A 3-month intermediate-to-advanced React engineering cohort. Master React 19 Actions, Server Components (RSC), concurrent rendering, custom hooks architecture, design system engineering with Tailwind CSS, and state machines with Zustand."
 summary: "12-week comprehensive React masterclass featuring 24 live interactive sessions, sub-millisecond render profiling, TanStack Query cache synchronization, accessible Radix UI primitives, and Core Web Vitals optimization."
 category: "Frontend Engineering"
 level: "Intermediate"
-order: 9
 duration: "3 Months (12 Weeks)"
 totalLessons: 24
 language: "Bengali & English"

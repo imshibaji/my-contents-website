@@ -46,6 +46,7 @@ const courseDetailSchema = {
 
 <Layout 
   title={`${entry.data.title} | Technical Mentorship`}
+  keywords={entry.data.tags?.join(", ")}
   description={entry.data.description}
   ogImage={entry.data.featuredImage || "/profile.png"}
 >

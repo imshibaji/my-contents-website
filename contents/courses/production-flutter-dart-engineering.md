@@ -1,10 +1,10 @@
 ---
+order: 7
 title: "Production Flutter & Dart Mobile App Engineering"
 description: "A 3-month intermediate-to-advanced mobile engineering cohort. Master Dart 3+, BLoC pattern, Clean Architecture, local Isolate multithreading, offline caching with Drift (SQLite), and CI/CD pipelines for Android & iOS."
 summary: "12-week comprehensive Flutter program featuring 24 live interactive sessions, rigorous Clean Architecture separation, custom render box animations, REST/GraphQL integration, and automated store deployments."
 category: "Mobile Development"
 level: "Intermediate"
-order: 7
 duration: "3 Months (12 Weeks)"
 totalLessons: 24
 language: "Bengali & English"

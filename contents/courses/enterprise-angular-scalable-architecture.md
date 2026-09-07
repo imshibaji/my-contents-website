@@ -1,10 +1,10 @@
 ---
+order: 8
 title: "Enterprise Angular, Signals & Scalable Architecture"
 description: "A 3-month intermediate frontend mentorship for enterprise applications. Master Angular 18+, Signals reactivity, standalone components, RxJS stream orchestration, Nx Monorepos, and micro-frontend federation."
 summary: "12-week enterprise Angular masterclass featuring 24 live interactive sessions, Zoneless change detection, advanced HTTP interceptor architectures, NgRx/Signals state stores, and automated testing with Vitest/Playwright."
 category: "Frontend Engineering"
 level: "Intermediate"
-order: 8
 duration: "3 Months (12 Weeks)"
 totalLessons: 24
 language: "Bengali & English"

@@ -5,6 +5,7 @@ import Footer from './Footer.astro';
 
 interface Props {
   title: string;
+  keywords?: string;
   description?: string;
   ogImage?: string;
   articleDate?: string;
@@ -12,7 +13,8 @@ interface Props {
 }
 
 const { 
-  title, 
+  title,
+  keywords = "Shibaji Debnath, CTO, System Architect, Ex-Google, NestJS, Agentic AI, MCP Plugins, Laravel, Microservices, Fractional CTO", 
   description = "Chief Technology Officer, Lead Technical Consultant & Senior System Architect with 15+ years of experience in NestJS microservices, Agentic AI, MCP plugins, and cloud scale.", 
   ogImage = "/profile.jpg",
   articleDate,
@@ -129,7 +131,7 @@ const schemaGraph = {
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="author" content="Shibaji Debnath" />
     <meta name="publisher" content="Shibaji Debnath" />
-    <meta name="keywords" content="Shibaji Debnath, CTO, System Architect, Ex-Google, NestJS, Agentic AI, MCP Plugins, Laravel, Microservices, Fractional CTO" />
+    <meta name="keywords" content={keywords} />
 
     <!-- Open Graph (Facebook, LinkedIn, Discord) -->
     <meta property="og:type" content={type} />
