@@ -22,7 +22,7 @@ export default defineConfig({
       // লোকাল ডেভেলপমেন্টে /api/* রিকোয়েস্টগুলো PHP সার্ভারে (localhost:8000) প্রক্সি করবে
       proxy: {
         '/api': {
-          target: 'http://localhost:8000',
+          target: 'http://127.0.0.1:8000',
           changeOrigin: true,
           secure: false,
         },

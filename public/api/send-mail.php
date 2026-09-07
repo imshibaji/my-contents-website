@@ -5,19 +5,112 @@ declare(strict_types=1);
 error_reporting(0);
 ini_set('display_errors', '0');
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'domain' => '',
+        'secure' => true,
+        'httponly' => true,
+        'samesite' => 'Strict'
+    ]);
+    session_start();
+}
+
+// ==========================================
+// SMTP Credentials & Global Config
+// ==========================================
+define('SMTP_GMAIL_USER', 'imshibaji@gmail.com');
+define('SMTP_GMAIL_PASS', 'YOUR_16_DIGIT_GMAIL_APP_PASSWORD'); // 👈 আপনার ১৬ ডিজিটের অ্যাপ পাসওয়ার্ড দিন
+
+/**
+ * Lightweight Native Socket SMTP Sender (Re-usable Helper)
+ */
+function sendViaGmailSMTP(
+    string $to, 
+    string $subject, 
+    string $body, 
+    string $replyToEmail, 
+    string $replyToName, 
+    string $smtpUser = SMTP_GMAIL_USER, 
+    string $smtpPass = SMTP_GMAIL_PASS,
+    bool $isHtml = false
+): bool {
+    $context = stream_context_create([
+        'ssl' => [
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+            'allow_self_signed' => true
+        ]
+    ]);
+
+    $socket = @stream_socket_client("ssl://smtp.gmail.com:465", $errno, $errstr, 15, STREAM_CLIENT_CONNECT, $context);
+    if (!$socket) return false;
+
+    $read = function() use ($socket) {
+        $data = "";
+        while ($str = fgets($socket, 515)) {
+            $data .= $str;
+            if (substr($str, 3, 1) === " ") break;
+        }
+        return $data;
+    };
+
+    $write = function(string $cmd) use ($socket) {
+        fputs($socket, $cmd . "\r\n");
+    };
+
+    $read();
+    $write("EHLO " . ($_SERVER['SERVER_NAME'] ?? 'localhost'));
+    $read();
+    $write("AUTH LOGIN");
+    $read();
+    $write(base64_encode($smtpUser));
+    $read();
+    $write(base64_encode($smtpPass));
+    $authRes = $read();
+    if (strpos($authRes, '235') === false) {
+        fclose($socket);
+        return false;
+    }
+
+    $write("MAIL FROM:<{$smtpUser}>");
+    $read();
+    $write("RCPT TO:<{$to}>");
+    $read();
+    $write("DATA");
+    $read();
+
+    $contentType = $isHtml ? "text/html; charset=UTF-8" : "text/plain; charset=UTF-8";
+
+    $headers = "From: Shibaji Debnath <{$smtpUser}>\r\n";
+    $headers .= "Reply-To: {$replyToName} <{$replyToEmail}>\r\n";
+    $headers .= "To: <{$to}>\r\n";
+    $headers .= "Subject: {$subject}\r\n";
+    $headers .= "Content-Type: {$contentType}\r\n";
+    $headers .= "X-Mailer: Native-PHP-SMTP\r\n\r\n";
+
+    $write($headers . $body . "\r\n.");
+    $res = $read();
+    $write("QUIT");
+    fclose($socket);
+
+    return strpos($res, '250') !== false;
+}
+
+// =========================================================================
+// যদি অন্য কোনো ফাইল (যেমন enquiry.php) এটি include করে, তবে নিচের অংশ থামবে
+// =========================================================================
+if (basename($_SERVER['SCRIPT_FILENAME'] ?? '') !== basename(__FILE__)) {
+    return;
+}
+
+// =========================================================================
+// কন্টাক্ট ফর্ম প্রসেসিং (সরাসরি /api/send-mail.php হিট হলে এটি চলবে)
+// =========================================================================
 header('Content-Type: application/json; charset=UTF-8');
 header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: DENY');
-
-session_set_cookie_params([
-    'lifetime' => 0,
-    'path' => '/',
-    'domain' => '',
-    'secure' => true,
-    'httponly' => true,
-    'samesite' => 'Strict'
-]);
-session_start();
 
 // Rate Limiting (IP-based, max 5 requests per 10 mins)
 $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
@@ -91,75 +184,7 @@ if (empty($name) || !$email || empty($message)) {
     exit;
 }
 
-// ==========================================
-// SMTP Credentials (Enter Your Details)
-// ==========================================
-$smtpUser = 'imshibaji@gmail.com';
-$smtpPass = 'YOUR_16_DIGIT_GMAIL_APP_PASSWORD'; // এখানে জিমেইলের ১৬ অক্ষরের অ্যাপ পাসওয়ার্ড দিন
-
-// Lightweight Native Socket SMTP Sender
-function sendViaGmailSMTP(string $to, string $subject, string $body, string $replyToEmail, string $replyToName, string $smtpUser, string $smtpPass): bool {
-    $context = stream_context_create([
-        'ssl' => [
-            'verify_peer' => false,
-            'verify_peer_name' => false,
-            'allow_self_signed' => true
-        ]
-    ]);
-
-    $socket = stream_socket_client("ssl://smtp.gmail.com:465", $errno, $errstr, 15, STREAM_CLIENT_CONNECT, $context);
-    if (!$socket) return false;
-
-    $read = function() use ($socket) {
-        $data = "";
-        while ($str = fgets($socket, 515)) {
-            $data .= $str;
-            if (substr($str, 3, 1) === " ") break;
-        }
-        return $data;
-    };
-
-    $write = function(string $cmd) use ($socket) {
-        fputs($socket, $cmd . "\r\n");
-    };
-
-    $read();
-    $write("EHLO " . ($_SERVER['SERVER_NAME'] ?? 'localhost'));
-    $read();
-    $write("AUTH LOGIN");
-    $read();
-    $write(base64_encode($smtpUser));
-    $read();
-    $write(base64_encode($smtpPass));
-    $authRes = $read();
-    if (strpos($authRes, '235') === false) {
-        fclose($socket);
-        return false;
-    }
-
-    $write("MAIL FROM:<{$smtpUser}>");
-    $read();
-    $write("RCPT TO:<{$to}>");
-    $read();
-    $write("DATA");
-    $read();
-
-    $headers = "From: Shibaji Debnath <{$smtpUser}>\r\n";
-    $headers .= "Reply-To: {$replyToName} <{$replyToEmail}>\r\n";
-    $headers .= "To: <{$to}>\r\n";
-    $headers .= "Subject: {$subject}\r\n";
-    $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-    $headers .= "X-Mailer: Native-PHP-SMTP\r\n\r\n";
-
-    $write($headers . $body . "\r\n.");
-    $res = $read();
-    $write("QUIT");
-    fclose($socket);
-
-    return strpos($res, '250') !== false;
-}
-
-// 1. Email to You (Admin Alert)
+// কন্টাক্ট মেইল ডিসপ্যাচ
 $adminSubject = "Advisory Inquiry: {$name} [{$scope}]";
 $adminBody = "Hi Shibaji,\n\nYou have received a new consultation inquiry:\n\n"
            . "Name: {$name}\n"
@@ -168,9 +193,8 @@ $adminBody = "Hi Shibaji,\n\nYou have received a new consultation inquiry:\n\n"
            . "IP: {$ip}\n\n"
            . "Message:\n{$message}\n";
 
-$adminSent = sendViaGmailSMTP($smtpUser, $adminSubject, $adminBody, $email, $name, $smtpUser, $smtpPass);
+$adminSent = sendViaGmailSMTP(SMTP_GMAIL_USER, $adminSubject, $adminBody, $email, $name);
 
-// 2. Confirmation to Client (Auto-responder)
 $clientSubject = "Inquiry Received: Technical Consultation with Shibaji Debnath";
 $clientBody = "Hi {$name},\n\n"
             . "Thank you for reaching out regarding '{$scope}'.\n\n"
@@ -186,8 +210,7 @@ $clientBody = "Hi {$name},\n\n"
             . "https://shibajidebnath.com\n";
 
 if ($adminSent) {
-    // Send confirmation to user
-    sendViaGmailSMTP($email, $clientSubject, $clientBody, $smtpUser, "Shibaji Debnath", $smtpUser, $smtpPass);
+    sendViaGmailSMTP($email, $clientSubject, $clientBody, SMTP_GMAIL_USER, "Shibaji Debnath");
 
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     echo json_encode([
@@ -198,6 +221,6 @@ if ($adminSent) {
     http_response_code(500);
     echo json_encode([
         'success' => false,
-        'error' => 'Server failed to deliver email via SMTP. Please verify SMTP credentials or email directly.'
+        'error' => 'Server failed to deliver email via SMTP.'
     ]);
 }

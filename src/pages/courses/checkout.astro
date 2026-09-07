@@ -4,280 +4,243 @@ import { getCollection } from 'astro:content';
 
 const courses = await getCollection('courses');
 
-const url = new URL(Astro.request.url);
-const selectedCourseSlug = url.searchParams.get('course') || (courses[0] ? courses[0].id : '');
-const planParam = url.searchParams.get('plan');
-const initialPlan = planParam === 'installment' ? 'installment' : 'full';
-
-const studentName = url.searchParams.get('name') || '';
-const studentEmail = url.searchParams.get('email') || '';
-const studentPhone = url.searchParams.get('phone') || '';
-
-const course = courses.find(c => c.id === selectedCourseSlug) || courses[0];
-
-const currency = course?.data.currency || "₹";
-const price = Number(course?.data.price ?? 0);
-const originalPrice = Number(course?.data.originalPrice ?? 0);
-const installmentPrice = Number(course?.data.installmentPrice ?? (price > 0 ? Math.round(price / 4) : 0));
-const hasInstallment = installmentPrice > 0 && price > 0;
-const isFree = price === 0;
-
-const payableAmount = (!isFree && initialPlan === 'installment' && hasInstallment) ? installmentPrice : price;
-const planLabel = isFree ? "Free Direct Access" : (initialPlan === 'installment' && hasInstallment ? "Quarterly Milestone (1 of 4)" : "Full 1-Year Mentorship");
+const courseCatalog = courses.map((c) => ({
+  slug: c.id.replace(/\.md$/, ''),
+  title: c.data.title,
+  duration: c.data.duration,
+  totalLessons: c.data.totalLessons,
+  level: c.data.level,
+  price: Number(c.data.price),
+  originalPrice: Number(c.data.originalPrice ?? c.data.price),
+  discountBadge: c.data.discountBadge ?? '',
+  installmentPrice: Number(c.data.installmentPrice ?? 0),
+  installmentPlanText: c.data.installmentPlanText ?? '',
+}));
 ---
 
-<Layout 
-  title={`Payment Terminal - ${course ? course.data.title : 'Course'} | Shibaji Debnath`}
-  description="Complete secure payment for verified cohort application."
->
-  <div class="relative min-h-screen py-12 lg:py-18">
-    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[300px] bg-gradient-to-tr from-sky-400/15 via-cyan-400/10 to-transparent dark:from-sky-600/20 dark:via-sky-400/10 blur-[130px] rounded-full pointer-events-none -z-10"></div>
-
-    <div class="max-w-5xl mx-auto px-6">
-      <header class="text-center max-w-2xl mx-auto mb-10">
-        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs font-mono font-bold mb-3">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          Application Verified & Profile Locked
-        </div>
-        <h1 class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
-          Secure Payment <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-cyan-500 to-sky-400">Terminal</span>
+<Layout title="Verified Payment Terminal — Shibaji Debnath">
+  <div class="min-h-screen bg-[#06080f] text-slate-200 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-5xl mx-auto">
+      
+      <!-- Top Navigation / Progress Indicator -->
+      <div class="mb-8">
+        <a 
+          id="back_to_enquiry"
+          href="/courses" 
+          class="text-xs font-mono uppercase tracking-widest text-sky-400 hover:text-sky-300 flex items-center gap-1 transition-colors"
+        >
+          &larr; Modify Registration / Candidate Profile
+        </a>
+        <h1 class="text-3xl sm:text-4xl font-black text-white tracking-tight mt-3">
+          Verified Payment <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-indigo-400">Terminal</span>
         </h1>
-        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-2 font-normal">
-          Review your enrolled program invoice and proceed to PayU 256-bit encrypted checkout.
+        <p class="text-sm text-slate-400 mt-2 max-w-2xl">
+          Review your enrolled cohort details and locked invoice profile before redirecting to the PayU secure transaction gateway.
         </p>
-      </header>
+      </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
-        <!-- Left: Verified Candidate Form -->
-        <main class="lg:col-span-6">
-          <div class="p-7 sm:p-8 rounded-3xl border border-sky-100 dark:border-sky-950/80 bg-white/80 dark:bg-[#070e1c]/90 backdrop-blur-xl shadow-xl space-y-6">
-            
-            <div class="flex items-center justify-between pb-3 border-b border-sky-100 dark:border-sky-950">
-              <h2 class="text-xs font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-sky-500"></span>
-                Candidate Credentials
-              </h2>
-              <span class="text-[11px] font-mono text-emerald-600 dark:text-emerald-400">✓ Step 2 of 2</span>
-            </div>
+        <!-- Left Column: Locked Candidate Dossier & Gateway Trigger Form -->
+        <div class="lg:col-span-7 space-y-6">
+          
+          <!-- Candidate Identity Card -->
+          <div class="bg-[#0b101d]/90 border border-slate-800/80 rounded-2xl p-6 sm:p-8 backdrop-blur shadow-2xl relative overflow-hidden">
+            <div class="absolute -right-8 -top-8 w-32 h-32 bg-sky-500/5 rounded-full blur-2xl pointer-events-none"></div>
 
-            <form id="checkout-gateway-form" class="space-y-4 text-xs font-mono">
-              <input type="hidden" id="course-id" value={course?.id} />
-              <input type="hidden" id="payment-plan" value={initialPlan} />
-
-              <div>
-                <label class="block text-slate-500 mb-1.5 font-bold">Candidate Full Name</label>
-                <input 
-                  type="text" 
-                  id="firstname" 
-                  readonly 
-                  value={studentName} 
-                  required 
-                  class="w-full px-4 py-3 rounded-xl border border-sky-100 dark:border-sky-900/60 bg-sky-50/30 dark:bg-slate-900/50 text-slate-900 dark:text-white font-bold outline-none cursor-not-allowed"
-                />
-              </div>
-
-              <div>
-                <label class="block text-slate-500 mb-1.5 font-bold">Registered Email Address</label>
-                <input 
-                  type="email" 
-                  id="email" 
-                  readonly 
-                  value={studentEmail} 
-                  required 
-                  class="w-full px-4 py-3 rounded-xl border border-sky-100 dark:border-sky-900/60 bg-sky-50/30 dark:bg-slate-900/50 text-slate-900 dark:text-white font-bold outline-none cursor-not-allowed"
-                />
-              </div>
-
-              <div>
-                <label class="block text-slate-500 mb-1.5 font-bold">WhatsApp Mobile Number</label>
-                <input 
-                  type="tel" 
-                  id="phone" 
-                  readonly 
-                  value={studentPhone} 
-                  required 
-                  class="w-full px-4 py-3 rounded-xl border border-sky-100 dark:border-sky-900/60 bg-sky-50/30 dark:bg-slate-900/50 text-slate-900 dark:text-white font-bold outline-none cursor-not-allowed"
-                />
-              </div>
-
-              <div id="checkout-error" class="hidden p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs font-sans"></div>
-
-              <div class="pt-2">
-                <button 
-                  type="submit" 
-                  id="pay-btn"
-                  class="w-full py-4 rounded-xl font-mono font-bold text-sm text-white bg-sky-600 hover:bg-sky-500 transition-all shadow-lg shadow-sky-600/25 cursor-pointer flex items-center justify-center gap-2"
-                >
-                  <span id="btn-text">Proceed to PayU Gateway ({currency}{payableAmount.toLocaleString('en-IN')}) &rarr;</span>
-                  <span id="btn-spinner" class="hidden animate-spin text-base">⟳</span>
-                </button>
-              </div>
-
-              <p class="text-[11px] font-sans text-slate-400 text-center leading-relaxed">
-                Need to edit your information? <a href={`/courses/enquiry?course=${course?.id}&plan=${initialPlan}`} class="text-sky-500 hover:underline">Go back to application</a>
-              </p>
-            </form>
-
-          </div>
-        </main>
-
-        <!-- Right: Expanded & Polished Payable Invoice -->
-        <aside class="lg:col-span-6 sticky top-28 space-y-6">
-          <div class="p-7 sm:p-8 rounded-3xl border border-sky-200 dark:border-sky-900 bg-white dark:bg-[#070e1c] shadow-xl space-y-5 font-mono text-xs">
-            
-            <div class="flex items-center justify-between pb-3 border-b border-sky-100 dark:border-sky-950">
-              <span class="text-xs font-mono font-bold uppercase tracking-wider text-slate-400">
-                Official Tuition Invoice
+            <div class="flex items-center justify-between pb-6 border-b border-slate-800/60 mb-6">
+              <span class="text-xs font-mono tracking-widest uppercase text-emerald-400 flex items-center gap-2">
+                <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+                Verified Candidate Profile
               </span>
-              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 border border-sky-200 dark:border-sky-800">
-                INVOICE PREVIEW
-              </span>
+              <span class="text-xs font-mono text-slate-500 uppercase tracking-widest">Step 2 of 2</span>
             </div>
 
-            <!-- Full Un-truncated Program Title & Badges -->
-            <div class="space-y-3 pt-1">
-              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Enrolled Program</span>
-              <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug font-sans">
-                {course?.data.title}
-              </h3>
-
-              <div class="flex flex-wrap items-center gap-1.5 pt-1">
-                <span class="px-2.5 py-1 rounded-lg bg-sky-50/70 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-200/60 dark:border-sky-900/60 font-medium text-[11px]">
-                  ⏱️ {course?.data.duration}
-                </span>
-                <span class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 text-[11px]">
-                  📑 {course?.data.totalLessons} Sessions
-                </span>
-                <span class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 text-[11px]">
-                  {course?.data.level}
-                </span>
-              </div>
-            </div>
-
-            <!-- Itemized Financial Breakdown -->
-            <div class="pt-4 border-t border-sky-100 dark:border-sky-950 space-y-3">
-              <div class="flex justify-between items-center text-slate-600 dark:text-slate-400">
-                <span>Tuition Schedule</span>
-                <span class="text-slate-900 dark:text-white font-bold text-right">{planLabel}</span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono">
+              <div class="p-3.5 rounded-xl bg-[#070b14] border border-slate-800/60">
+                <span class="block text-[10px] text-slate-500 uppercase">Enrolled Candidate</span>
+                <span id="display_candidate_name" class="font-bold text-white text-sm mt-0.5 block truncate">--</span>
               </div>
 
-              <div class="flex justify-between items-center text-slate-600 dark:text-slate-400">
-                <span>Standard Program Fee</span>
-                <span class="line-through text-slate-400 font-medium">{currency}{originalPrice.toLocaleString('en-IN')}</span>
+              <div class="p-3.5 rounded-xl bg-[#070b14] border border-slate-800/60">
+                <span class="block text-[10px] text-slate-500 uppercase">Contact Email</span>
+                <span id="display_candidate_email" class="font-bold text-white text-sm mt-0.5 block truncate">--</span>
               </div>
 
-              {course?.data.discountBadge && initialPlan === 'full' && (
-                <div class="flex justify-between items-center text-rose-500 font-bold">
-                  <span>Founding Cohort Discount</span>
-                  <span>{course.data.discountBadge} (-{currency}{(originalPrice - price).toLocaleString('en-IN')})</span>
+              <div class="p-3.5 rounded-xl bg-[#070b14] border border-slate-800/60 sm:col-span-2 flex items-center justify-between">
+                <div>
+                  <span class="block text-[10px] text-slate-500 uppercase">Registered WhatsApp</span>
+                  <span id="display_candidate_phone" class="font-bold text-white text-sm mt-0.5 block">--</span>
                 </div>
-              )}
-
-              <div class="flex justify-between items-center text-slate-600 dark:text-slate-400">
-                <span>1-on-1 Code Review & Mentorship</span>
-                <span class="text-emerald-500 font-bold">Included</span>
+                <span class="text-[10px] font-mono px-2 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  LOCKED
+                </span>
               </div>
+            </div>
+          </div>
 
-              <div class="flex justify-between items-center text-slate-600 dark:text-slate-400">
-                <span>Taxes & Gateway Convenience</span>
-                <span class="text-slate-900 dark:text-white font-bold">₹0.00</span>
-              </div>
+          <!-- Checkout Action Terminal Form -->
+          <form id="checkout_gateway_form" action="/api/payu/init.php" method="POST" class="bg-[#0b101d]/90 border border-slate-800/80 rounded-2xl p-6 sm:p-8 backdrop-blur shadow-2xl space-y-6">
+            <!-- Hidden Fields Dispatched to /api/payu/init.php -->
+            <input type="hidden" name="course_slug" id="pay_course_slug" value="" />
+            <input type="hidden" name="course_title" id="pay_course_title" value="" />
+            <input type="hidden" name="payment_plan" id="pay_payment_plan" value="full" />
+            <input type="hidden" name="amount" id="pay_amount" value="0" />
+            <input type="hidden" name="full_name" id="pay_full_name" value="" />
+            <input type="hidden" name="email" id="pay_email" value="" />
+            <input type="hidden" name="phone" id="pay_phone" value="" />
 
-              <div class="pt-4 border-t border-sky-100 dark:border-sky-950 flex justify-between items-baseline text-sm font-bold text-slate-900 dark:text-white">
-                <span class="text-xs uppercase tracking-wider text-slate-400">Total Payable Now</span>
-                <span class="text-xl sm:text-2xl text-sky-600 dark:text-sky-400 font-mono font-black">
-                  {currency}{payableAmount.toLocaleString('en-IN')} <span class="text-xs font-normal text-slate-400">INR</span>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between p-4 rounded-xl bg-sky-950/20 border border-sky-500/30">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold text-sm">
+                    ⚡
+                  </div>
+                  <div>
+                    <h4 class="text-sm font-bold text-white">Direct PayU Payment Gateway</h4>
+                    <p class="text-[11px] text-slate-400">Cards, UPI (GPay/PhonePe), NetBanking & EMI</p>
+                  </div>
+                </div>
+                <span class="text-[10px] font-mono text-sky-400 px-2.5 py-1 rounded bg-sky-500/10 border border-sky-500/20 uppercase font-bold">
+                  Active
                 </span>
               </div>
             </div>
 
-            <!-- Assurance & Deliverables Checklist -->
-            <div class="pt-4 border-t border-sky-100 dark:border-sky-950 text-[11px] text-slate-500 dark:text-slate-400 space-y-2">
-              <p class="flex items-center gap-2">
-                <span class="text-emerald-500 font-bold">✓</span>
-                <span>Immediate GitHub repository & architectural notes invite</span>
-              </p>
-              <p class="flex items-center gap-2">
-                <span class="text-emerald-500 font-bold">✓</span>
-                <span>Tax compliant GST / Corporate invoice dispatched via email</span>
-              </p>
-              <p class="flex items-center gap-2">
-                <span class="text-emerald-500 font-bold">✓</span>
-                <span>Direct 1-on-1 calendar onboarding with Shibaji Debnath</span>
-              </p>
-            </div>
+            <button 
+              type="submit" 
+              id="pay_btn"
+              class="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-base tracking-wide shadow-xl shadow-emerald-500/20 hover:shadow-emerald-500/30 transition-all flex items-center justify-center gap-3 cursor-pointer"
+            >
+              <span>Initiate Secure Transaction</span>
+              <span id="btn_amount_display" class="font-mono bg-black/30 px-2.5 py-1 rounded text-sm">₹0</span>
+              <span>&rarr;</span>
+            </button>
 
+            <div class="flex items-center justify-center gap-6 text-slate-500 text-xs font-mono pt-2">
+              <span class="flex items-center gap-1">🔒 256-Bit SSL</span>
+              <span class="flex items-center gap-1">🛡️ SHA-512 Signed</span>
+              <span class="flex items-center gap-1">⚡ Instant Invoicing</span>
+            </div>
+          </form>
+
+        </div>
+
+        <!-- Right Column: Line-Item Order Invoice Breakdown -->
+        <div class="lg:col-span-5 bg-[#0b101d]/90 border border-slate-800/80 rounded-2xl p-6 sm:p-8 backdrop-blur shadow-2xl space-y-6 sticky top-8">
+          
+          <div class="pb-5 border-b border-slate-800/60">
+            <span class="text-[11px] font-mono tracking-widest uppercase text-slate-400">Enrolled Program</span>
+            <h2 id="invoice_course_title" class="text-lg sm:text-xl font-black text-white mt-1 leading-snug">
+              Loading Cohort...
+            </h2>
+            <div class="flex flex-wrap items-center gap-2 mt-3 font-mono text-[11px]">
+              <span id="invoice_badge_duration" class="px-2.5 py-1 rounded-md bg-sky-950/60 text-sky-400 border border-sky-800/40">--</span>
+              <span id="invoice_badge_lessons" class="px-2.5 py-1 rounded-md bg-indigo-950/60 text-indigo-400 border border-indigo-800/40">--</span>
+              <span id="invoice_badge_level" class="px-2.5 py-1 rounded-md bg-slate-800 text-slate-300">--</span>
+            </div>
           </div>
-        </aside>
+
+          <!-- Billing Line Items -->
+          <div class="space-y-3.5 text-xs text-slate-300">
+            <div class="flex justify-between items-center py-1">
+              <span class="text-slate-400">Tuition Standard Rate</span>
+              <span id="invoice_original_rate" class="font-mono line-through text-slate-500">₹0</span>
+            </div>
+            <div class="flex justify-between items-center py-1">
+              <span class="text-slate-400">Payment Milestone Structure</span>
+              <span id="invoice_plan_type" class="font-mono font-medium text-white">Full Cohort Access</span>
+            </div>
+            <div class="flex justify-between items-center py-1">
+              <span class="text-slate-400">Tuition Scholarship / Waiver</span>
+              <span id="invoice_scholarship_discount" class="font-mono text-emerald-400 font-semibold">-₹0</span>
+            </div>
+            <div class="flex justify-between items-center py-1">
+              <span class="text-slate-400">Architecture Sandbox & Labs</span>
+              <span class="font-mono text-emerald-400 font-semibold">Covered</span>
+            </div>
+            <div class="flex justify-between items-center py-1">
+              <span class="text-slate-400">Processing / Gateway Fee</span>
+              <span class="font-mono text-emerald-400 font-semibold">₹0.00</span>
+            </div>
+          </div>
+
+          <!-- Total Invoice Due Section -->
+          <div class="pt-5 border-t border-slate-800/80 flex items-baseline justify-between">
+            <div>
+              <span class="block text-xs font-mono uppercase tracking-wider text-slate-400">Total Net Payable</span>
+              <span class="text-[10px] text-slate-500">Guaranteed fixed rate</span>
+            </div>
+            <div class="text-right">
+              <span id="invoice_final_amount" class="text-2xl sm:text-3xl font-black text-sky-400 font-mono">₹0</span>
+              <span class="block text-[10px] font-mono text-slate-500">INR TOTAL</span>
+            </div>
+          </div>
+
+          <!-- Confirmation Notice -->
+          <div class="pt-4 border-t border-slate-800/40 space-y-2 text-[11px] text-slate-400">
+            <p>
+              Your payment will be securely recorded. Upon completion, enrollment credentials and your signed admission invoice are automatically dispatched to your email.
+            </p>
+          </div>
+
+        </div>
 
       </div>
     </div>
   </div>
-</Layout>
 
-<script is:inline>
-  const form = document.getElementById('checkout-gateway-form');
-  const payBtn = document.getElementById('pay-btn');
-  const spinner = document.getElementById('btn-spinner');
-  const btnText = document.getElementById('btn-text');
-  const errorBox = document.getElementById('checkout-error');
+  <!-- Client-Side Invoice Resolution Script -->
+  <script define:vars={{ courseCatalog }}>
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const courseSlug = params.get('course');
+      const plan = (params.get('plan') || 'full').toLowerCase();
+      const name = params.get('name') || '';
+      const email = params.get('email') || '';
+      const phone = params.get('phone') || '';
 
-  form?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    errorBox.classList.add('hidden');
-    payBtn.disabled = true;
-    spinner.classList.remove('hidden');
-    btnText.textContent = "Connecting to PayU Terminal...";
+      // ১. ক্যাটালগ থেকে কোর্স নির্বাচন
+      const course = courseCatalog.find((c) => c.slug === courseSlug) || courseCatalog[0];
+      if (!course) return;
 
-    const payload = {
-      firstname: document.getElementById('firstname').value.trim(),
-      email: document.getElementById('email').value.trim(),
-      phone: document.getElementById('phone').value.trim(),
-      course_id: document.getElementById('course-id').value,
-      payment_plan: document.getElementById('payment-plan').value,
-    };
+      // ২. অ্যামাউন্ট নির্ধারণ (Full বনাম Installment)
+      const isInstallment = plan === 'installment' && course.installmentPrice > 0;
+      const payableAmount = isInstallment ? course.installmentPrice : course.price;
+      const planLabel = isInstallment ? 'Milestone Split Installment' : 'Full Cohort Access';
+      const savings = Math.max(0, course.originalPrice - payableAmount);
 
-    try {
-      const res = await fetch('/api/payu/init.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      const result = await res.json();
-
-      if (result.status === 'success') {
-        if (result.is_free && result.redirect_url) {
-          window.location.href = result.redirect_url;
-          return;
-        }
-
-        if (result.action && result.params) {
-          const payuForm = document.createElement('form');
-          payuForm.method = 'POST';
-          payuForm.action = result.action;
-
-          for (const [key, val] of Object.entries(result.params)) {
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = key;
-            input.value = val;
-            payuForm.appendChild(input);
-          }
-
-          document.body.appendChild(payuForm);
-          payuForm.submit();
-        }
-      } else {
-        throw new Error(result.message || 'Payment terminal initialization failed.');
+      // ৩. ব্যাক লিঙ্ক কোয়েরি রিটেইন করা
+      const backLink = document.getElementById('back_to_enquiry');
+      if (backLink) {
+        backLink.href = `/courses/enquiry?course=${course.slug}&plan=${plan}`;
       }
-    } catch (err) {
-      errorBox.textContent = err.message || 'Connection error. Please try again.';
-      errorBox.classList.remove('hidden');
-      payBtn.disabled = false;
-      spinner.classList.add('hidden');
-      btnText.textContent = "Try Again";
-    }
-  });
-</script>
+
+      // ৪. ক্যান্ডিডেট ডেটা ভিউ আপডেট
+      document.getElementById('display_candidate_name').textContent = name || 'Candidate';
+      document.getElementById('display_candidate_email').textContent = email || 'Unspecified';
+      document.getElementById('display_candidate_phone').textContent = phone || 'Unspecified';
+
+      // ৫. ইনভয়েস মেটা আপডেট
+      document.getElementById('invoice_course_title').textContent = course.title;
+      document.getElementById('invoice_badge_duration').textContent = course.duration;
+      document.getElementById('invoice_badge_lessons').textContent = `${course.totalLessons} Lessons`;
+      document.getElementById('invoice_badge_level').textContent = course.level;
+
+      document.getElementById('invoice_original_rate').textContent = `₹${course.originalPrice.toLocaleString('en-IN')}`;
+      document.getElementById('invoice_plan_type').textContent = planLabel;
+      document.getElementById('invoice_scholarship_discount').textContent = `-₹${savings.toLocaleString('en-IN')}`;
+      document.getElementById('invoice_final_amount').textContent = `₹${payableAmount.toLocaleString('en-IN')}`;
+      document.getElementById('btn_amount_display').textContent = `₹${payableAmount.toLocaleString('en-IN')}`;
+
+      // ৬. হিডেন ফর্ম ফিল্ডস পপুলেট করা (যা /api/payu/init.php এ যাবে)
+      document.getElementById('pay_course_slug').value = course.slug;
+      document.getElementById('pay_course_title').value = course.title;
+      document.getElementById('pay_payment_plan').value = plan;
+      document.getElementById('pay_amount').value = payableAmount;
+      document.getElementById('pay_full_name').value = name;
+      document.getElementById('pay_email').value = email;
+      document.getElementById('pay_phone').value = phone;
+    });
+  </script>
+</Layout>

@@ -156,7 +156,7 @@ export async function generateLlmsFile() {
       urlPrefix: 'articles',
     },
     {
-      sectionTitle: 'Software Production Engineering Courses & Bootcamps',
+      sectionTitle: 'Software Engineering Courses & Bootcamps',
       dirName: 'courses',
       urlPrefix: 'courses',
     },

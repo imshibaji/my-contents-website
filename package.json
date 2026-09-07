@@ -6,10 +6,12 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "dev:astro": "astro dev",
+    "dev:php": "php -S 127.0.0.1:8000 -t public",
+    "dev": "concurrently \"npm run dev:php\" \"npm run dev:astro\""
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
@@ -21,6 +23,7 @@
     "esbuild": true
   },
   "devDependencies": {
-    "@tailwindcss/typography": "^0.5.20"
+    "@tailwindcss/typography": "^0.5.20",
+    "concurrently": "^10.0.5"
   }
 }
