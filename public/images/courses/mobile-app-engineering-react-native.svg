@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bgRn" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#050a16"/>
+      <stop offset="50%" stop-color="#09152e"/>
+      <stop offset="100%" stop-color="#02050c"/>
+    </linearGradient>
+    <linearGradient id="rnGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00d8ff"/>
+      <stop offset="50%" stop-color="#60a5fa"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <pattern id="rnGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(0, 216, 255, 0.05)" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bgRn)"/>
+  <rect width="1200" height="675" fill="url(#rnGrid)"/>
+  <circle cx="1060" cy="200" r="320" fill="#0284c7" opacity="0.14" filter="blur(80px)"/>
+  <circle cx="900" cy="380" r="220" fill="#7c3aed" opacity="0.10" filter="blur(90px)"/>
+
+  <!-- Top Badges -->
+  <g transform="translate(80, 80)">
+    <rect width="170" height="36" rx="8" fill="#075985" fill-opacity="0.4" stroke="#00d8ff" stroke-width="1.5"/>
+    <text x="85" y="23" fill="#7dd3fc" font-family="monospace" font-size="13" font-weight="700" text-anchor="middle">3-MONTH COHORT</text>
+
+    <rect x="185" width="220" height="36" rx="8" fill="#1e1b4b" fill-opacity="0.4" stroke="#a855f7" stroke-width="1.5"/>
+    <text x="295" y="23" fill="#d8b4fe" font-family="monospace" font-size="13" font-weight="700" text-anchor="middle">CROSS-PLATFORM APPS</text>
+  </g>
+
+  <!-- Main Titles with Escaped Ampersand -->
+  <text x="80" y="230" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-size="52" font-weight="900" letter-spacing="-1">
+    Cross-Platform Mobile App
+  </text>
+  <text x="80" y="295" fill="url(#rnGrad)" font-family="system-ui, -apple-system, sans-serif" font-size="50" font-weight="900" letter-spacing="-1">
+    Engineering with React Native &amp; Expo
+  </text>
+
+  <text x="80" y="355" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="20" font-weight="400">
+    Expo Router • Reanimated 60 FPS • SQLite Offline Sync • Native APIs • EAS Cloud Builds
+  </text>
+
+  <!-- Feature Tags -->
+  <g transform="translate(80, 480)">
+    <rect width="140" height="42" rx="10" fill="#0a1d3b" stroke="#163e75" stroke-width="1.5"/>
+    <text x="70" y="26" fill="#00d8ff" font-family="monospace" font-size="14" font-weight="600" text-anchor="middle">24 Sessions</text>
+
+    <rect x="155" width="170" height="42" rx="10" fill="#0a1d3b" stroke="#163e75" stroke-width="1.5"/>
+    <text x="240" y="26" fill="#e2e8f0" font-family="monospace" font-size="14" font-weight="600" text-anchor="middle">Expo Router v3</text>
+
+    <rect x="340" width="180" height="42" rx="10" fill="#0a1d3b" stroke="#163e75" stroke-width="1.5"/>
+    <text x="430" y="26" fill="#e2e8f0" font-family="monospace" font-size="14" font-weight="600" text-anchor="middle">EAS Production</text>
+  </g>
+
+  <!-- Author Signature -->
+  <g transform="translate(80, 565)">
+    <text x="0" y="25" fill="#f8fafc" font-family="system-ui, sans-serif" font-size="22" font-weight="800">Shibaji Debnath</text>
+    <text x="0" y="46" fill="#00d8ff" font-family="monospace" font-size="13" font-weight="600">Mobile Systems Consultant</text>
+  </g>
+</svg>

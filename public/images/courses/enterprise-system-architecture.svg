@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#050b18"/>
+      <stop offset="50%" stop-color="#08142c"/>
+      <stop offset="100%" stop-color="#02050d"/>
+    </linearGradient>
+    <linearGradient id="cyanGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg1)"/>
+  <circle cx="1050" cy="180" r="320" fill="#0284c7" opacity="0.12"/>
+
+  <!-- Top Badges -->
+  <g transform="translate(80, 80)">
+    <rect width="180" height="36" rx="8" fill="#0369a1" fill-opacity="0.25" stroke="#38bdf8" stroke-width="1.5"/>
+    <text x="90" y="23" fill="#38bdf8" font-family="monospace" font-size="13" font-weight="700" text-anchor="middle" letter-spacing="1">12-MONTH COHORT</text>
+
+    <rect x="195" width="140" height="36" rx="8" fill="#065f46" fill-opacity="0.25" stroke="#34d399" stroke-width="1.5"/>
+    <text x="265" y="23" fill="#34d399" font-family="monospace" font-size="13" font-weight="700" text-anchor="middle" letter-spacing="1">ADVANCED</text>
+  </g>
+
+  <!-- Titles with &amp; -->
+  <text x="80" y="220" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-size="52" font-weight="900" letter-spacing="-1">
+    Enterprise System Architecture,
+  </text>
+  <text x="80" y="285" fill="url(#cyanGrad1)" font-family="system-ui, -apple-system, sans-serif" font-size="50" font-weight="900" letter-spacing="-1">
+    Microservices &amp; Autonomous AI
+  </text>
+
+  <text x="80" y="345" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="20" font-weight="400">
+    Distributed Transactions • Kafka • Kubernetes • Redis • Model Context Protocol
+  </text>
+
+  <!-- Tags -->
+  <g transform="translate(80, 480)">
+    <rect width="130" height="42" rx="10" fill="#0f172a" stroke="#1e293b" stroke-width="1.5"/>
+    <text x="65" y="26" fill="#cbd5e1" font-family="monospace" font-size="14" font-weight="600" text-anchor="middle">96 Sessions</text>
+
+    <rect x="145" width="180" height="42" rx="10" fill="#0f172a" stroke="#1e293b" stroke-width="1.5"/>
+    <text x="235" y="26" fill="#cbd5e1" font-family="monospace" font-size="14" font-weight="600" text-anchor="middle">1-on-1 Mentorship</text>
+
+    <rect x="340" width="180" height="42" rx="10" fill="#0f172a" stroke="#1e293b" stroke-width="1.5"/>
+    <text x="430" y="26" fill="#cbd5e1" font-family="monospace" font-size="14" font-weight="600" text-anchor="middle">Production Labs</text>
+  </g>
+
+  <!-- Author -->
+  <g transform="translate(80, 565)">
+    <text x="0" y="25" fill="#f8fafc" font-family="system-ui, sans-serif" font-size="22" font-weight="800">Shibaji Debnath</text>
+    <text x="0" y="46" fill="#38bdf8" font-family="monospace" font-size="13" font-weight="600">CTO • Senior System Architect</text>
+  </g>
+</svg>

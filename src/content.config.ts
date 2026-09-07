@@ -44,6 +44,7 @@ const articles = defineCollection({
 const courses = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './contents/courses' }),
   schema: z.object({
+    order: z.number().default(999), // 👈 এই লাইনটি যোগ করুন (ছোট সংখ্যা = আগে দেখাবে)
     title: z.string(),
     description: z.string(),
     summary: z.string().optional(),

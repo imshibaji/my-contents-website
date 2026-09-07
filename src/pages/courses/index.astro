@@ -2,18 +2,38 @@
 import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
-const courses = await getCollection('courses');
+// কালেকশন ফেচ করে order অনুযায়ী সর্ট করা
+const courses = (await getCollection('courses')).sort(
+  (a, b) => (a.data.order ?? 999) - (b.data.order ?? 999)
+);
 
 const allCategories = ["All", ...new Set(courses.map(c => c.data.category))];
 const allLevels = ["All", "Beginner", "Intermediate", "Advanced"];
 
+// function getCourseThumbnail(c: any) {
+//   if (c.data.featuredImage) return c.data.featuredImage;
+//   if (c.data.videoTrailerUrl) {
+//     const match = c.data.videoTrailerUrl.match(/(?:embed\/|v=|vi\/|youtu\.be\/|\/v\/)([^#&?]*).*/);
+//     const videoId = (match && match[1]) ? match[1] : null;
+//     if (videoId) return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+//   }
+//   return "/profile.png";
+// }
+
 function getCourseThumbnail(c: any) {
-  if (c.data.featuredImage) return c.data.featuredImage;
+  // ১. যদি featuredImage দেওয়া থাকে, তবে সেটিই সবার আগে রিটার্ন করবে
+  if (c.data.featuredImage && c.data.featuredImage.trim() !== "") {
+    return c.data.featuredImage;
+  }
+  
+  // ২. featuredImage না থাকলে YouTube ট্রেইলার থেকে থাম্বনেইল আনবে
   if (c.data.videoTrailerUrl) {
     const match = c.data.videoTrailerUrl.match(/(?:embed\/|v=|vi\/|youtu\.be\/|\/v\/)([^#&?]*).*/);
     const videoId = (match && match[1]) ? match[1] : null;
     if (videoId) return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
   }
+  
+  // ৩. কোনোটিই না থাকলে ডিফল্ট ইমেজ
   return "/profile.png";
 }
 

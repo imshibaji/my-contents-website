@@ -1,4 +1,5 @@
 ---
+order: 5
 title: "Enterprise System Architecture, Microservices & Autonomous AI Engineering"
 description: "A 12-month rigorous, career-defining apprenticeship for engineers. Master distributed systems, high-throughput microservices, Kubernetes orchestration, and agentic workflows with 2 weekly live sessions and 1-on-1 hand-holding."
 summary: "48-week flagship mentorship program featuring 96 live interactive sessions, production architecture teardowns, BullMQ distributed caching, PostgreSQL internals, Kubernetes orchestration, and bare-metal VPS deployment."
@@ -14,10 +15,10 @@ price: 80000
 originalPrice: 120000
 discountBadge: "33% OFF"
 offerText: "Founding Cohort • Limited to 15 Seats"
-installmentPrice: 25000
+installmentPrice: 20000
 installmentPlanText: "Pay in 4 Quarterly Milestones (₹25,000 x 4)"
-featuredImage: ""
-videoTrailerUrl: "https://www.youtube.com/watch?v=TeLLfKnd17A"
+featuredImage: "/images/courses/enterprise-system-architecture.svg"
+videoTrailerUrl: ""
 tags: ["System Architecture", "NestJS", "Kubernetes", "Redis", "Kafka", "PostgreSQL", "Docker", "Agentic AI"]
 prerequisites: [
   "Solid foundation in JavaScript/TypeScript, Python, or Go",
