@@ -1,0 +1,349 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles');
+  return articles.map(entry => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+
+const siteUrl = "https://shibajidebnath.com";
+const canonicalURL = new URL(Astro.url.pathname, siteUrl);
+
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": entry.data.title,
+  "description": entry.data.description,
+  "articleSection": entry.data.category || "Architecture",
+  "keywords": (entry.data.tags || []).join(", "),
+  "datePublished": entry.data.pubDate.toISOString(),
+  "author": {
+    "@type": "Person",
+    "name": "Shibaji Debnath",
+    "url": siteUrl
+  }
+};
+---
+
+<Layout 
+  title={`${entry.data.title} | Shibaji Debnath`}
+  description={entry.data.description}
+  ogImage={entry.data.featuredImage || "/profile.png"}
+  type="article"
+  articleDate={entry.data.pubDate.toISOString()}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} slot="head" />
+
+  <!-- Reading Progress Bar -->
+  <div class="fixed top-20 left-0 w-full h-1 bg-sky-100 dark:bg-sky-950/40 z-40">
+    <div id="progress-bar" class="h-full bg-gradient-to-r from-sky-500 to-cyan-400 w-0 transition-all duration-75"></div>
+  </div>
+
+  <div class="max-w-6xl mx-auto px-6 py-12 lg:py-16">
+    
+    <!-- Breadcrumb -->
+    <nav class="flex items-center gap-2 text-xs font-mono text-slate-400 mb-8">
+      <a href="/articles" class="text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1">
+        <span>&larr;</span> Articles
+      </a>
+      <span>/</span>
+      <span class="text-slate-600 dark:text-slate-300 font-semibold uppercase">{entry.data.category || "Architecture"}</span>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="max-w-4xl space-y-6 pb-10 border-b border-sky-100 dark:border-sky-950/80">
+      
+      <div class="flex flex-wrap items-center gap-3 text-xs font-mono">
+        <span class="px-3 py-1 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-800 dark:text-sky-300 border border-sky-200 dark:border-sky-900 font-bold uppercase tracking-wider">
+          {entry.data.category || "Architecture"}
+        </span>
+        <span class="text-slate-400">•</span>
+        <time class="text-slate-500 dark:text-slate-400 font-semibold" datetime={entry.data.pubDate.toISOString()}>
+          {entry.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+        </time>
+        <span class="text-slate-400">•</span>
+        <span class="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 font-semibold">
+          <svg class="w-4 h-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          {entry.data.readingTime || "8 min read"}
+        </span>
+      </div>
+
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-[1.18]">
+        {entry.data.title}
+      </h1>
+
+      <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+        {entry.data.description}
+      </p>
+
+      <div class="flex flex-wrap gap-2 pt-2">
+        {(entry.data.tags || []).map((t: string) => (
+          <span class="text-xs font-mono px-2.5 py-1 rounded-lg bg-white dark:bg-slate-900 border border-sky-100 dark:border-sky-950 text-slate-600 dark:text-slate-300 shadow-xs">
+            #{t}
+          </span>
+        ))}
+      </div>
+
+      <div class="flex items-center gap-3.5 pt-4">
+        <img src="/profile.png" alt="Shibaji Debnath" class="w-11 h-11 rounded-full border border-sky-400/40 p-0.5 object-cover object-top bg-sky-50 dark:bg-slate-900" />
+        <div>
+          <span class="block text-sm font-bold text-slate-900 dark:text-white leading-none">Shibaji Debnath</span>
+          <span class="text-xs font-mono text-sky-600 dark:text-sky-400 font-medium">Chief Technology Officer • System Architect</span>
+        </div>
+      </div>
+
+    </header>
+
+    <!-- 2-Column Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-12 items-start">
+      
+      <!-- Main Content Column -->
+      <main class="lg:col-span-8 min-w-0">
+        
+        <!-- Summary Card -->
+        <div class="mb-12 p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-sky-500/10 via-sky-50/50 to-transparent dark:from-sky-950/40 dark:via-[#070e1e] dark:to-transparent border border-sky-200/80 dark:border-sky-900/60 shadow-xs">
+          <div class="flex items-center gap-2.5 mb-3 text-sky-700 dark:text-sky-400 font-mono font-bold text-xs uppercase tracking-wider">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            Executive Summary (TL;DR)
+          </div>
+          <p class="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed font-medium">
+            {entry.data.summary || entry.data.description}
+          </p>
+        </div>
+
+        <!-- Video Player -->
+        {entry.data.videoUrl && (
+          <div class="mb-12 rounded-3xl overflow-hidden border border-sky-200 dark:border-sky-900 shadow-xl bg-black aspect-video">
+            <iframe 
+              src={entry.data.videoUrl} 
+              title={entry.data.title}
+              class="w-full h-full border-0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen
+            ></iframe>
+          </div>
+        )}
+
+        <!-- Feature Banner -->
+        {!entry.data.videoUrl && entry.data.featuredImage && (
+          <div class="mb-12 rounded-3xl overflow-hidden border border-sky-100 dark:border-sky-950 shadow-md">
+            <img src={entry.data.featuredImage} alt={entry.data.title} class="w-full object-cover max-h-[480px]" />
+          </div>
+        )}
+
+        <!-- Article Prose Content -->
+        <article class="article-body prose prose-slate dark:prose-invert max-w-none text-base sm:text-lg leading-relaxed
+          prose-headings:font-extrabold prose-headings:tracking-tight prose-headings:text-slate-900 dark:prose-headings:text-white
+          prose-h2:text-2xl sm:prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-4 prose-h2:border-b prose-h2:border-sky-100 dark:prose-h2:border-sky-950/80 prose-h2:pb-3
+          prose-h3:text-xl sm:prose-h3:text-2xl prose-h3:mt-8
+          prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-p:my-5
+          prose-ul:my-5 prose-li:my-1.5 prose-li:text-slate-700 dark:prose-li:text-slate-300
+          prose-a:text-sky-600 dark:prose-a:text-sky-400 prose-a:font-semibold prose-a:no-underline hover:prose-a:underline
+          prose-blockquote:border-l-4 prose-blockquote:border-sky-500 prose-blockquote:bg-sky-50/50 dark:prose-blockquote:bg-slate-900/60 prose-blockquote:py-2 prose-blockquote:px-5 prose-blockquote:rounded-r-2xl prose-blockquote:not-italic
+          prose-code:text-sky-700 dark:prose-code:text-sky-300 prose-code:bg-sky-100/60 dark:prose-code:bg-slate-800/80 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:font-mono prose-code:text-sm prose-code:font-semibold
+        ">
+          <Content />
+        </article>
+
+        <!-- Footer Actions -->
+        <footer class="mt-16 pt-8 border-t border-sky-100 dark:border-sky-950/80 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="text-xs font-mono text-slate-500 dark:text-slate-400">
+            Have questions or feedback? Connect via <a href="/contact" class="text-sky-600 dark:text-sky-400 underline">Architecture Advisory</a>.
+          </div>
+          <button 
+            id="copy-link-btn" 
+            type="button"
+            class="px-4 py-2 rounded-xl text-xs font-mono font-bold border border-sky-200 dark:border-sky-900 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:border-sky-500 transition-colors flex items-center gap-1.5 cursor-pointer"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+            <span id="copy-btn-text">Copy Article Link</span>
+          </button>
+        </footer>
+
+      </main>
+
+      <!-- Right Column: Sticky Navigation -->
+      <aside class="hidden lg:block lg:col-span-4 sticky top-28 space-y-6">
+        
+        <div class="p-6 rounded-3xl border border-sky-100 dark:border-sky-950/80 bg-white/70 dark:bg-[#070d1a]/80 backdrop-blur-md shadow-xs">
+          <div class="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-white pb-3 border-b border-sky-100 dark:border-sky-950">
+            <svg class="w-4 h-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+            Quick Links
+          </div>
+
+          <nav class="mt-4 space-y-2.5 max-h-[60vh] overflow-y-auto text-xs font-medium pr-2">
+            {headings.filter(h => h.depth <= 3).map((h) => (
+              <a 
+                href={`#${h.slug}`}
+                class={`block transition-colors hover:text-sky-600 dark:hover:text-sky-400 py-0.5 ${h.depth === 3 ? 'pl-4 text-slate-500 dark:text-slate-400 text-[11px]' : 'text-slate-700 dark:text-slate-300 font-semibold'}`}
+              >
+                {h.text}
+              </a>
+            ))}
+          </nav>
+        </div>
+
+        <div class="p-6 rounded-3xl border border-sky-200/80 dark:border-sky-900/60 bg-gradient-to-br from-sky-50 to-white dark:from-[#081124] dark:to-slate-900 shadow-xs">
+          <span class="text-[10px] font-mono uppercase tracking-widest text-sky-600 dark:text-sky-400 font-bold">Advisory</span>
+          <h3 class="text-sm font-bold text-slate-900 dark:text-white mt-1">Deploying this stack?</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-300 mt-1.5 leading-relaxed">
+            Get technical audit support on VPS sizing, Ollama model latency, and n8n security.
+          </p>
+          <a href="/contact" class="mt-4 inline-flex items-center justify-center w-full py-2.5 rounded-xl text-xs font-mono font-bold text-white bg-sky-600 hover:bg-sky-500 transition-colors shadow-sm">
+            Book Advisory Consultation &rarr;
+          </a>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</Layout>
+
+<style is:global>
+  /* Code Frame Styles */
+  .code-block-wrapper {
+    position: relative;
+    margin: 2rem 0;
+    border-radius: 1rem;
+    overflow: hidden;
+    background: #090d16;
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.45);
+  }
+
+  .code-block-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.65rem 1rem;
+    background: #0d1322;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.75rem;
+  }
+
+  /* Reset Shiki pre & code tags */
+  .code-block-wrapper pre {
+    margin: 0 !important;
+    padding: 1.25rem !important;
+    background: transparent !important;
+    font-size: 0.875rem !important;
+    line-height: 1.7 !important;
+    font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+    overflow-x: auto;
+  }
+
+  .code-block-wrapper code {
+    background: transparent !important;
+    padding: 0 !important;
+    color: inherit !important;
+    font-size: inherit !important;
+  }
+
+  .copy-code-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #94a3b8;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .copy-code-btn:hover {
+    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.12);
+    border-color: rgba(56, 189, 248, 0.35);
+  }
+</style>
+
+<script is:inline>
+  function setupArticlePage() {
+    // 1. Reading Progress Bar
+    const progressBar = document.getElementById('progress-bar');
+    window.onscroll = () => {
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (totalHeight > 0 && progressBar) {
+        progressBar.style.width = ((window.scrollY / totalHeight) * 100) + '%';
+      }
+    };
+
+    // 2. Share / Copy Link Button
+    const copyBtn = document.getElementById('copy-link-btn');
+    const copyText = document.getElementById('copy-btn-text');
+    if (copyBtn && copyText) {
+      copyBtn.onclick = () => {
+        navigator.clipboard.writeText(window.location.href);
+        copyText.textContent = 'Copied to Clipboard!';
+        setTimeout(() => { copyText.textContent = 'Copy Article Link'; }, 2200);
+      };
+    }
+
+    // 3. Code Frame Enhancements (Language Badge + Window Dots + Copy Button)
+    const preElements = document.querySelectorAll('.article-body pre');
+    preElements.forEach((pre) => {
+      if (pre.parentElement.classList.contains('code-block-wrapper')) return;
+
+      const lang = pre.getAttribute('data-language') || 'terminal';
+      const wrapper = document.createElement('div');
+      wrapper.className = 'code-block-wrapper';
+
+      const header = document.createElement('div');
+      header.className = 'code-block-header';
+      header.innerHTML = `
+        <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#ff5f56]/90 inline-block shadow-xs"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]/90 inline-block shadow-xs"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#27c93f]/90 inline-block shadow-xs"></span>
+          </div>
+          <span class="text-sky-400/90 font-mono text-[11px] ml-2 uppercase font-semibold tracking-wider">${lang}</span>
+        </div>
+        <button type="button" class="copy-code-btn" aria-label="Copy Code">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+          <span class="btn-copy-label">Copy</span>
+        </button>
+      `;
+
+      pre.parentNode.insertBefore(wrapper, pre);
+      wrapper.appendChild(header);
+      wrapper.appendChild(pre);
+
+      const copyCodeBtn = header.querySelector('.copy-code-btn');
+      const copyLabel = header.querySelector('.btn-copy-label');
+
+      copyCodeBtn.addEventListener('click', async () => {
+        const rawCode = pre.querySelector('code')?.innerText || pre.innerText;
+        try {
+          await navigator.clipboard.writeText(rawCode);
+          copyLabel.textContent = 'Copied!';
+          copyCodeBtn.classList.add('text-sky-400', 'border-sky-400');
+          setTimeout(() => {
+            copyLabel.textContent = 'Copy';
+            copyCodeBtn.classList.remove('text-sky-400', 'border-sky-400');
+          }, 2000);
+        } catch {
+          copyLabel.textContent = 'Failed';
+        }
+      });
+    });
+  }
+
+  setupArticlePage();
+  document.addEventListener('astro:after-swap', setupArticlePage);
+</script>

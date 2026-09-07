@@ -1,0 +1,308 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const caseStudies = [
+  {
+    id: "jobs-portal-decoupled",
+    badge: "Decoupled Architecture & High-Performance Web",
+    title: "High-Traffic Jobs Portal Ecosystem: TypeScript API & Astro UI",
+    client: "Production Platform (jobs-api-server & jobs-client-ui)",
+    timeline: "Full-Stack System Delivery",
+    githubLinks: [
+      { name: "Backend API", url: "https://github.com/imshibaji/jobs-api-server" },
+      { name: "Frontend Client", url: "https://github.com/imshibaji/jobs-client-ui" }
+    ],
+    stack: ["TypeScript", "Astro.js", "Node.js", "Tailwind CSS", "PostgreSQL", "Docker"],
+    metrics: [
+      { label: "Core Web Vitals", before: "LCP 3.8s (SPA)", after: "LCP 0.6s (Astro SSG/SSR)" },
+      { label: "SEO Indexation", before: "Slow Client Hydration", after: "100% Edge Pre-rendered" },
+      { label: "API Latency", before: "280ms Average", after: "38ms (Optimized Queries)" }
+    ],
+    bottleneck: "Job listing platforms require near-instant First Contentful Paint (FCP) and optimal SEO indexation for thousands of dynamic openings. Traditional heavy SPA architectures bloated client bundles, hurt mobile crawlability, and increased bounce rates.",
+    solutionSteps: [
+      "Decoupled the architecture: Built a robust, type-safe API server using TypeScript and Node.js for recruitment workflow pipelines.",
+      "Engineered the public-facing client (jobs-client-ui) with Astro.js, adopting an Islands Architecture that ships zero unnecessary JavaScript by default.",
+      "Implemented structured JSON-LD job posting schemas directly in SSR views, resulting in immediate rich-snippet eligibility across search engines.",
+      "Secured endpoints with tokenized authentication and rate limits to thwart unauthorized scraping."
+    ],
+    asciiFlow: `[Job Seekers / Employers]
+           │
+   [Astro.js Edge Client] (Zero JS Bloat / Sub-second LCP)
+           │ (Type-Safe API Contracts)
+  [TypeScript Jobs API Server]
+           │
+  ┌────────┴──────────────────────────┐
+  ▼                                   ▼
+[PostgreSQL Relational DB]     [Redis Search Cache]`
+  },
+  {
+    id: "flutter-clean-architecture",
+    badge: "Open Source Enterprise Framework",
+    title: "Enterprise Flutter Clean Architecture Boilerplate",
+    client: "GitHub Open Source (134+ Stars, 44+ Forks)",
+    timeline: "Production-Grade Core Architecture",
+    githubLinks: [
+      { name: "Repository", url: "https://github.com/imshibaji/flutter_clean_architecture" }
+    ],
+    stack: ["Flutter", "Dart", "Clean Architecture", "BLoC/State Pattern", "TDD"],
+    metrics: [
+      { label: "Adoption", before: "Initial Release", after: "134+ Stars / 44+ Forks" },
+      { label: "Code Coupling", before: "Tightly Coupled UI", after: "Domain / Data Isolated" },
+      { label: "Test Coverage", before: "Fragile Manual QA", after: "Unit & Contract Tested" }
+    ],
+    bottleneck: "Enterprise cross-platform mobile apps frequently turn into maintenance nightmares due to tightly coupled UI and data layers, business logic leakage into views, and untestable spaghetti state flows.",
+    solutionSteps: [
+      "Structured the complete boilerplate following Uncle Bob's Clean Architecture: Domain, Data, and Presentation separation.",
+      "Implemented reactive state management enforcing strict unidirectional data flow and repository patterns.",
+      "Provided enterprise abstraction for network layers, local caching (SQLite/Hive), and automated dependency injection.",
+      "Standardized error handling and contract failures for high resilience across distributed backend endpoints."
+    ],
+    asciiFlow: `[Presentation Layer] (Widgets, Pages & BLoC)
+         │ (Events & States)
+   [Domain Layer] (Use Cases, Entities & Repository Interfaces)
+         │ (Dependency Inversion)
+    [Data Layer] (API Datasources, Local DB & Model Mappings)`
+  },
+  {
+    id: "leadbook-core",
+    badge: "SaaS Business Infrastructure",
+    title: "LeadBook: High-Velocity Business API Server & Automation",
+    client: "LeadBook Web Suite (leadbook-api-server)",
+    timeline: "Core Backend Product Engineering",
+    githubLinks: [
+      { name: "API Server", url: "https://github.com/imshibaji/leadbook-api-server" }
+    ],
+    stack: ["TypeScript", "Node.js", "NestJS Architecture", "PostgreSQL", "Redis", "WhatsApp API"],
+    metrics: [
+      { label: "Proposal Turnaround", before: "Manual Drafts", after: "Instant Link Generation" },
+      { label: "Queue Throughput", before: "Thread Blocking", after: "5,000 jobs/min via Redis" },
+      { label: "Payment Capture", before: "Disjointed Accounts", after: "100% Webhook Reconciled" }
+    ],
+    bottleneck: "Managing high-volume client leads, automatic PDF proposal creation, and multi-channel messaging (WhatsApp/Email) required a non-blocking asynchronous backend that could handle bursty webhooks without downtime.",
+    solutionSteps: [
+      "Architected the LeadBook API Server using TypeScript with strict request-validation DTOs and clean modular routing.",
+      "Integrated in-memory Redis message queues to buffer webhook traffic from external communication gateways.",
+      "Engineered automated billing pipelines tracking deal closures and ledger updates in real-time."
+    ],
+    asciiFlow: `[Inbound Leads / Webhooks]
+           │
+  [LeadBook API Server (TS)]
+           │
+   [Redis Queue Manager]
+           │
+  ┌────────┴──────────────────────────┐
+  ▼                                   ▼
+[Notification Workers]       [PostgreSQL Ledger Storage]`
+  },
+  {
+    id: "larnr-portal",
+    badge: "EdTech Platform & Multi-Tenant Infrastructure",
+    title: "LARNR: EdTech Ecosystem Connecting Tutors, Learners & Recruiters",
+    client: "LARNR Platform (larnr.com)",
+    timeline: "Platform Architecture & Mentorship Ecosystem",
+    githubLinks: [
+      { name: "Larnr Web Repo", url: "https://github.com/imshibaji/larnrwebsite" },
+      { name: "Course Engine", url: "https://github.com/imshibaji/laravel-course-app" }
+    ],
+    stack: ["NestJS", "TypeScript", "Angular", "Laravel", "PostgreSQL", "Redis", "Docker"],
+    metrics: [
+      { label: "Trained Engineers", before: "Zero", after: "1,000+ Mentored" },
+      { label: "Cache Hit Ratio", before: "34%", after: "91% (Redis Caching)" },
+      { label: "Platform SLA", before: "98.5%", after: "99.98% Uptime" }
+    ],
+    bottleneck: "Delivering real-time multi-tenant educational portals where students, corporate mentors, and job recruiters interact without tenant leakage or latency under peak webinar traffic.",
+    solutionSteps: [
+      "Architected modular micro-services separating course catalogs, student submission trackers, and recruiter job feeds.",
+      "Implemented PostgreSQL composite indexes and Redis distributed caching for instant catalog search.",
+      "Trained and onboarded over 1,000 developers directly through the platform's hands-on engineering tracks."
+    ],
+    asciiFlow: `[Students / Mentors / Recruiters]
+           │
+  [API Gateway Router]
+           │
+  ┌────────┴──────────────────────────┐
+  ▼                                   ▼
+[Course Delivery Service]     [Recruiter Talent Feed]
+  │                                   │
+  └─────────────────┬─────────────────┘
+                    ▼
+           [PostgreSQL & Redis]`
+  },
+  {
+    id: "sportsvisio-streaming",
+    badge: "Computer Vision & Mobile AI",
+    title: "SportsVisio: High-Framerate Video Capture & ML Pipeline",
+    client: "SportsVisio, Inc. (New York, USA)",
+    timeline: "Enterprise Mobile Streaming Contract",
+    githubLinks: [],
+    stack: ["Flutter", "Dart", "Computer Vision AI", "HLS / WebRTC", "REST APIs"],
+    metrics: [
+      { label: "Frame Rate", before: "38 FPS (Buffer Stutter)", after: "Rock Solid 60 FPS" },
+      { label: "Drop Rate", before: "8.4% on Weak Uplink", after: "<0.2% Resumable Sync" },
+      { label: "Battery Drain", before: "High Thermal Clocks", after: "35% CPU Overhead Reduction" }
+    ],
+    bottleneck: "Streaming live athletic games on mobile devices while rendering machine learning overlay tags produced severe thermal throttling and UI stutter.",
+    solutionSteps: [
+      "Offloaded video compression and packet streaming to background native threads, keeping the Flutter rendering pipeline free.",
+      "Engineered resilient resumable chunk-upload pipelines to handle sudden loss of cellular connectivity.",
+      "Rendered real-time AI recommendation tags and tracking boxes smoothly on-device."
+    ],
+    asciiFlow: `[Live Camera Sensor]
+         │ (Native Thread Buffer)
+[Background Ingestion Streamer]
+         │
+   ┌─────┴────────────────────────┐
+   ▼                              ▼
+[Local SQLite Buffer]     [Cloud Inference Uplink]`
+  },
+  {
+    id: "agentic-ai-mcp",
+    badge: "Agentic AI & Custom Infrastructure Tools",
+    title: "Autonomous Operational Agent via Model Context Protocol (MCP)",
+    client: "SDN Technology Solutions",
+    timeline: "Production Agent Engineering",
+    githubLinks: [],
+    stack: ["Model Context Protocol (MCP)", "Node.js", "Python", "pgvector", "n8n", "Docker"],
+    metrics: [
+      { label: "Manual Triage", before: "100% Human", after: "72% Autonomous" },
+      { label: "Incident MTTR", before: "45 Minutes", after: "3.5 Minutes" },
+      { label: "Protocol Compliance", before: "Ad-hoc Scripts", after: "Deterministic MCP Tools" }
+    ],
+    bottleneck: "Developers losing hours to manual log queries and routine incident triage instead of building core features.",
+    solutionSteps: [
+      "Built custom Model Context Protocol (MCP) server endpoints exposing database health and server telemetry to LLM agents.",
+      "Integrated PostgreSQL pgvector embeddings to retrieve matching historical incident runbooks.",
+      "Structured n8n workflows with human verification gates before executing automated rollbacks."
+    ],
+    asciiFlow: `[System Alerts] ──► [n8n Workflow] ──► [MCP Server Router]
+                                              │
+                              ┌───────────────┴───────────────┐
+                              ▼                               ▼
+                     [pgvector Knowledge]           [Live Telemetry Tool]
+                              │                               │
+                              └───────────────┬───────────────┘
+                                              ▼
+                                   [Autonomous LLM Triage]`
+  }
+];
+---
+
+<Layout 
+  title="Architectural Case Studies | Shibaji Debnath"
+  description="Deep-dive architectural case studies: High-concurrency TypeScript APIs, Astro-powered web clients, Clean Architecture in Flutter, and Agentic AI systems."
+>
+
+  <header class="py-20 border-b border-sky-100 dark:border-sky-950/50 bg-white/40 dark:bg-[#040813]">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-sky-200 dark:border-sky-900/80 bg-sky-50 dark:bg-sky-950/40 text-xs font-mono font-semibold text-sky-700 dark:text-sky-300 mb-4">
+        Production Delivery & Open Source
+      </div>
+      <h1 class="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+        Architectural Case Studies
+      </h1>
+      <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-3xl mt-4 leading-relaxed">
+        Dissecting complex engineering systems: architectural decision records (ADRs), open-source framework design, and verifiable performance outcomes from 15+ years of software leadership.
+      </p>
+    </div>
+  </header>
+
+  <main class="py-20 max-w-6xl mx-auto px-6 space-y-20">
+    {caseStudies.map((cs, idx) => (
+      <article id={cs.id} class="p-8 md:p-12 rounded-3xl border border-sky-100 dark:border-sky-950/80 bg-white dark:bg-[#070d1a] shadow-xs hover:border-sky-400/50 transition-all">
+        
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-sky-100 dark:border-sky-950/60">
+          <div>
+            <span class="text-xs font-mono font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 block mb-1">
+              Case 0{idx + 1} // {cs.badge}
+            </span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+              {cs.title}
+            </h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              Environment: <strong class="text-slate-700 dark:text-slate-300">{cs.client}</strong> | Scope: <strong class="text-slate-700 dark:text-slate-300">{cs.timeline}</strong>
+            </p>
+          </div>
+          
+          <div class="flex flex-wrap gap-2 lg:justify-end items-center">
+            {cs.githubLinks && cs.githubLinks.map(link => (
+              <a 
+                href={link.url} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="inline-flex items-center gap-1.5 text-xs font-mono font-bold px-3 py-1.5 rounded-lg bg-slate-900 text-white hover:bg-sky-600 transition-colors"
+              >
+                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                {link.name}
+              </a>
+            ))}
+            {cs.stack.map(tag => (
+              <span class="text-xs font-mono font-semibold px-2.5 py-1 rounded-md bg-sky-50 dark:bg-slate-900 text-sky-800 dark:text-sky-300 border border-sky-200/80 dark:border-sky-900/60">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 my-8">
+          {cs.metrics.map(m => (
+            <div class="p-5 rounded-2xl bg-sky-50/40 dark:bg-[#0c1527] border border-sky-100 dark:border-sky-950/60">
+              <p class="text-xs uppercase font-mono font-bold text-slate-500 dark:text-slate-400">{m.label}</p>
+              <div class="flex items-baseline gap-3 mt-2">
+                <span class="text-xs font-mono text-rose-500 line-through">{m.before}</span>
+                <span class="text-base font-mono font-extrabold text-sky-600 dark:text-sky-400">{m.after}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 my-8">
+          <div class="lg:col-span-5 space-y-3">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400 font-mono">
+              The Architecture Bottleneck
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed bg-rose-50/40 dark:bg-rose-950/10 p-5 rounded-2xl border border-rose-100 dark:border-rose-950/40">
+              {cs.bottleneck}
+            </p>
+          </div>
+
+          <div class="lg:col-span-7 space-y-3">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 font-mono">
+              Interventions & Engineering Design
+            </h3>
+            <ul class="space-y-2.5 text-sm text-slate-700 dark:text-slate-300">
+              {cs.solutionSteps.map(step => (
+                <li class="flex items-start gap-2.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-sky-500 mt-2 shrink-0"></span>
+                  <span class="leading-relaxed">{step}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-sky-100 dark:border-sky-950/60">
+          <p class="text-xs font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3">
+            System Topology Blueprint
+          </p>
+          <pre class="p-6 rounded-2xl bg-slate-900 text-sky-300 font-mono text-xs overflow-x-auto border border-sky-950/80 leading-relaxed shadow-inner">
+{cs.asciiFlow}
+          </pre>
+        </div>
+
+      </article>
+    ))}
+  </main>
+
+  <section class="pb-24 max-w-6xl mx-auto px-6">
+    <div class="rounded-3xl p-10 bg-gradient-to-r from-sky-700 via-sky-800 to-slate-950 text-white flex flex-col md:flex-row items-center justify-between gap-6 border border-sky-500/30">
+      <div>
+        <h2 class="text-2xl font-bold">Have an infrastructure or scaling bottleneck?</h2>
+        <p class="text-sky-100 text-sm mt-1">Available for CTO advisory, legacy refactoring, and high-concurrency audits.</p>
+      </div>
+      <a href="/contact" class="px-6 py-3.5 rounded-xl font-bold bg-white text-slate-950 hover:bg-sky-50 shrink-0 transition-colors">
+        Book Architecture Consultation
+      </a>
+    </div>
+  </section>
+
+</Layout>

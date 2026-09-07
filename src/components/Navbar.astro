@@ -1,0 +1,122 @@
+---
+import Logo from "./Logo.astro";
+import ThemeToggle from "./ThemeToggle.astro";
+
+const pathname = new URL(Astro.request.url).pathname;
+const currentPath = pathname.replace(/\/$/, "");
+
+const navItems = [
+  { name: "Overview", href: "/" },
+  { name: "Experience", href: "/experience" },
+  { name: "Case Studies", href: "/case-studies" },
+  { name: "Articles", href: "/articles" },
+  { name: "Contact", href: "/contact" },
+];
+---
+
+<header class="sticky top-0 z-50 backdrop-blur-md bg-white/85 dark:bg-[#030712]/85 border-b border-sky-100 dark:border-sky-950/50 transition-colors">
+  <!-- max-w-7xl px-6 দিয়ে পেজের কন্টেন্টের সাথে বাম ও ডান মার্জিন একদম সমান রাখা হয়েছে -->
+  <div class="max-w-7xl mx-auto px-6 sm:px-8 h-20 flex items-center justify-between">
+    
+    <!-- Logo: এখন পেজের টাইটেলের একদম সোজা ভার্টিক্যাল লাইনে থাকবে -->
+    <a href="/" class="flex items-center gap-3 group shrink-0">
+      <Logo />
+    </a>
+
+    <!-- Desktop Nav Links -->
+    <nav class="hidden md:flex items-center space-x-7 text-sm font-semibold text-slate-600 dark:text-slate-400">
+      {navItems.map(item => {
+        const isActive = currentPath === item.href || (item.href === "/" && currentPath === "");
+        return (
+          <a 
+            href={item.href} 
+            class={`hover:text-sky-600 dark:hover:text-sky-400 transition-colors ${isActive ? 'text-sky-600 dark:text-sky-400 font-bold' : ''}`}
+          >
+            {item.name}
+          </a>
+        );
+      })}
+    </nav>
+
+    <!-- Right Controls -->
+    <div class="flex items-center gap-3 shrink-0">
+      <ThemeToggle />
+      
+      <a href="/contact" class="hidden sm:inline-flex px-4 py-2 rounded-xl text-xs font-bold text-white bg-sky-600 hover:bg-sky-500 transition-all shadow-sm">
+        Book Advisory Call
+      </a>
+
+      <!-- Mobile Hamburger Button -->
+      <button 
+        id="mobile-menu-btn" 
+        type="button" 
+        aria-label="Toggle mobile menu" 
+        aria-expanded="false"
+        class="md:hidden w-10 h-10 rounded-xl border border-sky-200 dark:border-sky-900 bg-sky-50/60 dark:bg-slate-900 text-slate-800 dark:text-slate-200 flex items-center justify-center hover:border-sky-500 transition-all cursor-pointer"
+      >
+        <svg id="menu-open-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+        <svg id="menu-close-icon" class="hidden w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Mobile Drawer -->
+  <div 
+    id="mobile-menu" 
+    class="hidden md:hidden border-t border-sky-100 dark:border-sky-950/60 bg-white/95 dark:bg-[#030712]/95 backdrop-blur-lg px-6 py-6 transition-all duration-200"
+  >
+    <nav class="flex flex-col space-y-3">
+      {navItems.map(item => {
+        const isActive = currentPath === item.href || (item.href === "/" && currentPath === "");
+        return (
+          <a 
+            href={item.href} 
+            class={`text-base font-semibold py-2.5 px-3 rounded-xl transition-colors ${isActive ? 'bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 font-bold' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900'}`}
+          >
+            {item.name}
+          </a>
+        );
+      })}
+      
+      <div class="pt-3 border-t border-sky-100 dark:border-sky-950/60">
+        <a href="/contact" class="w-full flex items-center justify-center py-3 rounded-xl text-sm font-bold text-white bg-sky-600 hover:bg-sky-500 transition-all">
+          Book Advisory Call
+        </a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script is:inline>
+  function setupMobileMenu() {
+    const mobileBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const openIcon = document.getElementById('menu-open-icon');
+    const closeIcon = document.getElementById('menu-close-icon');
+
+    if (!mobileBtn || !mobileMenu || !openIcon || !closeIcon) return;
+
+    mobileBtn.onclick = () => {
+      const isClosed = mobileMenu.classList.contains('hidden');
+      if (isClosed) {
+        mobileMenu.classList.remove('hidden');
+        openIcon.classList.add('hidden');
+        closeIcon.classList.remove('hidden');
+        mobileBtn.setAttribute('aria-expanded', 'true');
+      } else {
+        mobileMenu.classList.add('hidden');
+        openIcon.classList.remove('hidden');
+        closeIcon.classList.add('hidden');
+        mobileBtn.setAttribute('aria-expanded', 'false');
+      }
+    };
+  }
+
+  setupMobileMenu();
+  document.addEventListener('astro:after-swap', setupMobileMenu);
+</script>

@@ -1,0 +1,69 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className = "" } = Astro.props;
+---
+
+<div class={`relative w-full max-w-sm mx-auto select-none ${className}`}>
+  
+  <!-- Outer Glow Ring (Adapts dynamically to Day and Night) -->
+  <div class="absolute -inset-1.5 rounded-[28px] bg-gradient-to-tr from-sky-400 via-sky-200 to-cyan-300 dark:from-sky-600 dark:via-cyan-500/40 dark:to-blue-950 opacity-80 blur-lg transition-all duration-500 group-hover:opacity-100"></div>
+
+  <!-- Main Card Container -->
+  <div class="relative rounded-[24px] p-2 bg-gradient-to-b from-white/90 to-sky-50/70 dark:from-slate-900/90 dark:to-[#030712] border border-sky-200/80 dark:border-sky-500/30 backdrop-blur-xl shadow-2xl transition-colors duration-300">
+    
+    <!-- Image Canvas Frame with Studio Gradient -->
+    <div class="relative w-full aspect-[4/4.6] rounded-[20px] overflow-hidden flex items-end justify-center border border-sky-100 dark:border-sky-950/80">
+      
+      <!-- Studio Light Gradients Behind the Portrait -->
+      <!-- Day Mode Canvas Background: Soft Studio Ice Blue -->
+      <div class="absolute inset-0 bg-gradient-to-b from-sky-100 via-sky-50 to-slate-100 dark:hidden"></div>
+      <div class="absolute top-6 left-1/2 -translate-x-1/2 w-48 h-48 bg-sky-300/40 rounded-full blur-2xl dark:hidden pointer-events-none"></div>
+
+      <!-- Night Mode Canvas Background: Deep Executive Space Navy -->
+      <div class="absolute inset-0 hidden dark:block bg-gradient-to-b from-[#0b1329] via-[#070b18] to-[#02050e]"></div>
+      <div class="absolute top-4 left-1/2 -translate-x-1/2 w-52 h-52 bg-sky-500/20 rounded-full blur-3xl hidden dark:block pointer-events-none"></div>
+
+      <!-- Profile PNG (Centered & Optimized) -->
+      <img 
+        src="/profile.png" 
+        alt="Shibaji Debnath - CTO & System Architect" 
+        class="relative z-10 w-full h-full object-contain object-bottom drop-shadow-[0_12px_24px_rgba(2,132,199,0.15)] dark:drop-shadow-[0_16px_32px_rgba(0,0,0,0.7)] transition-transform duration-300 hover:scale-[1.02]"
+        loading="eager"
+      />
+
+      <!-- Live Advisory Status Badge -->
+      <div class="absolute top-3 right-3 z-20 flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 border border-sky-200 dark:border-sky-500/40 shadow-sm backdrop-blur-md">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-sky-300">
+          Advisory Active
+        </span>
+      </div>
+
+    </div>
+
+    <!-- Quick Meta Info Below Image -->
+    <div class="p-4 text-center">
+      <h3 class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+        Shibaji Debnath
+      </h3>
+      <p class="text-xs font-mono font-semibold text-sky-600 dark:text-sky-400 mt-0.5">
+        CTO • Senior System Architect
+      </p>
+
+      <div class="mt-3 grid grid-cols-2 gap-2 text-[11px] font-mono">
+        <div class="p-2 rounded-xl bg-sky-50/80 dark:bg-slate-900/70 border border-sky-100 dark:border-sky-950 text-slate-600 dark:text-slate-300">
+          <span class="text-slate-400 block text-[9px] uppercase">Domain</span>
+          Distributed Systems
+        </div>
+        <div class="p-2 rounded-xl bg-sky-50/80 dark:bg-slate-900/70 border border-sky-100 dark:border-sky-950 text-slate-600 dark:text-slate-300">
+          <span class="text-slate-400 block text-[9px] uppercase">Applied AI</span>
+          MCP & Agentic Flows
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

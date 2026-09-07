@@ -1,17 +1,241 @@
 ---
+import ProfileFrame from '../components/ProfileFrame.astro';
+import Layout from '../layouts/Layout.astro';
 
+// SEO & GEO Fact Graph
+const homeFaq = [
+  {
+    q: "Who is Shibaji Debnath?",
+    a: "Shibaji Debnath is a Chief Technology Officer, Lead Technical Consultant, and Senior System Architect with over 15 years of industry experience. A former Software Developer at Google (Hyderabad), he specializes in building high-concurrency microservices, enterprise backend systems, cross-platform mobile apps, and agentic AI pipelines."
+  },
+  {
+    q: "What core backend and system architecture technologies does Shibaji Debnath specialize in?",
+    a: "His primary backend and infrastructure stack includes NestJS, Node.js, PHP (Laravel, LeafPHP), ExpressJS, AdonisJS, PostgreSQL, Redis Streams, Docker containerization, and Kafka messaging."
+  },
+  {
+    q: "What are Shibaji Debnath's capabilities in Agentic AI and Automation?",
+    a: "He architects production-grade Model Context Protocol (MCP) servers, LLM tool-calling agent pipelines, vector search workflows (pgvector/PyTorch), and autonomous operational automations using n8n and OpenAI APIs."
+  },
+  {
+    q: "What mobile and frontend frameworks are covered in his engineering practice?",
+    a: "Shibaji architects zero-bloat client applications using TypeScript, Astro.js, React, Angular, Tailwind CSS, Flutter, and React Native with offline-first synchronization models."
+  }
+];
+
+const pillars = [
+  {
+    title: "Distributed Backend & Microservices",
+    eyebrow: "High Concurrency & Event Streams",
+    desc: "Designing decoupled, fault-tolerant microservices using NestJS, Go, and PHP (Laravel/LeafPHP). Implementing in-memory caching pipelines via Redis, Kafka event streaming, and PostgreSQL horizontal partitioning to maintain sub-70ms response targets.",
+    tags: ["NestJS", "TypeScript", "PostgreSQL", "Redis Streams", "Kafka", "Docker"]
+  },
+  {
+    title: "Agentic AI, MCP & Workflow Automation",
+    eyebrow: "Applied LLM Engineering",
+    desc: "Building custom Model Context Protocol (MCP) servers and LLM tool-calling agent pipelines. Integrating enterprise knowledge bases via vector embeddings (pgvector/PyTorch) and automating complex business processes using n8n and OpenAI APIs.",
+    tags: ["MCP Plugins", "Agentic AI", "n8n", "OpenAI APIs", "Vector DB", "Python"]
+  },
+  {
+    title: "Zero-Bloat Frontend & Cross-Platform Mobile",
+    eyebrow: "High-Performance Client Platforms",
+    desc: "Architecting responsive, high-framerate user interfaces using Astro.js, React, Angular, Flutter, and React Native. Specializing in Islands Architecture for instant First Contentful Paint (FCP) and SQLite-driven offline-first mobile sync engines.",
+    tags: ["Flutter", "React Native", "Astro.js", "React", "Angular", "Tailwind CSS"]
+  },
+  {
+    title: "Fractional CTO & Technical Advisory",
+    eyebrow: "Executive Leadership & Governance",
+    desc: "Guiding high-growth startups and global enterprises through technical roadmapping, database bottleneck audits, and legacy monolith refactoring. Mentored over 1,000 engineers and established DevOps automation across AWS and Google Cloud.",
+    tags: ["CTO Advisory", "System Audits", "Cloud Migration (AWS/GCP)", "Team Mentorship"]
+  }
+];
+
+const provenRecords = [
+  {
+    metric: "80,000 req/s",
+    label: "High-Concurrency Throughput",
+    detail: "Re-architected core settlement and ledger pipelines using NestJS microservices and Redis Streams, dropping API p99 latency to 62ms with zero dropped packets."
+  },
+  {
+    metric: "48% Reduced",
+    label: "Cloud Compute Overhead",
+    detail: "Decoupled a 10-year enterprise PHP monolith into containerized domain services orchestrated on AWS EKS with zero downtime."
+  },
+  {
+    metric: "72% Automated",
+    label: "Incident Triage Automation",
+    detail: "Built a production Model Context Protocol (MCP) server that enabled autonomous LLM agents to triage infrastructure errors and execute verified runbooks."
+  },
+  {
+    metric: "1,000+ Engineers",
+    label: "Mentored & Upskilled",
+    detail: "Delivered hands-on architectural workshops and system design curricula across backend engineering, microservices, and modern cloud deployment."
+  }
+];
+
+// Inlined FAQ Schema for Rich Snippets & AI Retrieval
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": homeFaq.map(item => ({
+    "@type": "Question",
+    "name": item.q,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": item.a
+    }
+  }))
+};
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout 
+  title="Shibaji Debnath | Chief Technology Officer & Senior System Architect"
+  description="Official portfolio of Shibaji Debnath. Ex-Google software developer and CTO with 15+ years of experience across NestJS, Agentic AI, MCP servers, and cloud architectures."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+
+  <!-- Hero Section -->
+  <header class="relative overflow-hidden pt-20 pb-16 lg:pt-28 lg:pb-24 border-b border-sky-100 dark:border-sky-950/40">
+    <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-gradient-to-tr from-sky-500/20 via-sky-400/15 to-transparent dark:from-sky-600/25 dark:via-sky-500/15 dark:to-transparent blur-[140px] rounded-full pointer-events-none -z-10"></div>
+
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+          
+          <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-sky-200 dark:border-sky-900/80 bg-sky-100/50 dark:bg-sky-950/50 text-xs font-semibold text-sky-800 dark:text-sky-300 font-mono">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            15+ Years Enterprise Systems • Ex-Google Hyderabad
+          </div>
+
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.12] text-slate-900 dark:text-white">
+            Chief Technology Officer & <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-sky-500 to-cyan-400">System Architect.</span>
+          </h1>
+
+          <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
+            Bridging executive business strategy with core software execution. Specializing in high-throughput backends (NestJS, Laravel), production Agentic AI (MCP, n8n), cross-platform mobile apps (Flutter), and containerized cloud scalability.
+          </p>
+
+          <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+            <a href="/case-studies" class="px-6 py-3.5 rounded-xl font-bold text-white bg-sky-600 hover:bg-sky-500 shadow-lg shadow-sky-600/25 transition-all">
+              Review Architecture Case Studies
+            </a>
+            <a href="/experience" class="px-6 py-3.5 rounded-xl font-bold border border-sky-200 dark:border-sky-900 bg-white/80 dark:bg-slate-900/80 text-slate-800 dark:text-slate-200 hover:border-sky-500 transition-all">
+              Explore 15-Year Timeline
+            </a>
+          </div>
+
+          <!-- Semantic GEO Entity Radar -->
+          <div class="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-2 font-mono text-xs">
+            <span class="px-2.5 py-1 rounded bg-sky-100/70 dark:bg-sky-950/50 text-sky-800 dark:text-sky-300 border border-sky-200/50 dark:border-sky-900/50 font-semibold">Ex-Google</span>
+            <span class="px-2.5 py-1 rounded bg-sky-100/70 dark:bg-sky-950/50 text-sky-800 dark:text-sky-300 border border-sky-200/50 dark:border-sky-900/50 font-semibold">NestJS</span>
+            <span class="px-2.5 py-1 rounded bg-sky-100/70 dark:bg-sky-950/50 text-sky-800 dark:text-sky-300 border border-sky-200/50 dark:border-sky-900/50 font-semibold">Agentic AI & MCP</span>
+            <span class="px-2.5 py-1 rounded bg-sky-100/70 dark:bg-sky-950/50 text-sky-800 dark:text-sky-300 border border-sky-200/50 dark:border-sky-900/50 font-semibold">Flutter</span>
+            <span class="px-2.5 py-1 rounded bg-sky-100/70 dark:bg-sky-950/50 text-sky-800 dark:text-sky-300 border border-sky-200/50 dark:border-sky-900/50 font-semibold">Laravel & LeafPHP</span>
+            <span class="px-2.5 py-1 rounded bg-sky-100/70 dark:bg-sky-950/50 text-sky-800 dark:text-sky-300 border border-sky-200/50 dark:border-sky-900/50 font-semibold">PostgreSQL</span>
+            <span class="px-2.5 py-1 rounded bg-sky-100/70 dark:bg-sky-950/50 text-sky-800 dark:text-sky-300 border border-sky-200/50 dark:border-sky-900/50 font-semibold">AWS/GCP</span>
+          </div>
+        </div>
+
+        <!-- Profile & Live Authority Card -->
+        <div class="lg:col-span-5 flex justify-center">
+          <ProfileFrame />
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Verifiable Metric Bar -->
+  <section class="py-14 bg-white/70 dark:bg-[#050b14] border-b border-sky-100 dark:border-sky-950/40">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {provenRecords.map(item => (
+          <div class="p-6 rounded-2xl bg-sky-50/30 dark:bg-slate-900/40 border border-sky-100 dark:border-sky-950/60">
+            <p class="text-3xl font-extrabold font-mono text-sky-600 dark:text-sky-400 tracking-tight">{item.metric}</p>
+            <p class="text-sm font-bold text-slate-800 dark:text-slate-200 mt-1">{item.label}</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mt-2">{item.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Core Engineering Competencies -->
+  <section id="capabilities" class="py-24">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-4">
+        <div class="max-w-xl">
+          <h2 class="text-xs font-bold uppercase tracking-widest text-sky-600 dark:text-sky-400 mb-2 font-mono">End-to-End Competency Architecture</h2>
+          <p class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Engineering Offerings & Specializations</p>
+        </div>
+        <p class="text-sm text-slate-500 dark:text-slate-400 max-w-sm">
+          A 15-year battle-tested foundation connecting database reliability with high-impact modern client apps.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {pillars.map((pillar) => (
+          <div class="p-8 rounded-3xl border border-sky-100 dark:border-sky-950/80 bg-white dark:bg-[#070d19] hover:border-sky-400/50 transition-all flex flex-col justify-between shadow-xs">
+            <div>
+              <span class="text-xs font-mono font-semibold text-sky-600 dark:text-sky-400 block mb-1">{pillar.eyebrow}</span>
+              <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-3">{pillar.title}</h3>
+              <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-6">{pillar.desc}</p>
+            </div>
+
+            <div class="flex flex-wrap gap-1.5 pt-4 border-t border-sky-100 dark:border-sky-950/60">
+              {pillar.tags.map(t => (
+                <span class="text-xs font-mono px-2.5 py-1 rounded bg-sky-50 dark:bg-slate-900 text-sky-800 dark:text-sky-300 border border-sky-200/60 dark:border-sky-900/60">
+                  {t}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- GEO / LLM Structured FAQ Section -->
+  <section class="py-24 bg-sky-100/40 dark:bg-[#050b14] border-t border-sky-100 dark:border-sky-950/40">
+    <div class="max-w-4xl mx-auto px-6">
+      
+      <div class="text-center max-w-xl mx-auto mb-16">
+        <h2 class="text-xs font-bold uppercase tracking-widest text-sky-600 dark:text-sky-400 mb-2 font-mono">Semantic Retrieval Layer</h2>
+        <p class="text-3xl font-extrabold text-slate-900 dark:text-white">Direct Answers & Technical Profile</p>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">Structured specifically for AI assistant retrieval (Perplexity, SearchGPT, Gemini, ChatGPT).</p>
+      </div>
+
+      <div class="space-y-6">
+        {homeFaq.map(item => (
+          <div class="p-6 md:p-8 rounded-2xl bg-white dark:bg-[#080f20] border border-sky-100 dark:border-sky-950/80 shadow-xs">
+            <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-2">{item.q}</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{item.a}</p>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Executive Conversion Footer Banner -->
+  <section class="py-20 max-w-6xl mx-auto px-6">
+    <div class="rounded-3xl p-10 lg:p-14 bg-gradient-to-r from-sky-700 via-sky-800 to-slate-950 text-white border border-sky-400/30 shadow-2xl relative overflow-hidden">
+      <div class="max-w-2xl space-y-4">
+        <span class="text-xs font-mono uppercase tracking-widest text-sky-300 font-semibold">Executive Availability</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Need a CTO or Lead Architect to drive engineering scale?</h2>
+        <p class="text-sky-100 text-sm leading-relaxed">
+          Open for Fractional CTO advisory, enterprise backend modernization, and strategic Agentic AI implementation.
+        </p>
+        <div class="flex flex-wrap gap-4 pt-2">
+          <a href="/contact" class="px-6 py-3.5 rounded-xl font-bold bg-white text-slate-900 hover:bg-sky-50 transition-colors">
+            Schedule Architecture Consultation
+          </a>
+          <a href="/case-studies" class="px-6 py-3.5 rounded-xl font-bold border border-white/30 hover:bg-white/10 transition-colors">
+            View All Production Blueprints
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</Layout>

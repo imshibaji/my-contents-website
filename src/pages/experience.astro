@@ -1,0 +1,188 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const highlightedRoles = [
+  {
+    role: "Associate Founder & Lead Software Instructor",
+    company: "LARNR",
+    type: "Platform & EdTech Architecture",
+    period: "Jan 2024 – Present",
+    location: "India",
+    summary: "Co-founded and architected the larnr.com platform connecting students, mentors, and employers. Personally trained 1,000+ engineers on microservices and DevOps.",
+    bulletPoints: [
+      "Architected the end-to-end LMS platform using modular backend services and zero-bloat user interfaces.",
+      "Conducted corporate masterclasses mentoring 1,000+ engineers on high-concurrency Node.js, NestJS, and cloud orchestration.",
+      "Designed secure API gateways and optimized relational database schemas for high-traffic student portals."
+    ],
+    stack: ["System Architecture", "NestJS", "Node.js", "Mentorship", "LMS Architecture", "DevOps"]
+  },
+  {
+    role: "Lead Technical Consultant & Senior Full-Stack Architect",
+    company: "SDN Technology",
+    type: "Enterprise Solutions & AI Advisory",
+    period: "Apr 2022 – Present",
+    location: "Kolkata, India",
+    summary: "Directing technical strategy for global clients across web, mobile, and agentic AI systems.",
+    bulletPoints: [
+      "Architected and deployed custom Agentic AI workflows and Model Context Protocol (MCP) servers using n8n and OpenAI APIs.",
+      "Engineered decoupled microservices using NestJS, Laravel, Angular, React, and Flutter.",
+      "Advised executive leaders on database scaling, cloud infrastructure (AWS/GCP), and secure API contracts.",
+      "Standardized containerization pipelines across development and production using Docker."
+    ],
+    stack: ["Agentic AI", "MCP", "NestJS", "Flutter", "n8n", "Docker", "AWS/GCP"]
+  },
+  {
+    role: "Flutter App Developer (US Client)",
+    company: "SportsVisio, Inc.",
+    type: "Computer Vision & Mobile AI",
+    period: "Oct 2021 – Feb 2022",
+    location: "New York, USA (Remote)",
+    summary: "Built high-performance mobile video streaming and AI-driven telemetry interfaces for US sports analytics.",
+    bulletPoints: [
+      "Engineered real-time low-latency video recording and streaming client modules with Flutter.",
+      "Integrated machine learning recommendation features directly into cross-platform mobile views.",
+      "Maintained 60 FPS performance during intensive on-device hardware camera operations."
+    ],
+    stack: ["Flutter", "Dart", "Video Streaming", "Computer Vision AI", "Mobile Architecture"]
+  },
+  {
+    role: "Chief Software Engineer / Senior Full-Stack Lead",
+    company: "Medust Technology Pvt. Ltd.",
+    type: "Core Engineering Leadership",
+    period: "Oct 2016 – May 2021",
+    location: "Kolkata, India",
+    summary: "Led full-stack engineering from initial product design to high-availability multi-tenant production systems.",
+    bulletPoints: [
+      "Modernized legacy PHP codebases into high-throughput Node.js and Laravel microservices.",
+      "Architected complex payment gateway integrations, webhook listeners, and financial reconciliation modules.",
+      "Tuned database models across MySQL, MongoDB, and Redis to eliminate query locking bottlenecks."
+    ],
+    stack: ["Laravel", "Node.js", "MySQL", "MongoDB", "Redis", "Payment Gateways"]
+  },
+  {
+    role: "Software Developer",
+    company: "Google",
+    type: "Infrastructure & Mobile Systems",
+    period: "Sep 2015 – Jul 2016",
+    location: "Hyderabad, India",
+    summary: "Designed backend systems and database structures for scalable internal services and mobile endpoints.",
+    bulletPoints: [
+      "Formulated scalable database schema architectures supporting high-concurrency request loads.",
+      "Engineered clean, resilient API endpoints powering internal mobile applications.",
+      "Applied strict test-driven development (TDD) and Google software engineering standards."
+    ],
+    stack: ["Database Design", "High-Performance Systems", "API Architecture", "TDD"]
+  },
+  {
+    role: "Technical Author & Community Open-Source Contributor",
+    company: "Independent / GitHub Community",
+    type: "Thought Leadership & Open Source",
+    period: "2018 – Present",
+    location: "Global",
+    summary: "Authoring architectural tutorials and building developer tooling with strong community adoption.",
+    bulletPoints: [
+      "Maintained open-source repositories and utility libraries earning 570+ GitHub stars.",
+      "Authored in-depth technical articles on system design, microservices, and AI tool calling.",
+      "Conducted developer webinars helping engineers transition into staff and lead architecture roles."
+    ],
+    stack: ["Open Source", "System Design Tutorials", "Technical Writing", "Developer Mentorship"]
+  }
+];
+---
+
+<Layout 
+  title="Curated Engineering Experience | Shibaji Debnath"
+  description="15+ years of verified software leadership: Ex-Google developer, CTO advisor, and systems architect specialized in distributed backends and Agentic AI."
+>
+
+  <header class="py-20 border-b border-sky-100 dark:border-sky-950/50 bg-white/40 dark:bg-[#040813]">
+    <div class="max-w-5xl mx-auto px-6">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-sky-200 dark:border-sky-900/80 bg-sky-50 dark:bg-sky-950/40 text-xs font-mono font-semibold text-sky-700 dark:text-sky-300 mb-4">
+        Battle-Tested Track Record
+      </div>
+      <h1 class="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+        Professional Experience & Leadership
+      </h1>
+      <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mt-4 leading-relaxed">
+        A hand-picked selection of high-impact engineering milestones—from core infrastructure at Google to founding EdTech platforms and directing enterprise AI strategies.
+      </p>
+    </div>
+  </header>
+
+  <main class="py-20 max-w-5xl mx-auto px-6">
+    <div class="relative border-l-2 border-sky-200 dark:border-sky-950 ml-4 md:ml-6 space-y-16">
+      
+      {highlightedRoles.map((exp, idx) => (
+        <div class="relative pl-8 md:pl-12 group">
+          <!-- Timeline Node Anchor -->
+          <div class="absolute -left-[9px] md:-left-[10px] top-2 w-5 h-5 rounded-full bg-white dark:bg-slate-950 border-4 border-sky-500 group-hover:border-sky-400 group-hover:scale-125 transition-all"></div>
+
+          <article class="p-8 md:p-10 rounded-3xl border border-sky-100 dark:border-sky-950/80 bg-white dark:bg-[#070d1a] shadow-xs hover:border-sky-400/40 transition-all">
+            
+            <!-- Role Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-6 border-b border-sky-100 dark:border-sky-950/60">
+              <div>
+                <span class="text-xs font-mono font-semibold text-sky-600 dark:text-sky-400 block mb-1">
+                  0{idx + 1} // {exp.type}
+                </span>
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white">
+                  {exp.role}
+                </h2>
+                <p class="text-sm font-semibold text-slate-700 dark:text-slate-300 mt-1">
+                  {exp.company} <span class="text-slate-400 font-normal">• {exp.location}</span>
+                </p>
+              </div>
+
+              <span class="text-xs font-mono font-bold px-3 py-1.5 rounded-xl bg-sky-50 dark:bg-sky-950/80 text-sky-800 dark:text-sky-300 border border-sky-200/60 dark:border-sky-900/60 w-fit shrink-0">
+                {exp.period}
+              </span>
+            </div>
+
+            <!-- Role Summary -->
+            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed my-6 font-medium">
+              {exp.summary}
+            </p>
+
+            <!-- Key Architectural Deliverables -->
+            <div class="space-y-3 mb-8">
+              <span class="text-xs font-mono uppercase tracking-wider text-slate-400 block font-semibold">Key Deliverables & Execution:</span>
+              <ul class="space-y-2.5">
+                {exp.bulletPoints.map(bp => (
+                  <li class="flex items-start gap-3 text-sm text-slate-700 dark:text-slate-300">
+                    <span class="w-1.5 h-1.5 rounded-full bg-sky-500 mt-2 shrink-0"></span>
+                    <span class="leading-relaxed">{bp}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <!-- Tech Radar Tags -->
+            <div class="flex flex-wrap gap-2 pt-6 border-t border-sky-100 dark:border-sky-950/60">
+              {exp.stack.map(tag => (
+                <span class="text-xs font-mono px-2.5 py-1 rounded-md bg-sky-50 dark:bg-slate-900 text-sky-800 dark:text-sky-300 border border-sky-200/60 dark:border-sky-900/60">
+                  {tag}
+                </span>
+              ))}
+            </div>
+
+          </article>
+        </div>
+      ))}
+
+    </div>
+  </main>
+
+  <!-- CTA Box -->
+  <section class="pb-24 max-w-5xl mx-auto px-6">
+    <div class="rounded-3xl p-10 bg-gradient-to-r from-sky-700 via-sky-800 to-slate-950 text-white flex flex-col sm:flex-row items-center justify-between gap-6 border border-sky-400/30">
+      <div>
+        <h3 class="text-2xl font-bold">Require strategic technical leadership?</h3>
+        <p class="text-sky-100 text-sm mt-1">Available for Fractional CTO engagements and microservice audits.</p>
+      </div>
+      <a href="/contact" class="px-6 py-3.5 rounded-xl font-bold bg-white text-slate-950 hover:bg-sky-50 shrink-0 transition-colors">
+        Initiate Advisory Discussion
+      </a>
+    </div>
+  </section>
+
+</Layout>

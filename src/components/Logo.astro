@@ -1,0 +1,60 @@
+---
+interface Props {
+  class?: string;
+}
+const { class: className = "" } = Astro.props;
+---
+
+<div class={`inline-flex items-center gap-3.5 group select-none ${className}`}>
+  <!-- Adaptive Container: Light in Day, Dark in Night -->
+  <div class="relative w-10 h-10 rounded-xl bg-white dark:bg-slate-950 border border-sky-200/90 dark:border-sky-500/30 flex items-center justify-center p-2 shadow-sm shadow-sky-100 dark:shadow-none group-hover:border-sky-500 transition-all duration-300">
+    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+      <defs>
+        <!-- Day Mode Gradient: Crisp Navy to Sky Blue -->
+        <linearGradient id="logoSkyDay" x1="11" y1="12" x2="29" y2="32" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#0284c7" />
+          <stop offset="100%" stop-color="#0369a1" />
+        </linearGradient>
+
+        <!-- Night Mode Gradient: Vivid Sky to Cyan Glow -->
+        <linearGradient id="logoSkyNight" x1="11" y1="12" x2="29" y2="32" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#38bdf8" />
+          <stop offset="100%" stop-color="#0284c7" />
+        </linearGradient>
+      </defs>
+
+      <!-- Day Mode Stroke (Visible only in Light Mode) -->
+      <g class="dark:hidden">
+        <path d="M12 12H24C26.7614 12 29 14.2386 29 17C29 19.7614 26.7614 22 24 22H16C13.2386 22 11 24.2386 11 27C11 29.7614 13.2386 32 16 32H28" 
+              stroke="url(#logoSkyDay)" 
+              stroke-width="3.5" 
+              stroke-linecap="round" 
+              stroke-linejoin="round" />
+        <circle cx="28" cy="32" r="2.2" fill="#0284c7" />
+      </g>
+
+      <!-- Night Mode Stroke (Visible only in Dark Mode) -->
+      <g class="hidden dark:block">
+        <path d="M12 12H24C26.7614 12 29 14.2386 29 17C29 19.7614 26.7614 22 24 22H16C13.2386 22 11 24.2386 11 27C11 29.7614 13.2386 32 16 32H28" 
+              stroke="url(#logoSkyNight)" 
+              stroke-width="3.5" 
+              stroke-linecap="round" 
+              stroke-linejoin="round" />
+        <circle cx="28" cy="32" r="2.2" fill="#38bdf8" />
+      </g>
+    </svg>
+
+    <!-- Node Pulse Indicator -->
+    <span class="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-sky-500 dark:bg-sky-400"></span>
+  </div>
+
+  <!-- Brand Typography with High-Contrast Day Colors -->
+  <div class="flex flex-col">
+    <span class="text-base font-extrabold tracking-tight text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors leading-tight">
+      Shibaji Debnath
+    </span>
+    <span class="text-[10px] font-mono uppercase tracking-widest text-slate-500 dark:text-slate-400 font-semibold leading-none mt-0.5">
+      System Architect
+    </span>
+  </div>
+</div>

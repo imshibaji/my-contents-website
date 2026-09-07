@@ -1,0 +1,187 @@
+---
+import '../styles/global.css';
+import Navbar from '../components/Navbar.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  articleDate?: string;
+  type?: 'website' | 'profile' | 'article';
+}
+
+const { 
+  title, 
+  description = "Chief Technology Officer, Lead Technical Consultant & Senior System Architect with 15+ years of experience in NestJS microservices, Agentic AI, MCP plugins, and cloud scale.", 
+  ogImage = "/profile.jpg",
+  articleDate,
+  type = "website"
+} = Astro.props;
+
+const siteUrl = "https://shibajidebnath.com";
+const canonicalURL = new URL(Astro.url.pathname, siteUrl);
+
+// Google & LLM Entity Schema Graph
+const schemaGraph = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": `${siteUrl}/#person`,
+      "name": "Shibaji Debnath",
+      "alternateName": ["Shibaji", "imshibaji"],
+      "jobTitle": "Chief Technology Officer & Senior System Architect",
+      "url": siteUrl,
+      "image": `${siteUrl}/profile.jpg`,
+      "sameAs": [
+        "https://github.com/imshibaji",
+        "https://linkedin.com/in/shibaji"
+      ],
+      "alumniOf": {
+        "@type": "Organization",
+        "name": "Google"
+      },
+      "worksFor": {
+        "@type": "Organization",
+        "name": "SDN Technology"
+      },
+      "knowsAbout": [
+        "System Architecture",
+        "NestJS",
+        "Agentic AI Workflows",
+        "Model Context Protocol (MCP)",
+        "Microservices Architecture",
+        "Laravel",
+        "LeafPHP",
+        "PostgreSQL",
+        "Redis Streams",
+        "Docker Containerization",
+        "Flutter",
+        "Angular",
+        "React",
+        "Vue",
+        "Next.js",
+        "Astro",
+        "OpenAI APIs"
+      ],
+      "description": description
+    },
+    {
+      "@type": "ProfessionalService",
+      "@id": `${siteUrl}/#service`,
+      "name": "Shibaji Debnath Technical Advisory & Architecture",
+      "url": siteUrl,
+      "provider": { "@id": `${siteUrl}/#person` },
+      "serviceType": [
+        "System Architecture Consulting",
+        "Fractional CTO Advisory",
+        "Agentic AI & MCP Integration",
+        "High-Concurrency Performance Audits"
+      ],
+      "areaServed": ["Worldwide", "India", "United States"],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Technical Leadership Offerings",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Fractional CTO & Technical Roadmapping"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Distributed Microservice Architecture (NestJS/Go)"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Agentic AI & Custom MCP Tool Development"
+            }
+          }
+        ]
+      }
+    }
+  ]
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Primary Metadata -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    
+    <!-- Crawler Controls for SEO & GEO -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="author" content="Shibaji Debnath" />
+    <meta name="publisher" content="Shibaji Debnath" />
+    <meta name="keywords" content="Shibaji Debnath, CTO, System Architect, Ex-Google, NestJS, Agentic AI, MCP Plugins, Laravel, Microservices, Fractional CTO" />
+
+    <!-- Open Graph (Facebook, LinkedIn, Discord) -->
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(ogImage, siteUrl)} />
+    <meta property="og:site_name" content="Shibaji Debnath | System Architect" />
+    {articleDate && <meta property="article:published_time" content={articleDate} />}
+
+    <!-- Twitter / X Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, siteUrl)} />
+
+    <!-- AI Model Quick Context Hook -->
+    <link rel="help" href="/llms.txt" title="LLM Context Reference" />
+
+    <!-- Google & LLM Entity Schema Graph -->
+    <script type="application/ld+json" set:html={JSON.stringify(schemaGraph)} />
+
+    <!-- Prevent Theme Flash -->
+    <script is:inline>
+      const theme = (() => {
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+          return localStorage.getItem('theme');
+        }
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      })();
+      if (theme === 'light') {
+        document.documentElement.classList.remove('dark');
+      } else {
+        document.documentElement.classList.add('dark');
+      }
+      window.localStorage.setItem('theme', theme);
+    </script>
+  </head>
+  <body class="bg-sky-50/30 text-slate-800 dark:bg-[#030712] dark:text-slate-100 font-sans transition-colors duration-300 antialiased selection:bg-sky-500 selection:text-white flex flex-col min-h-screen">
+    <Navbar />
+    <main class="flex-grow">
+      <slot />
+    </main>
+    <footer class="py-12 border-t border-sky-100 dark:border-sky-950/40 text-xs text-slate-500 dark:text-slate-400 bg-white/50 dark:bg-black/20">
+      <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p>© {new Date().getFullYear()} Shibaji Debnath. Engineered for Low Latency & High Scalability.</p>
+        <div class="flex items-center gap-4 font-mono text-sky-600 dark:text-sky-400">
+          <a href="/llms.txt" class="hover:underline">llms.txt (AI Direct)</a>
+          <span>•</span>
+          <a href="/sitemap-index.xml" class="hover:underline">Sitemap</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
