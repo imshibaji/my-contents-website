@@ -1,0 +1,522 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const courses = await getCollection('courses');
+  return courses.map(entry => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+function getEmbedUrl(url?: string) {
+  if (!url) return null;
+  if (url.includes('embed/')) return url;
+  const match = url.match(/(?:watch\?v=|youtu\.be\/)([^#&?]*).*/);
+  return match && match[1] ? `https://www.youtube.com/embed/${match[1]}` : url;
+}
+
+const embedVideoUrl = getEmbedUrl(entry.data.videoTrailerUrl);
+
+const currency = entry.data.currency || "₹";
+const price = Number(entry.data.price ?? 0);
+const originalPrice = Number(entry.data.originalPrice ?? 0);
+const installmentPrice = Number(entry.data.installmentPrice ?? (price > 0 ? Math.round(price / 4) : 0));
+const hasInstallment = installmentPrice > 0 && price > 0;
+
+const courseDetailSchema = {
+  "@context": "https://schema.org",
+  "@type": "Course",
+  "name": entry.data.title,
+  "description": entry.data.description,
+  "provider": {
+    "@type": "Person",
+    "name": "Shibaji Debnath",
+    "url": "https://shibajidebnath.com"
+  },
+  "courseCode": entry.id,
+  "inLanguage": entry.data.language,
+  "educationalLevel": entry.data.level
+};
+---
+
+<Layout 
+  title={`${entry.data.title} | Technical Mentorship`}
+  description={entry.data.description}
+  ogImage={entry.data.featuredImage || "/profile.png"}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(courseDetailSchema)} slot="head" />
+
+  <!-- Signature Executive Hero Section -->
+  <header class="relative overflow-hidden py-12 lg:py-16 border-b border-sky-100 dark:border-sky-950/60 bg-white/40 dark:bg-[#040813]">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[380px] bg-gradient-to-tr from-sky-400/15 via-cyan-400/10 to-transparent dark:from-sky-600/20 dark:via-sky-400/10 blur-[130px] rounded-full pointer-events-none -z-10"></div>
+
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+        
+        <!-- Left Column -->
+        <div class="lg:col-span-7 space-y-6">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-sky-200 dark:border-sky-900/80 bg-white/80 dark:bg-sky-950/40 backdrop-blur-md text-xs font-mono font-semibold text-sky-700 dark:text-sky-300 shadow-xs">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            15+ Years Enterprise Systems • {entry.data.category}
+          </div>
+
+          <h1 class="text-3xl sm:text-4xl lg:text-[2.85rem] font-black text-slate-900 dark:text-white tracking-tight leading-[1.14]">
+            {entry.data.title}
+          </h1>
+
+          <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+            {entry.data.description}
+          </p>
+
+          <div class="flex flex-wrap items-center gap-4 pt-1">
+            <a 
+              id="hero-enroll-btn"
+              href={`/courses/enquiry?course=${entry.id}&plan=full`}
+              class="px-6 py-3.5 rounded-2xl bg-sky-600 hover:bg-sky-500 text-white font-mono font-bold text-xs sm:text-sm transition-all shadow-lg shadow-sky-600/25 cursor-pointer"
+            >
+              {price === 0 ? 'Enroll for Free →' : 'Apply / Reserve Seat →'}
+            </a>
+            <a 
+              href="#curriculum-section" 
+              class="px-6 py-3.5 rounded-2xl border border-sky-200 dark:border-sky-900/80 bg-white dark:bg-slate-900/70 hover:border-sky-400 text-slate-700 dark:text-slate-200 font-mono font-bold text-xs sm:text-sm transition-all shadow-xs"
+            >
+              Explore Course Syllabus
+            </a>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 pt-2">
+            {(entry.data.tags || ["NestJS", "Docker", "Redis", "Distributed Systems", "MCP"]).map((tech: string) => (
+              <span class="px-3 py-1.5 rounded-xl text-xs font-mono font-semibold bg-sky-50/70 dark:bg-slate-900/70 text-sky-700 dark:text-sky-300 border border-sky-100 dark:border-sky-900/60 shadow-2xs">
+                {tech}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <!-- Right Column Video Preview -->
+        <div class="lg:col-span-5 w-full">
+          <div class="relative rounded-3xl p-3 sm:p-4 bg-white/80 dark:bg-[#070e1c]/90 border border-sky-200/80 dark:border-sky-900/60 shadow-2xl shadow-sky-500/10 backdrop-blur-xl space-y-4">
+            <div class="flex items-center justify-between px-2 pt-1">
+              <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-400">
+                Architectural Preview
+              </span>
+              <span class="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                {entry.data.status}
+              </span>
+            </div>
+
+            <div class="relative aspect-video w-full rounded-2xl overflow-hidden bg-slate-950 border border-sky-100 dark:border-sky-950 shadow-inner">
+              {embedVideoUrl ? (
+                <iframe 
+                  src={embedVideoUrl} 
+                  title={entry.data.title}
+                  class="w-full h-full border-0 absolute inset-0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowfullscreen
+                ></iframe>
+              ) : entry.data.featuredImage ? (
+                <img 
+                  src={entry.data.featuredImage} 
+                  alt={entry.data.title} 
+                  class="w-full h-full object-cover" 
+                />
+              ) : (
+                <img 
+                  src="/profile.png" 
+                  alt="Preview" 
+                  class="w-full h-full object-cover" 
+                />
+              )}
+            </div>
+
+            <div class="pt-2 text-center">
+              <h3 class="text-base font-extrabold text-slate-900 dark:text-white leading-tight">
+                Shibaji Debnath
+              </h3>
+              <p class="text-xs font-mono text-sky-600 dark:text-sky-400 font-semibold mt-0.5">
+                CTO • Senior System Architect
+              </p>
+
+              <div class="grid grid-cols-2 gap-3 mt-4 pt-3 border-t border-sky-100 dark:border-sky-950/80 text-left">
+                <div class="p-2 rounded-xl bg-sky-50/50 dark:bg-slate-900/50 border border-sky-100/60 dark:border-sky-900/40">
+                  <span class="block text-[10px] font-mono uppercase text-slate-400 font-bold">Duration</span>
+                  <span class="text-xs font-bold font-mono text-slate-800 dark:text-slate-200">{entry.data.duration}</span>
+                </div>
+                <div class="p-2 rounded-xl bg-sky-50/50 dark:bg-slate-900/50 border border-sky-100/60 dark:border-sky-900/40">
+                  <span class="block text-[10px] font-mono uppercase text-slate-400 font-bold">Total Lessons</span>
+                  <span class="text-xs font-bold font-mono text-slate-800 dark:text-slate-200">{entry.data.totalLessons} Sessions</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Body Content -->
+  <div class="max-w-6xl mx-auto px-6 py-12 lg:py-16">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+      
+      <!-- Left Column: Syllabus & Details -->
+      <main class="lg:col-span-8 space-y-12 min-w-0">
+        <div class="p-8 rounded-3xl border border-sky-100 dark:border-sky-950/80 bg-white dark:bg-[#070d1a] shadow-xs">
+          <h2 class="text-xl font-extrabold text-slate-900 dark:text-white mb-6">
+            What you'll master in this course
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-slate-700 dark:text-slate-300">
+            <div class="flex items-start gap-2.5">
+              <span class="text-sky-500 font-bold">✓</span>
+              <span>Architecting high-concurrency microservices from scratch.</span>
+            </div>
+            <div class="flex items-start gap-2.5">
+              <span class="text-sky-500 font-bold">✓</span>
+              <span>Preventing memory leaks and queue bottlenecks with Redis.</span>
+            </div>
+            <div class="flex items-start gap-2.5">
+              <span class="text-sky-500 font-bold">✓</span>
+              <span>Running local and autonomous AI agents using Ollama & n8n.</span>
+            </div>
+            <div class="flex items-start gap-2.5">
+              <span class="text-sky-500 font-bold">✓</span>
+              <span>Zero-downtime VPS deployment and Docker network security.</span>
+            </div>
+          </div>
+        </div>
+
+        {entry.data.prerequisites && (
+          <div class="space-y-4">
+            <h2 class="text-xl font-extrabold text-slate-900 dark:text-white">Requirements & Prerequisites</h2>
+            <ul class="list-disc pl-5 space-y-2 text-sm text-slate-700 dark:text-slate-300">
+              {entry.data.prerequisites.map((p: string) => (
+                <li>{p}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div id="curriculum-section" class="scroll-mt-28 space-y-6">
+          <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white border-b border-sky-100 dark:border-sky-950 pb-4">
+            Course Curriculum & Syllabus
+          </h2>
+          <article class="article-body prose prose-slate dark:prose-invert max-w-none text-base leading-relaxed">
+            <Content />
+          </article>
+        </div>
+      </main>
+
+      <!-- Right Column: Sticky Enrollment Box -->
+      <aside class="lg:col-span-4 sticky top-28 self-start">
+        <div class="rounded-3xl p-6 sm:p-7 bg-white dark:bg-[#070e1c] border border-sky-200/80 dark:border-sky-900 shadow-xl space-y-6">
+          
+          <!-- Pricing Block with Single-Line Badge -->
+          <div class="space-y-2.5">
+            {price === 0 ? (
+              <div class="flex items-baseline gap-2">
+                <h3 class="text-3xl sm:text-4xl font-black font-mono text-emerald-600 dark:text-emerald-400">
+                  Free
+                </h3>
+                {originalPrice > 0 && (
+                  <span class="text-base font-mono line-through text-slate-400">
+                    {currency}{originalPrice.toLocaleString('en-IN')}
+                  </span>
+                )}
+              </div>
+            ) : (
+              <div>
+                <div class="flex items-baseline gap-2.5 flex-wrap">
+                  <h3 id="display-price" class="text-3xl sm:text-4xl font-black font-mono text-slate-900 dark:text-white tracking-tight">
+                    {currency}{price.toLocaleString('en-IN')}
+                  </h3>
+                  {originalPrice > price && (
+                    <span id="display-original-price" class="text-base font-mono line-through text-slate-400">
+                      {currency}{originalPrice.toLocaleString('en-IN')}
+                    </span>
+                  )}
+                  {entry.data.discountBadge && (
+                    <span id="display-discount-badge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-rose-500/15 text-rose-500 border border-rose-500/30 whitespace-nowrap">
+                      {entry.data.discountBadge}
+                    </span>
+                  )}
+                </div>
+
+                {entry.data.offerText && (
+                  <p class="text-xs font-mono text-emerald-600 dark:text-emerald-400 font-semibold pt-1.5 flex items-center gap-1.5">
+                    <span>🎉</span>
+                    <span>{entry.data.offerText}</span>
+                  </p>
+                )}
+              </div>
+            )}
+
+            <p class="text-xs font-mono text-slate-500 dark:text-slate-400 flex items-center gap-1.5 pt-0.5">
+              <span class="text-emerald-500 font-bold">✓</span>
+              <span>Live Cohort Mentorship Included</span>
+            </p>
+          </div>
+
+          <!-- Dynamic Payment Plan Switcher -->
+          {hasInstallment && (
+            <div class="space-y-2.5 pt-3 pb-3 border-t border-b border-sky-100 dark:border-sky-950 font-mono text-xs">
+              <span class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                Select Payment Option:
+              </span>
+              
+              <label 
+                id="detail-card-full"
+                class="flex items-center justify-between p-3.5 rounded-2xl border-2 border-sky-500 bg-sky-50/60 dark:bg-sky-950/40 cursor-pointer transition-all"
+              >
+                <div class="flex items-center gap-2.5">
+                  <input type="radio" name="detail_plan" value="full" checked class="w-4 h-4 text-sky-600 focus:ring-0 cursor-pointer" />
+                  <div>
+                    <span class="block font-bold text-slate-900 dark:text-white">Full 1-Year Access</span>
+                    <span class="block text-[10px] text-emerald-600 dark:text-emerald-400">Save {currency}{(originalPrice - price).toLocaleString('en-IN')}</span>
+                  </div>
+                </div>
+                <span class="font-bold text-slate-900 dark:text-white">{currency}{price.toLocaleString('en-IN')}</span>
+              </label>
+
+              <label 
+                id="detail-card-installment"
+                class="flex items-center justify-between p-3.5 rounded-2xl border border-sky-200 dark:border-sky-900 bg-white dark:bg-slate-900 cursor-pointer transition-all hover:border-sky-400"
+              >
+                <div class="flex items-center gap-2.5">
+                  <input type="radio" name="detail_plan" value="installment" class="w-4 h-4 text-sky-600 focus:ring-0 cursor-pointer" />
+                  <div>
+                    <span class="block font-bold text-slate-900 dark:text-white">Quarterly Milestones</span>
+                    <span class="block text-[10px] text-slate-400">4 quarterly payments</span>
+                  </div>
+                </div>
+                <span class="font-bold text-slate-900 dark:text-white">{currency}{installmentPrice.toLocaleString('en-IN')}</span>
+              </label>
+            </div>
+          )}
+
+          <!-- CTA Action routing to enquiry.astro -->
+          <div class="space-y-3">
+            <a 
+              id="detail-enroll-btn"
+              href={`/courses/enquiry?course=${entry.id}&plan=full`} 
+              class="w-full inline-flex items-center justify-center py-4 rounded-2xl font-mono font-bold text-sm text-white bg-sky-600 hover:bg-sky-500 shadow-lg shadow-sky-600/25 transition-all text-center cursor-pointer"
+            >
+              {price === 0 ? 'Enroll for Free →' : 'Apply / Reserve Seat →'}
+            </a>
+            <p class="text-xs font-mono text-slate-500 dark:text-slate-400 text-center leading-relaxed">
+              Direct review & consultation with Shibaji Debnath
+            </p>
+          </div>
+
+          <!-- Feature Meta List with Precise Spacing -->
+          <div class="pt-5 border-t border-sky-100 dark:border-sky-950 space-y-3 text-xs font-mono text-slate-600 dark:text-slate-300">
+            <p class="font-bold text-slate-900 dark:text-white uppercase tracking-wider text-[11px] mb-2">
+              This program includes:
+            </p>
+            <div class="flex items-start gap-3">
+              <span class="text-sm shrink-0">⏱️</span>
+              <span class="leading-relaxed">{entry.data.duration} (Weekly 2 Sessions)</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-sm shrink-0">📑</span>
+              <span class="leading-relaxed">{entry.data.totalLessons} Architecture Decision Records</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-sm shrink-0">💻</span>
+              <span class="leading-relaxed">Production Docker & NestJS repos</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-sm shrink-0">🎓</span>
+              <span class="leading-relaxed">Certificate of Architecture Completion</span>
+            </div>
+          </div>
+
+        </div>
+      </aside>
+
+    </div>
+  </div>
+</Layout>
+
+<script is:inline define:vars={{ courseId: entry.id, currency, price, installmentPrice, originalPrice }}>
+  const radios = document.querySelectorAll('input[name="detail_plan"]');
+  const enrollBtn = document.getElementById('detail-enroll-btn');
+  const heroEnrollBtn = document.getElementById('hero-enroll-btn');
+  const displayPrice = document.getElementById('display-price');
+  const displayOriginalPrice = document.getElementById('display-original-price');
+  const displayDiscountBadge = document.getElementById('display-discount-badge');
+  const cardFull = document.getElementById('detail-card-full');
+  const cardInst = document.getElementById('detail-card-installment');
+
+  radios.forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      const selected = e.target.value;
+      const targetUrl = `/courses/enquiry?course=${courseId}&plan=${selected}`;
+
+      if (enrollBtn) enrollBtn.href = targetUrl;
+      if (heroEnrollBtn) heroEnrollBtn.href = targetUrl;
+
+      if (selected === 'installment') {
+        cardInst?.classList.add('border-2', 'border-sky-500', 'bg-sky-50/60', 'dark:bg-sky-950/40');
+        cardInst?.classList.remove('border', 'border-sky-200', 'dark:border-sky-900', 'bg-white', 'dark:bg-slate-900');
+        cardFull?.classList.remove('border-2', 'border-sky-500', 'bg-sky-50/60', 'dark:bg-sky-950/40');
+        cardFull?.classList.add('border', 'border-sky-200', 'dark:border-sky-900', 'bg-white', 'dark:bg-slate-900');
+
+        if (displayPrice) displayPrice.textContent = `${currency}${installmentPrice.toLocaleString('en-IN')}`;
+        if (displayOriginalPrice) displayOriginalPrice.style.display = 'none';
+        if (displayDiscountBadge) displayDiscountBadge.style.display = 'none';
+      } else {
+        cardFull?.classList.add('border-2', 'border-sky-500', 'bg-sky-50/60', 'dark:bg-sky-950/40');
+        cardFull?.classList.remove('border', 'border-sky-200', 'dark:border-sky-900', 'bg-white', 'dark:bg-slate-900');
+        cardInst?.classList.remove('border-2', 'border-sky-500', 'bg-sky-50/60', 'dark:bg-sky-950/40');
+        cardInst?.classList.add('border', 'border-sky-200', 'dark:border-sky-900', 'bg-white', 'dark:bg-slate-900');
+
+        if (displayPrice) displayPrice.textContent = `${currency}${price.toLocaleString('en-IN')}`;
+        if (displayOriginalPrice) displayOriginalPrice.style.display = 'inline';
+        if (displayDiscountBadge) displayDiscountBadge.style.display = 'inline-flex';
+      }
+    });
+  });
+</script>
+
+<style is:global>
+  /* Collapsible Accordion Styles */
+  .article-body details {
+    margin-bottom: 1rem;
+    border-radius: 1.25rem;
+    border: 1px solid #e0f2fe;
+    background-color: #ffffff;
+    overflow: hidden;
+    transition: all 0.25s ease-in-out;
+  }
+
+  html.dark .article-body details,
+  .dark .article-body details {
+    background-color: #070e1c !important;
+    border-color: rgba(56, 189, 248, 0.2) !important;
+  }
+
+  .article-body details[open] {
+    border-color: rgba(56, 189, 248, 0.45) !important;
+    box-shadow: 0 10px 25px -5px rgba(56, 189, 248, 0.08);
+  }
+
+  .article-body summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.15rem 1.5rem;
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    background-color: #f8fafc;
+    transition: background-color 0.2s;
+  }
+
+  html.dark .article-body summary,
+  .dark .article-body summary {
+    background-color: #0c1527 !important;
+  }
+
+  .article-body summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .article-body summary:hover {
+    background-color: #f0f9ff;
+  }
+
+  html.dark .article-body summary:hover,
+  .dark .article-body summary:hover {
+    background-color: #111e38 !important;
+  }
+
+  .article-body summary::after {
+    content: "↓";
+    font-family: ui-monospace, monospace;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #0284c7;
+    margin-left: 1rem;
+    transition: transform 0.25s ease;
+  }
+
+  html.dark .article-body summary::after,
+  .dark .article-body summary::after {
+    color: #38bdf8 !important;
+  }
+
+  .article-body details[open] summary::after {
+    transform: rotate(180deg);
+  }
+
+  .article-body .module-number {
+    font-family: ui-monospace, monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 0.25rem 0.65rem;
+    border-radius: 0.5rem;
+    background-color: #0284c7;
+    color: #ffffff;
+    margin-right: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .article-body .module-title {
+    font-weight: 700;
+    color: #0f172a;
+    flex: 1;
+    font-size: 0.95rem;
+  }
+
+  html.dark .article-body .module-title,
+  .dark .article-body .module-title {
+    color: #f8fafc !important;
+  }
+
+  .article-body .module-meta {
+    font-family: ui-monospace, monospace;
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-right: 0.5rem;
+  }
+
+  html.dark .article-body .module-meta,
+  .dark .article-body .module-meta {
+    color: #94a3b8 !important;
+  }
+
+  .article-body .module-content {
+    padding: 1.25rem 1.75rem;
+    border-top: 1px solid rgba(56, 189, 248, 0.15);
+    background-color: #ffffff;
+  }
+
+  html.dark .article-body .module-content,
+  .dark .article-body .module-content {
+    background-color: #070e1c !important;
+    border-top-color: rgba(56, 189, 248, 0.15) !important;
+  }
+
+  .article-body .module-content ul {
+    margin: 0 !important;
+    padding-left: 1.25rem !important;
+  }
+
+  .article-body .module-content li {
+    margin: 0.5rem 0 !important;
+    font-size: 0.875rem !important;
+    color: #475569;
+  }
+
+  html.dark .article-body .module-content li,
+  .dark .article-body .module-content li {
+    color: #cbd5e1 !important;
+  }
+</style>

@@ -1,36 +1,29 @@
-# Shibaji Debnath
-> Chief Technology Officer | Lead Technical Consultant | Senior Full-Stack & System Architect
+# Shibaji Debnath - System Architect & Fractional CTO, Mentor
+> Senior Full-Stack Software Engineer, Mentor & Fractional CTO specializing in high-concurrency distributed systems, applied agentic AI, and microservice architectures.
 
-- Location: Kolkata, West Bengal, India
-- Website: https://shibajidebnath.com
-- Inquiries: imshibaji@gmail.com
-- Experience: 15+ years across enterprise backends, mobile engineering, and AI automation.
-- Previous Roles: Software Developer at Google (Hyderabad), Lead Consultant at SDN Technology, Associate Founder at LARNR.
+## Core Capabilities
+- Distributed Systems Architecture (NestJS, PHP, PostgreSQL, Redis)
+- Autonomous AI Agent Workflows (n8n, Flowise, Ollama, MCP Servers)
+- Cloud Infrastructure & DevOps (Docker, Linux VPS, Traefik, CI/CD)
+- Fractional CTO Advisory & Architectural Audits
+- Software Engineering Courses & Mentorship
 
-## Core Specializations
+## Primary Coordinates
+- Home / Overview: https://shibajidebnath.com
+- Articles & Architectural Blueprints: https://shibajidebnath.com/articles
+- Architectural Case Studies: https://shibajidebnath.com/case-studies
+- Contact / Advisory Portal: https://shibajidebnath.com/contact
+- Software Engineering Courses & Mentorship: https://shibajidebnath.com/courses
+- Course Checkout Terminal: https://shibajidebnath.com/courses/checkout
+- Payment Failed: https://shibajidebnath.com/courses/payment-failed
+- Payment Success: https://shibajidebnath.com/courses/payment-success
+- Curated Engineering Experience: https://shibajidebnath.com/experience
+- Privacy Policy & Data Architecture: https://shibajidebnath.com/privacy
+- Terms of Service & Advisory Governance: https://shibajidebnath.com/terms
 
-### 1. Backend & Distributed Systems Architecture
-- Frameworks: NestJS, Node.js, PHP (Laravel, LeafPHP, ExpressJS, AdonisJS).
-- Protocols & Design: Microservices, RESTful APIs, GraphQL, Domain-Driven Design (DDD), Event-Driven Architecture.
-- High Concurrency: PostgreSQL horizontal partitioning, Redis Streams, Kafka messaging, query execution optimization.
+## Published Architectural Blueprints & Articles
+- [Self-Hosting n8n & Ollama on a VPS: Production AI Workflows Without Third-Party API Bills](https://shibajidebnath.com/articles/n8n-hostinger-vps-ollama-setup): Learn how to bypass recurring OpenAI and Anthropic token charges by deploying self-hosted n8n and Ollama on a Hostinger VPS. This guide walks through Linux server configuration, Docker provisioning, and running private AI agents 24/7.
+- [How to Build a 100% Free Local AI Chatbot with n8n, Flowise & Ollama](https://shibajidebnath.com/articles/n8n-flowise-local-ai-setup): A beginner-friendly, zero-code architectural guide on running private AI chatbots locally using Docker, n8n, Flowise, and Ollama without recurring API bills.
 
-### 2. Agentic AI & Applied LLMs
-- Model Context Protocol: Development of custom MCP and ACP servers exposing database/telemetry tools to agents.
-- Automations: Workflow engines with n8n and OpenAI/Anthropic APIs.
-- Search & Knowledge: pgvector embeddings, hybrid RAG pipelines, PyTorch integration.
-
-### 3. Frontend & Cross-Platform Mobile
-- Web: TypeScript, Astro.js (Islands Architecture), React, Angular, Tailwind CSS v4.
-- Native Mobile: Flutter, React Native (Offline-first data sync engines with SQLite).
-
-## Verified Production Impact
-- Scaled FinTech ledger microservices to 80,000 req/sec at 62ms p99 latency using NestJS and Redis Streams.
-- Deconstructed 10-year enterprise PHP monolith into decoupled AWS EKS containerized services, slashing cloud bills by 48%.
-- Built production MCP servers reducing infrastructure triage time by 72%.
-- Trained and mentored 1,000+ software engineers across system design, microservices, and backend best practices.
-
-## Engagement Models
-- Fractional CTO & Technology Roadmapping
-- System Design & Microservices Consulting
-- Performance Optimization & Database Audits
-- Hands-on Full-Stack Architecture
+## Production Engineering Courses & Bootcamps
+- [Production System Architecture & Microservices with NestJS, Redis & Docker](https://shibajidebnath.com/courses/system-architecture-mastery): An intensive engineering bootcamp covering real-world ADR decision making, NestJS microservice patterns, Redis BullMQ architectures, and zero-downtime VPS deployments.

@@ -1,0 +1,268 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const lastUpdated = "September 2026";
+---
+
+<Layout 
+  title="Privacy Policy & Data Architecture | Shibaji Debnath"
+  description="Technical privacy disclosure, data handling practices, and zero-tracking philosophy by System Architect Shibaji Debnath."
+>
+  <div class="relative min-h-screen">
+    <!-- Ambient Glow (pointer-events-none ensures no scroll interference) -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-tr from-sky-400/10 via-cyan-400/5 to-transparent dark:from-sky-600/15 dark:via-sky-400/5 blur-[120px] rounded-full pointer-events-none -z-10"></div>
+
+    <!-- Header Banner -->
+    <header class="py-14 sm:py-18 border-b border-sky-100 dark:border-sky-950/60 bg-white/40 dark:bg-[#040813]/60 backdrop-blur-md">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-sky-200 dark:border-sky-900 bg-sky-50 dark:bg-sky-950/50 text-xs font-mono font-bold text-sky-700 dark:text-sky-300 mb-4 shadow-xs">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          Transparency & Compliance
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+          Privacy Policy & <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-cyan-500 to-sky-400">Data Architecture</span>
+        </h1>
+        <p class="text-slate-600 dark:text-slate-300 mt-3 text-base sm:text-lg max-w-2xl leading-relaxed font-normal">
+          An engineering-first disclosure of telemetry handling, zero cross-site tracker usage, and advisory communication governance.
+        </p>
+        <div class="flex items-center gap-4 mt-6 text-xs font-mono text-slate-400">
+          <span>Effective: {lastUpdated}</span>
+          <span>•</span>
+          <span>Scope: shibajidebnath.com</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Grid with Desktop Sticky Left Column -->
+    <div class="max-w-6xl mx-auto px-6 py-12 lg:py-16">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start relative">
+        
+        <!-- Sticky Left Sidebar (Self-Start & Top Offset) -->
+        <aside class="hidden lg:block lg:col-span-4 sticky top-28 self-start space-y-6 z-20">
+          
+          <div class="p-6 rounded-3xl border border-sky-100 dark:border-sky-950/80 bg-white/80 dark:bg-[#070d1a]/85 backdrop-blur-md shadow-sm">
+            <h2 class="text-xs font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-white pb-3 border-b border-sky-100 dark:border-sky-950 flex items-center gap-2">
+              <svg class="w-4 h-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+              </svg>
+              Quick Navigation
+            </h2>
+            
+            <nav id="privacy-nav" class="mt-4 space-y-1.5 text-xs font-medium">
+              <a 
+                href="#core-philosophy" 
+                class="privacy-nav-link block px-3 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-sky-50/50 dark:hover:bg-slate-900/50 transition-all font-mono"
+              >
+                1. Core Philosophy
+              </a>
+              <a 
+                href="#telemetry-matrix" 
+                class="privacy-nav-link block px-3 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-sky-50/50 dark:hover:bg-slate-900/50 transition-all font-mono"
+              >
+                2. Ingestion Matrix
+              </a>
+              <a 
+                href="#security-cookies" 
+                class="privacy-nav-link block px-3 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-sky-50/50 dark:hover:bg-slate-900/50 transition-all font-mono"
+              >
+                3. Cookies & Storage
+              </a>
+              <a 
+                href="#third-party-isolation" 
+                class="privacy-nav-link block px-3 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-sky-50/50 dark:hover:bg-slate-900/50 transition-all font-mono"
+              >
+                4. Third-Party Isolation
+              </a>
+              <a 
+                href="#data-retention" 
+                class="privacy-nav-link block px-3 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-sky-50/50 dark:hover:bg-slate-900/50 transition-all font-mono"
+              >
+                5. Data Retention & Erasure
+              </a>
+              <a 
+                href="#direct-contact" 
+                class="privacy-nav-link block px-3 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-sky-50/50 dark:hover:bg-slate-900/50 transition-all font-mono"
+              >
+                6. Direct DPO Contact
+              </a>
+            </nav>
+          </div>
+
+          <!-- Zero Tracker Verification Badge -->
+          <div class="p-6 rounded-3xl border border-emerald-500/20 bg-emerald-50/40 dark:bg-emerald-950/20 text-xs font-mono text-emerald-800 dark:text-emerald-300 space-y-2 shadow-xs">
+            <span class="font-bold flex items-center gap-1.5">
+              <span>🛡️</span> Zero Advertising Trackers
+            </span>
+            <p class="text-[11px] leading-relaxed text-emerald-700 dark:text-emerald-400 font-sans">
+              No Meta Pixels, Google Remarketing scripts, or behavioral telemetry brokers are executed on this platform.
+            </p>
+          </div>
+
+        </aside>
+
+        <!-- Right Main Column: Privacy Declarations -->
+        <main class="lg:col-span-8 min-w-0 space-y-12">
+          
+          <!-- Section 1 -->
+          <section id="core-philosophy" class="privacy-section scroll-mt-28 space-y-4">
+            <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-950 border border-sky-200 dark:border-sky-900 text-sky-600 dark:text-sky-400 flex items-center justify-center font-mono text-sm font-bold shrink-0">1</span>
+              Core Privacy Philosophy
+            </h2>
+            <p class="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
+              As a technical consultancy and engineering portfolio (<a href="https://shibajidebnath.com" class="text-sky-600 dark:text-sky-400 font-semibold underline">shibajidebnath.com</a>), data governance is treated as an architectural requirement rather than a legal afterthought. We strictly uphold a <strong>minimal-ingestion model</strong>: we only process technical and communication data strictly necessary to review advisory briefs, run system diagnostic courses, and defend the server perimeter against automated brute-force attacks.
+            </p>
+          </section>
+
+          <!-- Section 2: Data Matrix -->
+          <section id="telemetry-matrix" class="privacy-section scroll-mt-28 space-y-5">
+            <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-950 border border-sky-200 dark:border-sky-900 text-sky-600 dark:text-sky-400 flex items-center justify-center font-mono text-sm font-bold shrink-0">2</span>
+              Data Ingestion Matrix
+            </h2>
+            <p class="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
+              The following matrix specifies every piece of telemetry captured through this platform:
+            </p>
+
+            <div class="overflow-x-auto rounded-2xl border border-sky-100 dark:border-sky-950/80 bg-white dark:bg-[#070d1a] shadow-xs">
+              <table class="w-full text-left border-collapse text-xs font-mono min-w-[540px]">
+                <thead>
+                  <tr class="border-b border-sky-100 dark:border-sky-950 bg-sky-50/50 dark:bg-slate-900/50 text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                    <th class="p-3.5 font-bold">Data Point</th>
+                    <th class="p-3.5 font-bold">Origin / Channel</th>
+                    <th class="p-3.5 font-bold">Purpose</th>
+                    <th class="p-3.5 font-bold">Retention</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-sky-100 dark:divide-sky-950 text-slate-600 dark:text-slate-300 font-sans">
+                  <tr>
+                    <td class="p-3.5 font-mono text-slate-800 dark:text-slate-200 font-bold">Name & Email</td>
+                    <td class="p-3.5">Advisory Contact Form</td>
+                    <td class="p-3.5">Responding to consultation briefs</td>
+                    <td class="p-3.5 font-mono">Active engagement duration</td>
+                  </tr>
+                  <tr>
+                    <td class="p-3.5 font-mono text-slate-800 dark:text-slate-200 font-bold">Client IP Address</td>
+                    <td class="p-3.5">HTTP Server Headers</td>
+                    <td class="p-3.5">Rate limiting (5 req / 10 min) & anti-DDoS</td>
+                    <td class="p-3.5 font-mono">Rotated every 24 hours</td>
+                  </tr>
+                  <tr>
+                    <td class="p-3.5 font-mono text-slate-800 dark:text-slate-200 font-bold">CSRF Session Token</td>
+                    <td class="p-3.5">HTTPOnly Secure Cookie</td>
+                    <td class="p-3.5">Mitigating Cross-Site Request Forgery</td>
+                    <td class="p-3.5 font-mono">Destroyed on browser exit</td>
+                  </tr>
+                  <tr>
+                    <td class="p-3.5 font-mono text-slate-800 dark:text-slate-200 font-bold">Project Context</td>
+                    <td class="p-3.5">Consultation Form Box</td>
+                    <td class="p-3.5">Evaluating system architecture bottlenecks</td>
+                    <td class="p-3.5 font-mono">Archived after NDA/SOW sign-off</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- Section 3 -->
+          <section id="security-cookies" class="privacy-section scroll-mt-28 space-y-4">
+            <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-950 border border-sky-200 dark:border-sky-900 text-sky-600 dark:text-sky-400 flex items-center justify-center font-mono text-sm font-bold shrink-0">3</span>
+              Cookies & Local Storage Usage
+            </h2>
+            <div class="space-y-3 text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
+              <p>
+                Unlike marketing-heavy portals, this site does not deploy behavioral profiling cookies. We only maintain:
+              </p>
+              <ul class="list-disc pl-5 space-y-2">
+                <li><strong>Cryptographic Anti-CSRF Token:</strong> Issued by the PHP session layer with <code>SameSite=Strict; Secure; HttpOnly</code> parameters, preventing malicious third parties from forging consultation messages.</li>
+                <li><strong>Local Theme State:</strong> A single key in your browser's <code>localStorage</code> (<code>theme: "dark" | "light"</code>) to remember your lighting preferences between sessions without notifying remote servers.</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- Section 4 -->
+          <section id="third-party-isolation" class="privacy-section scroll-mt-28 space-y-4">
+            <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-950 border border-sky-200 dark:border-sky-900 text-sky-600 dark:text-sky-400 flex items-center justify-center font-mono text-sm font-bold shrink-0">4</span>
+              Third-Party Integrations & CDN Isolation
+            </h2>
+            <p class="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
+              Course trailers and technical demonstrations are embedded using YouTube's privacy-enhanced embed gateway. When you play a video, Google services may capture functional streaming telemetry subject to standard Google privacy terms. No visitor identification data from contact submissions or courses is shared with external analytics vendors.
+            </p>
+          </section>
+
+          <!-- Section 5 -->
+          <section id="data-retention" class="privacy-section scroll-mt-28 space-y-4">
+            <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-950 border border-sky-200 dark:border-sky-900 text-sky-600 dark:text-sky-400 flex items-center justify-center font-mono text-sm font-bold shrink-0">5</span>
+              Data Retention & Erasure Rights
+            </h2>
+            <p class="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
+              In strict accordance with global data protection standards (including GDPR Article 17 and Indian DPDP guidelines), you hold the permanent right to request full audits or permanent deletion of any communication history exchanged with our technical mailboxes.
+            </p>
+          </section>
+
+          <!-- Section 6: Direct Contact Box -->
+          <section id="direct-contact" class="privacy-section scroll-mt-28 p-6 sm:p-8 rounded-3xl border border-sky-200 dark:border-sky-900 bg-white dark:bg-[#070d1a] shadow-md space-y-4">
+            <div class="flex items-center gap-2.5 text-xs font-mono font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              6. Direct Data Protection Requests
+            </div>
+            <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+              To request an immediate purge of your consultation records or discuss technical NDA boundaries, reach out directly to the principal:
+            </p>
+            <div class="pt-2 flex flex-wrap items-center gap-4 text-xs font-mono">
+              <a 
+                href="mailto:imshibaji@gmail.com?subject=Data%20Erasure%20Audit" 
+                class="px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold transition-all shadow-sm"
+              >
+                imshibaji@gmail.com
+              </a>
+              <span class="text-slate-400 font-sans text-xs">Direct review by Shibaji Debnath (&lt; 24h)</span>
+            </div>
+          </section>
+
+        </main>
+
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<!-- Client-Side Scrollspy to Highlight Active Sidebar Link -->
+<script is:inline>
+  function setupPrivacyScrollSpy() {
+    const sections = document.querySelectorAll('.privacy-section');
+    const navLinks = document.querySelectorAll('.privacy-nav-link');
+
+    if (!sections.length || !navLinks.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('id');
+          navLinks.forEach(link => {
+            if (link.getAttribute('href') === `#${id}`) {
+              link.classList.add('bg-sky-100/80', 'dark:bg-sky-950/80', 'text-sky-600', 'dark:text-sky-400', 'font-bold');
+              link.classList.remove('text-slate-600', 'dark:text-slate-400');
+            } else {
+              link.classList.remove('bg-sky-100/80', 'dark:bg-sky-950/80', 'text-sky-600', 'dark:text-sky-400', 'font-bold');
+              link.classList.add('text-slate-600', 'dark:text-slate-400');
+            }
+          });
+        }
+      });
+    }, {
+      rootMargin: '-100px 0px -60% 0px',
+      threshold: 0
+    });
+
+    sections.forEach(section => observer.observe(section));
+  }
+
+  setupPrivacyScrollSpy();
+  document.addEventListener('astro:after-swap', setupPrivacyScrollSpy);
+</script>

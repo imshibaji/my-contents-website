@@ -1,0 +1,94 @@
+---
+const currentYear = new Date().getFullYear();
+
+const navLinks = [
+  { name: "Overview", href: "/" },
+  { name: "Experience", href: "/experience" },
+  { name: "Case Studies", href: "/case-studies" },
+  { name: "Articles", href: "/articles" },
+  { name: "Contact", href: "/contact" },
+];
+
+const legalLinks = [
+  { name: "Privacy Policy", href: "/privacy" },
+  { name: "Terms of Service", href: "/terms" },
+];
+---
+
+<footer class="border-t border-sky-100 dark:border-sky-950/60 bg-white/60 dark:bg-[#030712] transition-colors mt-20">
+  <div class="max-w-6xl mx-auto px-6 py-12 lg:py-16">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-10 items-start">
+      
+      <!-- Brand & Direct Info -->
+      <div class="md:col-span-5 space-y-4">
+        <a href="/" class="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+          <span class="w-7 h-7 rounded-lg bg-sky-600 text-white flex items-center justify-center font-mono text-sm font-bold shadow-xs">S</span>
+          Shibaji Debnath
+        </a>
+        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-sm leading-relaxed">
+          Chief Technology Officer & Senior System Architect specializing in distributed systems, high-concurrency microservices, and autonomous agentic workflows.
+        </p>
+        <div class="flex items-center gap-3 pt-2">
+          <a href="https://linkedin.com/in/shibaji" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl border border-sky-100 dark:border-sky-900 bg-sky-50/50 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 hover:border-sky-400 transition-all text-xs font-mono font-bold">
+            LinkedIn
+          </a>
+          <a href="https://github.com/imshibaji" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl border border-sky-100 dark:border-sky-900 bg-sky-50/50 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 hover:border-sky-400 transition-all text-xs font-mono font-bold">
+            GitHub
+          </a>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <div class="md:col-span-4 space-y-3">
+        <p class="text-xs font-mono font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+          Navigation
+        </p>
+        <ul class="space-y-2 text-xs font-medium">
+          {navLinks.map(link => (
+            <li>
+              <a href={link.href} class="text-slate-600 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
+                {link.name}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Legal & AI Crawler Coordinates -->
+      <div class="md:col-span-3 space-y-3">
+        <p class="text-xs font-mono font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+          Legal & System Feeds
+        </p>
+        <ul class="space-y-2 text-xs font-medium">
+          {legalLinks.map(link => (
+            <li>
+              <a href={link.href} class="text-slate-600 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
+                {link.name}
+              </a>
+            </li>
+          ))}
+          <li>
+            <a href="/llms.txt" class="text-slate-400 dark:text-slate-500 hover:text-sky-500 transition-colors font-mono text-[11px]">
+              llms.txt (AI Direct)
+            </a>
+          </li>
+          <li>
+            <a href="/sitemap-index.xml" class="text-slate-400 dark:text-slate-500 hover:text-sky-500 transition-colors font-mono text-[11px]">
+              Sitemap
+            </a>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Bottom Strip -->
+    <div class="mt-12 pt-6 border-t border-sky-100 dark:border-sky-950/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-500 dark:text-slate-400">
+      <p>© {currentYear} Shibaji Debnath. Engineered for Low Latency & High Scalability.</p>
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span>Systems Operational</span>
+      </div>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,274 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const lastUpdated = "September 2026";
+---
+
+<Layout 
+  title="Terms of Service & Advisory Governance | Shibaji Debnath"
+  description="Legal terms, advisory retainers, code licensing, and liability framework governing engineering consultations by System Architect Shibaji Debnath."
+>
+  <div class="relative min-h-screen">
+    <!-- Ambient Backdrop (Matching Privacy & Architecture Themes) -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-tr from-sky-400/10 via-cyan-400/5 to-transparent dark:from-sky-600/15 dark:via-sky-400/5 blur-[120px] rounded-full pointer-events-none -z-10"></div>
+
+    <!-- Header Banner -->
+    <header class="py-14 sm:py-18 border-b border-sky-100 dark:border-sky-950/60 bg-white/40 dark:bg-[#040813]/60 backdrop-blur-md">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-sky-200 dark:border-sky-900 bg-sky-50 dark:bg-sky-950/50 text-xs font-mono font-bold text-sky-700 dark:text-sky-300 mb-4 shadow-xs">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          Contractual & Advisory Governance
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+          Terms of Service & <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-cyan-500 to-sky-400">Engagement Scope</span>
+        </h1>
+        <p class="text-slate-600 dark:text-slate-300 mt-3 text-base sm:text-lg max-w-2xl leading-relaxed font-normal">
+          Contractual framework governing Fractional CTO advisory scopes, architectural audits, open-source code reproduction, and course cohort enrollment.
+        </p>
+        <div class="flex items-center gap-4 mt-6 text-xs font-mono text-slate-400">
+          <span>Effective: {lastUpdated}</span>
+          <span>•</span>
+          <span>Domain: shibajidebnath.com</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Grid with Desktop Sticky Left Column -->
+    <div class="max-w-6xl mx-auto px-6 py-12 lg:py-16">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start relative">
+        
+        <!-- Sticky Left Sidebar (Self-Start & Top Offset for Desktop) -->
+        <aside class="hidden lg:block lg:col-span-4 sticky top-28 self-start space-y-6 z-20">
+          
+          <div class="p-6 rounded-3xl border border-sky-100 dark:border-sky-950/80 bg-white/80 dark:bg-[#070d1a]/85 backdrop-blur-md shadow-sm">
+            <h2 class="text-xs font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-white pb-3 border-b border-sky-100 dark:border-sky-950 flex items-center gap-2">
+              <svg class="w-4 h-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Quick Navigation
+            </h2>
+            
+            <nav id="terms-nav" class="mt-4 space-y-1.5 text-xs font-medium">
+              <a 
+                href="#advisory-boundaries" 
+                class="terms-nav-link block px-3 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-sky-50/50 dark:hover:bg-slate-900/50 transition-all font-mono"
+              >
+                1. Advisory Boundaries
+              </a>
+              <a 
+                href="#intellectual-property" 
+                class="terms-nav-link block px-3 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-sky-50/50 dark:hover:bg-slate-900/50 transition-all font-mono"
+              >
+                2. Intellectual Property
+              </a>
+              <a 
+                href="#governance-matrix" 
+                class="terms-nav-link block px-3 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-sky-50/50 dark:hover:bg-slate-900/50 transition-all font-mono"
+              >
+                3. Engagement Matrix
+              </a>
+              <a 
+                href="#production-disclaimer" 
+                class="terms-nav-link block px-3 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-sky-50/50 dark:hover:bg-slate-900/50 transition-all font-mono"
+              >
+                4. Production Disclaimer
+              </a>
+              <a 
+                href="#courses-cohorts" 
+                class="terms-nav-link block px-3 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-sky-50/50 dark:hover:bg-slate-900/50 transition-all font-mono"
+              >
+                5. Courses & Cohorts
+              </a>
+              <a 
+                href="#governing-jurisdiction" 
+                class="terms-nav-link block px-3 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-sky-50/50 dark:hover:bg-slate-900/50 transition-all font-mono"
+              >
+                6. Jurisdiction & Legal
+              </a>
+            </nav>
+          </div>
+
+          <!-- Quick Engagement Badge -->
+          <div class="p-6 rounded-3xl border border-sky-500/20 bg-sky-50/40 dark:bg-sky-950/20 text-xs font-mono text-sky-800 dark:text-sky-300 space-y-2 shadow-xs">
+            <span class="font-bold flex items-center gap-1.5">
+              <span>⚖️</span> Contract Precedence
+            </span>
+            <p class="text-[11px] leading-relaxed text-sky-700 dark:text-sky-400 font-sans">
+              Mutually executed Non-Disclosure Agreements (NDAs) and Statements of Work (SOW) supersede general website terms.
+            </p>
+          </div>
+
+        </aside>
+
+        <!-- Right Main Column: Terms Articles -->
+        <main class="lg:col-span-8 min-w-0 space-y-12">
+          
+          <!-- Section 1 -->
+          <section id="advisory-boundaries" class="terms-section scroll-mt-28 space-y-4">
+            <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-950 border border-sky-200 dark:border-sky-900 text-sky-600 dark:text-sky-400 flex items-center justify-center font-mono text-sm font-bold shrink-0">1</span>
+              Advisory Scopes & Retainer Inception
+            </h2>
+            <p class="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
+              Submitting an inquiry through the technical consultation portal (<a href="/contact" class="text-sky-600 dark:text-sky-400 font-semibold underline">shibajidebnath.com/contact</a>) initiates exploratory preliminary analysis. Transmitting an inquiry does <strong>not</strong> constitute an automatic fiduciary, employee, or formal retainer relationship. Formal engagements (Fractional CTO retainers, system vulnerability audits, or microservice refactors) require an explicitly counter-signed Master Services Agreement (MSA) or Statement of Work (SOW).
+            </p>
+          </section>
+
+          <!-- Section 2 -->
+          <section id="intellectual-property" class="terms-section scroll-mt-28 space-y-4">
+            <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-950 border border-sky-200 dark:border-sky-900 text-sky-600 dark:text-sky-400 flex items-center justify-center font-mono text-sm font-bold shrink-0">2</span>
+              Intellectual Property & Code Reproduction
+            </h2>
+            <div class="space-y-3 text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
+              <p>
+                Unless explicitly stated otherwise in a dedicated repository or article footer, intellectual property is classified under the following tiers:
+              </p>
+              <ul class="list-disc pl-5 space-y-2">
+                <li><strong>Architectural Articles & Diagrams:</strong> System topology diagrams, video walkthroughs, and written retrospectives authored by Shibaji Debnath are protected by copyright. Reproduction without explicit canonical attribution is prohibited.</li>
+                <li><strong>Embedded Code Blocks & Gists:</strong> Algorithmic implementations, Dockerfiles, and code snippets embedded in published articles are licensed under the <strong class="text-slate-900 dark:text-white font-mono">MIT License</strong> for commercial and private reproduction.</li>
+                <li><strong>Client Deliverables:</strong> All proprietary domain code, internal microservices, and private repositories developed under paid retainers remain the exclusive intellectual property of the respective hiring enterprise.</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- Section 3: Governance Matrix -->
+          <section id="governance-matrix" class="terms-section scroll-mt-28 space-y-5">
+            <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-950 border border-sky-200 dark:border-sky-900 text-sky-600 dark:text-sky-400 flex items-center justify-center font-mono text-sm font-bold shrink-0">3</span>
+              Advisory Governance Matrix
+            </h2>
+            <p class="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
+              A transparent breakdown of commitments across different consultation tiers:
+            </p>
+
+            <div class="overflow-x-auto rounded-2xl border border-sky-100 dark:border-sky-950/80 bg-white dark:bg-[#070d1a] shadow-xs">
+              <table class="w-full text-left border-collapse text-xs font-mono min-w-[540px]">
+                <thead>
+                  <tr class="border-b border-sky-100 dark:border-sky-950 bg-sky-50/50 dark:bg-slate-900/50 text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                    <th class="p-3.5 font-bold">Engagement Scope</th>
+                    <th class="p-3.5 font-bold">Confidentiality</th>
+                    <th class="p-3.5 font-bold">SLA / Response</th>
+                    <th class="p-3.5 font-bold">Contract Instrument</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-sky-100 dark:divide-sky-950 text-slate-600 dark:text-slate-300 font-sans">
+                  <tr>
+                    <td class="p-3.5 font-mono text-slate-800 dark:text-slate-200 font-bold">Initial Inquiry</td>
+                    <td class="p-3.5">Standard Direct Privacy</td>
+                    <td class="p-3.5 font-mono">&lt; 24 Business Hours</td>
+                    <td class="p-3.5 font-mono">Website Terms</td>
+                  </tr>
+                  <tr>
+                    <td class="p-3.5 font-mono text-slate-800 dark:text-slate-200 font-bold">Fractional CTO</td>
+                    <td class="p-3.5">Mutual Bilateral NDA</td>
+                    <td class="p-3.5 font-mono">Real-time Slack / On-call</td>
+                    <td class="p-3.5 font-mono">Monthly Retainer MSA</td>
+                  </tr>
+                  <tr>
+                    <td class="p-3.5 font-mono text-slate-800 dark:text-slate-200 font-bold">Architecture Audit</td>
+                    <td class="p-3.5">Strict Codebase NDA</td>
+                    <td class="p-3.5 font-mono">Milestone Delivery</td>
+                    <td class="p-3.5 font-mono">Fixed-Fee SOW</td>
+                  </tr>
+                  <tr>
+                    <td class="p-3.5 font-mono text-slate-800 dark:text-slate-200 font-bold">Cohort Mentorship</td>
+                    <td class="p-3.5">Course Cohort Terms</td>
+                    <td class="p-3.5 font-mono">Weekly Live Sessions</td>
+                    <td class="p-3.5 font-mono">Enrollment Receipt</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- Section 4 -->
+          <section id="production-disclaimer" class="terms-section scroll-mt-28 space-y-4">
+            <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-950 border border-sky-200 dark:border-sky-900 text-sky-600 dark:text-sky-400 flex items-center justify-center font-mono text-sm font-bold shrink-0">4</span>
+              Production Disclaimer & Limitation of Liability
+            </h2>
+            <div class="space-y-3 text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
+              <p>
+                All tutorials, Docker compose configurations, system architecture blueprints, and articles published on this platform are provided on an <strong>"AS-IS"</strong> basis without warranties of merchantability or operational fitness for a particular workload.
+              </p>
+              <p>
+                Implementing infrastructure scripts (such as high-load Redis caching, n8n workflows, or VPS reverse proxies) in live production clusters must undergo strict staging load-testing by your internal DevOps personnel. Under no circumstances shall Shibaji Debnath be held liable for server outages, revenue loss, or data corruption resulting from independent reproduction of public materials.
+              </p>
+            </div>
+          </section>
+
+          <!-- Section 5 -->
+          <section id="courses-cohorts" class="terms-section scroll-mt-28 space-y-4">
+            <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-950 border border-sky-200 dark:border-sky-900 text-sky-600 dark:text-sky-400 flex items-center justify-center font-mono text-sm font-bold shrink-0">5</span>
+              Courses, Mentorship Cohorts & Seats
+            </h2>
+            <p class="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
+              Enrollments for engineering cohorts and live architecture workshops are managed on a seat-allocation basis. Detailed access credentials, repository access, and live review coordinates are dispatched upon confirmation. Cancellation requests submitted at least 72 hours prior to cohort inception are eligible for full refunds or seat deferrals to subsequent batches.
+            </p>
+          </section>
+
+          <!-- Section 6: Jurisdiction Box -->
+          <section id="governing-jurisdiction" class="terms-section scroll-mt-28 p-6 sm:p-8 rounded-3xl border border-sky-200 dark:border-sky-900 bg-white dark:bg-[#070d1a] shadow-md space-y-4">
+            <div class="flex items-center gap-2.5 text-xs font-mono font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+              </svg>
+              6. Governing Jurisdiction & Inquiries
+            </div>
+            <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+              These terms and non-contractual advisory obligations shall be governed and interpreted in accordance with the laws of West Bengal, India. To execute specific enterprise NDAs or request formal procurement proposals, reach out directly:
+            </p>
+            <div class="pt-2 flex flex-wrap items-center gap-4 text-xs font-mono">
+              <a 
+                href="mailto:imshibaji@gmail.com?subject=Legal%20Scope%20and%20Retainer%20Inquiry" 
+                class="px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold transition-all shadow-sm"
+              >
+                imshibaji@gmail.com
+              </a>
+              <span class="text-slate-400 font-sans text-xs">Direct review by Shibaji Debnath (&lt; 24h)</span>
+            </div>
+          </section>
+
+        </main>
+
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<!-- Client-Side Scrollspy to Highlight Active Sidebar Link -->
+<script is:inline>
+  function setupTermsScrollSpy() {
+    const sections = document.querySelectorAll('.terms-section');
+    const navLinks = document.querySelectorAll('.terms-nav-link');
+
+    if (!sections.length || !navLinks.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('id');
+          navLinks.forEach(link => {
+            if (link.getAttribute('href') === `#${id}`) {
+              link.classList.add('bg-sky-100/80', 'dark:bg-sky-950/80', 'text-sky-600', 'dark:text-sky-400', 'font-bold');
+              link.classList.remove('text-slate-600', 'dark:text-slate-400');
+            } else {
+              link.classList.remove('bg-sky-100/80', 'dark:bg-sky-950/80', 'text-sky-600', 'dark:text-sky-400', 'font-bold');
+              link.classList.add('text-slate-600', 'dark:text-slate-400');
+            }
+          });
+        }
+      });
+    }, {
+      rootMargin: '-100px 0px -60% 0px',
+      threshold: 0
+    });
+
+    sections.forEach(section => observer.observe(section));
+  }
+
+  setupTermsScrollSpy();
+  document.addEventListener('astro:after-swap', setupTermsScrollSpy);
+</script>

@@ -1,0 +1,38 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Enrollment Confirmed | Shibaji Debnath" description="Payment successfully verified.">
+  <div class="min-h-screen py-20 flex items-center justify-center px-6">
+    <div class="max-w-lg w-full p-8 sm:p-10 rounded-3xl border border-emerald-500/30 bg-white dark:bg-[#070e1c] shadow-2xl text-center space-y-5">
+      
+      <div class="w-16 h-16 mx-auto rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-500 text-2xl font-bold">
+        ✓
+      </div>
+
+      <div class="space-y-1">
+        <span class="text-xs font-mono uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-bold">Payment Verified</span>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Cohort Seat Confirmed!</h1>
+      </div>
+
+      <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+        Thank you for enrolling. A receipt and onboarding instructions have been dispatched to your email.
+      </p>
+
+      <div class="p-4 rounded-2xl bg-sky-50/50 dark:bg-slate-900/50 border border-sky-100 dark:border-sky-900/60 text-xs font-mono text-left space-y-1.5 text-slate-600 dark:text-slate-300">
+        <p>• Status: <span class="text-emerald-500 font-bold">Active / Paid</span></p>
+        <p>• Workspace Dispatch: <span class="text-slate-800 dark:text-slate-200 font-bold">&lt; 12 Hours</span></p>
+      </div>
+
+      <div class="pt-4 flex flex-col sm:flex-row gap-3">
+        <a href="/courses" class="flex-1 py-3 rounded-xl border border-sky-200 dark:border-sky-900 bg-white dark:bg-slate-900 text-xs font-mono font-bold text-slate-700 dark:text-slate-200 hover:border-sky-500 transition-all">
+          Browse Courses
+        </a>
+        <a href="/contact" class="flex-1 py-3 rounded-xl bg-sky-600 hover:bg-sky-500 text-xs font-mono font-bold text-white transition-all shadow-md shadow-sky-600/20">
+          Direct Support
+        </a>
+      </div>
+
+    </div>
+  </div>
+</Layout>

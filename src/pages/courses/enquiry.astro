@@ -1,0 +1,347 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const courses = await getCollection('courses');
+
+const url = new URL(Astro.request.url);
+const selectedCourseSlug = url.searchParams.get('course') || (courses[0] ? courses[0].id : '');
+const planParam = url.searchParams.get('plan');
+const initialPlan = planParam === 'installment' ? 'installment' : 'full';
+
+const course = courses.find(c => c.id === selectedCourseSlug) || courses[0];
+
+const currency = course?.data.currency || "₹";
+const price = Number(course?.data.price ?? 0);
+const originalPrice = Number(course?.data.originalPrice ?? 0);
+const installmentPrice = Number(course?.data.installmentPrice ?? (price > 0 ? Math.round(price / 4) : 0));
+const hasInstallment = installmentPrice > 0 && price > 0;
+const isFree = price === 0;
+
+const initialPayable = (!isFree && initialPlan === 'installment' && hasInstallment) ? installmentPrice : price;
+const initialPlanTitle = isFree ? "Free Access" : (initialPlan === 'installment' && hasInstallment ? "Quarterly Milestone (1/4)" : "Full 1-Year Mentorship");
+---
+
+<Layout 
+  title={`Candidate Application - ${course ? course.data.title : 'Mentorship'} | Shibaji Debnath`}
+  description="Apply for cohort mentorship seat reservation."
+>
+  <div class="relative min-h-screen py-12 lg:py-18">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[300px] bg-gradient-to-tr from-sky-400/15 via-cyan-400/10 to-transparent dark:from-sky-600/20 dark:via-sky-400/10 blur-[130px] rounded-full pointer-events-none -z-10"></div>
+
+    <div class="max-w-5xl mx-auto px-6">
+      <header class="max-w-2xl mb-10">
+        <nav class="flex items-center gap-2 text-xs font-mono text-slate-400 mb-3">
+          <a href={`/courses/${course?.id}`} class="text-sky-600 dark:text-sky-400 hover:underline">&larr; Back to Program Details</a>
+          <span>/</span>
+          <span>Candidate Application</span>
+        </nav>
+        <h1 class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+          Cohort Candidate <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-cyan-500 to-sky-400">Application</span>
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-2 font-normal">
+          Submit your candidate details to initiate profile registration. Both you and the mentor will receive a confirmation copy immediately.
+        </p>
+      </header>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+        
+        <!-- Left: Form -->
+        <main class="lg:col-span-7">
+          <div class="p-7 sm:p-9 rounded-3xl border border-sky-100 dark:border-sky-950/80 bg-white/80 dark:bg-[#070e1c]/90 backdrop-blur-xl shadow-xl space-y-6">
+            
+            <div class="pb-4 border-b border-sky-100 dark:border-sky-950 flex items-center justify-between">
+              <h2 class="text-sm font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-sky-500"></span>
+                Candidate Profile
+              </h2>
+              <span class="text-[11px] font-mono text-slate-400">Step 1 of 2</span>
+            </div>
+
+            <form id="enquiry-form" class="space-y-5 text-xs font-mono">
+              <input type="hidden" id="course-id" value={course?.id} />
+
+              {!isFree && hasInstallment && (
+                <div class="space-y-3 pb-5 border-b border-sky-100 dark:border-sky-950">
+                  <label class="block text-slate-700 dark:text-slate-300 font-bold uppercase tracking-wider text-[11px]">
+                    Select Preferred Payment Schedule
+                  </label>
+                  
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <label 
+                      id="card-plan-full"
+                      class={`relative flex items-center justify-between p-4 rounded-2xl cursor-pointer transition-all ${
+                        initialPlan === 'full' 
+                          ? 'border-2 border-sky-500 bg-sky-50/50 dark:bg-sky-950/40' 
+                          : 'border border-sky-100 dark:border-sky-900/60 bg-white dark:bg-slate-900/40 hover:border-sky-400'
+                      }`}
+                    >
+                      <div class="flex items-center gap-3">
+                        <input 
+                          type="radio" 
+                          name="payment_plan" 
+                          value="full" 
+                          checked={initialPlan === 'full'} 
+                          class="w-4 h-4 text-sky-600 focus:ring-0 cursor-pointer" 
+                        />
+                        <div>
+                          <span class="block text-xs font-mono font-bold text-slate-900 dark:text-white">Full 1-Year Access</span>
+                          <span class="block text-[10px] font-mono text-emerald-600 dark:text-emerald-400">Save {currency}{(originalPrice - price).toLocaleString('en-IN')}</span>
+                        </div>
+                      </div>
+                      <span class="text-sm font-mono font-black text-slate-900 dark:text-white">{currency}{price.toLocaleString('en-IN')}</span>
+                    </label>
+
+                    <label 
+                      id="card-plan-installment"
+                      class={`relative flex items-center justify-between p-4 rounded-2xl cursor-pointer transition-all ${
+                        initialPlan === 'installment' 
+                          ? 'border-2 border-sky-500 bg-sky-50/50 dark:bg-sky-950/40' 
+                          : 'border border-sky-100 dark:border-sky-900/60 bg-white dark:bg-slate-900/40 hover:border-sky-400'
+                      }`}
+                    >
+                      <div class="flex items-center gap-3">
+                        <input 
+                          type="radio" 
+                          name="payment_plan" 
+                          value="installment" 
+                          checked={initialPlan === 'installment'} 
+                          class="w-4 h-4 text-sky-600 focus:ring-0 cursor-pointer" 
+                        />
+                        <div>
+                          <span class="block text-xs font-mono font-bold text-slate-900 dark:text-white">Quarterly Milestones</span>
+                          <span class="block text-[10px] font-mono text-slate-500 dark:text-slate-400">{currency}{installmentPrice.toLocaleString('en-IN')} x 4 quarters</span>
+                        </div>
+                      </div>
+                      <span class="text-sm font-mono font-black text-slate-900 dark:text-white">{currency}{installmentPrice.toLocaleString('en-IN')}</span>
+                    </label>
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <label for="firstname" class="block text-slate-700 dark:text-slate-300 font-bold mb-2">
+                  Full Name *
+                </label>
+                <input 
+                  type="text" 
+                  id="firstname" 
+                  required 
+                  placeholder="e.g. Subhankar Sen" 
+                  class="w-full px-4 py-3 rounded-xl border border-sky-200 dark:border-sky-900 bg-sky-50/30 dark:bg-slate-900/60 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-500 text-sm font-sans"
+                />
+              </div>
+
+              <div>
+                <label for="email" class="block text-slate-700 dark:text-slate-300 font-bold mb-2">
+                  Email Address *
+                </label>
+                <input 
+                  type="email" 
+                  id="email" 
+                  required 
+                  placeholder="subhankar@example.com" 
+                  class="w-full px-4 py-3 rounded-xl border border-sky-200 dark:border-sky-900 bg-sky-50/30 dark:bg-slate-900/60 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-500 text-sm font-sans"
+                />
+              </div>
+
+              <div>
+                <label for="phone" class="block text-slate-700 dark:text-slate-300 font-bold mb-2">
+                  WhatsApp Phone Number *
+                </label>
+                <input 
+                  type="tel" 
+                  id="phone" 
+                  required 
+                  placeholder="+91 98765 43210" 
+                  class="w-full px-4 py-3 rounded-xl border border-sky-200 dark:border-sky-900 bg-sky-50/30 dark:bg-slate-900/60 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-500 text-sm font-sans"
+                />
+              </div>
+
+              <div id="enquiry-error" class="hidden p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs font-sans"></div>
+
+              <button 
+                type="submit" 
+                id="submit-btn"
+                class="w-full py-4 rounded-xl font-mono font-bold text-sm text-white bg-sky-600 hover:bg-sky-500 transition-all shadow-lg shadow-sky-600/25 cursor-pointer flex items-center justify-center gap-2"
+              >
+                <span id="btn-text">Submit Application & Proceed to Terminal &rarr;</span>
+                <span id="btn-spinner" class="hidden animate-spin text-base">⟳</span>
+              </button>
+
+              <p class="text-[11px] font-sans text-slate-400 text-center pt-1 leading-relaxed">
+                🔒 Application submission generates email telemetry for both you and the mentor prior to payment.
+              </p>
+            </form>
+
+          </div>
+        </main>
+
+        <!-- Right: Order Summary -->
+        <aside class="lg:col-span-5 sticky top-28 space-y-6">
+          <div class="p-6 sm:p-7 rounded-3xl border border-sky-200 dark:border-sky-900 bg-white dark:bg-[#070e1c] shadow-xl space-y-5">
+            <span class="text-xs font-mono font-bold uppercase tracking-wider text-slate-400">
+              Application Summary
+            </span>
+
+            <div class="space-y-3 pt-2">
+              <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug">
+                {course ? course.data.title : 'Selected Architecture Course'}
+              </h3>
+              
+              <div class="flex flex-wrap items-center gap-1.5 text-[11px] font-mono pt-0.5">
+                <span class="px-2 py-0.5 rounded-md bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-200/60 dark:border-sky-900/60 font-medium">
+                  ⏱️ {course?.data.duration}
+                </span>
+                <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800">
+                  📑 {course?.data.totalLessons} Lessons
+                </span>
+                <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800">
+                  {course?.data.level}
+                </span>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-sky-100 dark:border-sky-950 space-y-2.5 text-xs font-mono">
+              <div class="flex justify-between text-slate-600 dark:text-slate-400">
+                <span>Selected Schedule</span>
+                <span id="summary-plan-name" class="font-bold text-slate-900 dark:text-white">
+                  {initialPlanTitle}
+                </span>
+              </div>
+
+              <div class="flex justify-between text-slate-600 dark:text-slate-400">
+                <span>Program Original Fee</span>
+                {originalPrice > price ? (
+                  <span class="line-through text-slate-400">{currency}{originalPrice.toLocaleString('en-IN')}</span>
+                ) : (
+                  <span>{isFree ? "Free" : `${currency}${price.toLocaleString('en-IN')}`}</span>
+                )}
+              </div>
+
+              {course?.data.discountBadge && (
+                <div 
+                  id="summary-discount-row" 
+                  class={`justify-between text-rose-500 font-bold ${initialPlan === 'installment' ? 'hidden' : 'flex'}`}
+                >
+                  <span>Promotional Discount</span>
+                  <span>{course.data.discountBadge}</span>
+                </div>
+              )}
+
+              <div class="flex justify-between text-slate-600 dark:text-slate-400">
+                <span>1-on-1 Code Review & Repo</span>
+                <span class="text-emerald-500 font-bold">Included</span>
+              </div>
+
+              <div class="flex justify-between text-slate-600 dark:text-slate-400">
+                <span>Application Fees</span>
+                <span>₹0.00</span>
+              </div>
+
+              <div class="pt-3 border-t border-sky-100 dark:border-sky-950 flex justify-between text-sm font-bold text-slate-900 dark:text-white">
+                <span>Total Payable Upon Approval</span>
+                <span id="summary-total-payable" class="text-sky-600 dark:text-sky-400 font-mono text-base font-black">
+                  {isFree ? "Free" : `${currency}${initialPayable.toLocaleString('en-IN')} INR`}
+                </span>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-sky-100 dark:border-sky-950 space-y-2 text-[11px] font-mono text-slate-500 dark:text-slate-400">
+              <p class="flex items-center gap-2">✓ Direct Mentor Access & Calendar Sync</p>
+              <p class="flex items-center gap-2">✓ Instant Invoicing & Confirmation Copy Delivered</p>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script is:inline define:vars={{ currency, price, installmentPrice }}>
+  const form = document.getElementById('enquiry-form');
+  const submitBtn = document.getElementById('submit-btn');
+  const spinner = document.getElementById('btn-spinner');
+  const btnText = document.getElementById('btn-text');
+  const errorBox = document.getElementById('enquiry-error');
+
+  const cardPlanFull = document.getElementById('card-plan-full');
+  const cardPlanInstallment = document.getElementById('card-plan-installment');
+  const planRadios = document.querySelectorAll('input[name="payment_plan"]');
+  const summaryPlanName = document.getElementById('summary-plan-name');
+  const summaryTotalPayable = document.getElementById('summary-total-payable');
+  const summaryDiscountRow = document.getElementById('summary-discount-row');
+
+  planRadios.forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      const selected = e.target.value;
+      if (selected === 'installment') {
+        cardPlanInstallment?.classList.add('border-2', 'border-sky-500', 'bg-sky-50/50', 'dark:bg-sky-950/40');
+        cardPlanInstallment?.classList.remove('border', 'border-sky-100', 'dark:border-sky-900/60', 'bg-white', 'dark:bg-slate-900/40');
+        cardPlanFull?.classList.remove('border-2', 'border-sky-500', 'bg-sky-50/50', 'dark:bg-sky-950/40');
+        cardPlanFull?.classList.add('border', 'border-sky-100', 'dark:border-sky-900/60', 'bg-white', 'dark:bg-slate-900/40');
+
+        if (summaryPlanName) summaryPlanName.textContent = "Quarterly Milestone (1/4)";
+        if (summaryTotalPayable) summaryTotalPayable.textContent = `${currency}${installmentPrice.toLocaleString('en-IN')} INR`;
+        if (summaryDiscountRow) summaryDiscountRow.classList.add('hidden');
+      } else {
+        cardPlanFull?.classList.add('border-2', 'border-sky-500', 'bg-sky-50/50', 'dark:bg-sky-950/40');
+        cardPlanFull?.classList.remove('border', 'border-sky-100', 'dark:border-sky-900/60', 'bg-white', 'dark:bg-slate-900/40');
+        cardPlanInstallment?.classList.remove('border-2', 'border-sky-500', 'bg-sky-50/50', 'dark:bg-sky-950/40');
+        cardPlanInstallment?.classList.add('border', 'border-sky-100', 'dark:border-sky-900/60', 'bg-white', 'dark:bg-slate-900/40');
+
+        if (summaryPlanName) summaryPlanName.textContent = "Full 1-Year Mentorship";
+        if (summaryTotalPayable) summaryTotalPayable.textContent = `${currency}${price.toLocaleString('en-IN')} INR`;
+        if (summaryDiscountRow) summaryDiscountRow.classList.remove('hidden');
+      }
+    });
+  });
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorBox.classList.add('hidden');
+    submitBtn.disabled = true;
+    spinner.classList.remove('hidden');
+    btnText.textContent = "Submitting Application...";
+
+    const selectedPlan = document.querySelector('input[name="payment_plan"]:checked')?.value || 'full';
+
+    const payload = {
+      firstname: document.getElementById('firstname').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      phone: document.getElementById('phone').value.trim(),
+      course_id: document.getElementById('course-id').value,
+      payment_plan: selectedPlan,
+    };
+
+    try {
+      const res = await fetch('/api/enquiry.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const contentType = res.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const rawText = await res.text();
+        console.error("Non-JSON Server Response:", rawText);
+        throw new Error("PHP server error. Make sure local PHP server is running.");
+      }
+
+      const result = await res.json();
+
+      if (result.status === 'success' && result.redirect_url) {
+        window.location.href = result.redirect_url;
+      } else {
+        throw new Error(result.message || 'Application failed to submit.');
+      }
+    } catch (err) {
+      errorBox.textContent = err.message || 'Connection error. Please try again.';
+      errorBox.classList.remove('hidden');
+      submitBtn.disabled = false;
+      spinner.classList.add('hidden');
+      btnText.textContent = "Submit Application & Proceed to Terminal →";
+    }
+  });
+</script>
