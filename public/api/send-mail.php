@@ -1,11 +1,14 @@
 <?php
 declare(strict_types=1);
 
+// Error suppression from polluting JSON
+error_reporting(0);
+ini_set('display_errors', '0');
+
 header('Content-Type: application/json; charset=UTF-8');
 header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: DENY');
 
-// Secure Session Initialization
 session_set_cookie_params([
     'lifetime' => 0,
     'path' => '/',
@@ -26,7 +29,7 @@ if (file_exists($rateLimitFile)) {
     if ($data && ($now - $data['start_time']) < 600) {
         if ($data['count'] >= 5) {
             http_response_code(429);
-            echo json_encode(['success' => false, 'error' => 'Too many requests. Please try again after 10 minutes.']);
+            echo json_encode(['success' => false, 'error' => 'Too many requests. Please retry in 10 minutes.']);
             exit;
         }
         $data['count']++;
@@ -38,7 +41,6 @@ if (file_exists($rateLimitFile)) {
 }
 file_put_contents($rateLimitFile, json_encode($data));
 
-// Method Validation
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['success' => false, 'error' => 'Method Not Allowed']);
@@ -54,20 +56,20 @@ if (!is_array($input)) {
     exit;
 }
 
-// 1. Bot Security: Honeypot Check
+// 1. Honeypot check
 if (!empty($input['company_website_url'])) {
     echo json_encode(['success' => true]);
     exit;
 }
 
-// 2. Bot Security: Time-Trap (Humans take > 3 seconds)
+// 2. Time-trap check
 $formInitTime = isset($input['form_timestamp']) ? (int)$input['form_timestamp'] : 0;
 if ($formInitTime === 0 || ($now - $formInitTime) < 3) {
     echo json_encode(['success' => true]);
     exit;
 }
 
-// 3. Security: CSRF Validation
+// 3. CSRF Validation
 $submittedToken = $input['csrf_token'] ?? '';
 $sessionToken = $_SESSION['csrf_token'] ?? '';
 
@@ -77,7 +79,7 @@ if (empty($submittedToken) || empty($sessionToken) || !hash_equals($sessionToken
     exit;
 }
 
-// Data Sanitization
+// Input Sanitization
 $name = trim(htmlspecialchars((string)($input['name'] ?? ''), ENT_QUOTES, 'UTF-8'));
 $email = filter_var(trim((string)($input['email'] ?? '')), FILTER_VALIDATE_EMAIL);
 $scope = trim(htmlspecialchars((string)($input['engagement_scope'] ?? 'General Advisory'), ENT_QUOTES, 'UTF-8'));
@@ -85,87 +87,117 @@ $message = trim(htmlspecialchars((string)($input['message'] ?? ''), ENT_QUOTES, 
 
 if (empty($name) || !$email || empty($message)) {
     http_response_code(422);
-    echo json_encode(['success' => false, 'error' => 'Please provide a valid name, email address, and message.']);
+    echo json_encode(['success' => false, 'error' => 'Please provide a valid name, email, and description.']);
     exit;
 }
 
-// Configuration
-$myEmail = 'imshibaji@gmail.com';
-$systemSender = 'no-reply@shibajidebnath.com';
+// ==========================================
+// SMTP Credentials (Enter Your Details)
+// ==========================================
+$smtpUser = 'imshibaji@gmail.com';
+$smtpPass = 'YOUR_16_DIGIT_GMAIL_APP_PASSWORD'; // এখানে জিমেইলের ১৬ অক্ষরের অ্যাপ পাসওয়ার্ড দিন
 
-// -------------------------------------------------------------
-// ১. আপনার জন্য ইমেইল (Admin Alert)
-// -------------------------------------------------------------
-$adminSubject = "New Advisory Inquiry: {$name} [{$scope}]";
-$adminBody = "Hi Shibaji,\n\n";
-$adminBody .= "You have received a new consultation inquiry from your website:\n\n";
-$adminBody .= "--------------------------------------------------\n";
-$adminBody .= "Name: {$name}\n";
-$adminBody .= "Email: {$email}\n";
-$adminBody .= "Scope: {$scope}\n";
-$adminBody .= "Timestamp: " . date('Y-m-d H:i:s T') . "\n";
-$adminBody .= "IP Address: {$ip}\n";
-$adminBody .= "--------------------------------------------------\n\n";
-$adminBody .= "Project Context / System Bottleneck:\n";
-$adminBody .= "{$message}\n\n";
-$adminBody .= "--------------------------------------------------\n";
-$adminBody .= "Reply directly to this email to contact the client.";
+// Lightweight Native Socket SMTP Sender
+function sendViaGmailSMTP(string $to, string $subject, string $body, string $replyToEmail, string $replyToName, string $smtpUser, string $smtpPass): bool {
+    $context = stream_context_create([
+        'ssl' => [
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+            'allow_self_signed' => true
+        ]
+    ]);
 
-$adminHeaders = [
-    'From' => "Portfolio Portal <{$systemSender}>",
-    'Reply-To' => "{$name} <{$email}>",
-    'X-Mailer' => 'PHP/' . phpversion(),
-    'Content-Type' => 'text/plain; charset=UTF-8'
-];
+    $socket = stream_socket_client("ssl://smtp.gmail.com:465", $errno, $errstr, 15, STREAM_CLIENT_CONNECT, $context);
+    if (!$socket) return false;
 
-$adminSent = mail($myEmail, $adminSubject, $adminBody, $adminHeaders);
+    $read = function() use ($socket) {
+        $data = "";
+        while ($str = fgets($socket, 515)) {
+            $data .= $str;
+            if (substr($str, 3, 1) === " ") break;
+        }
+        return $data;
+    };
 
-// -------------------------------------------------------------
-// ২. ক্লায়েন্টের জন্য কনফার্মেশন ইমেইল (Client Auto-Responder)
-// -------------------------------------------------------------
+    $write = function(string $cmd) use ($socket) {
+        fputs($socket, $cmd . "\r\n");
+    };
+
+    $read();
+    $write("EHLO " . ($_SERVER['SERVER_NAME'] ?? 'localhost'));
+    $read();
+    $write("AUTH LOGIN");
+    $read();
+    $write(base64_encode($smtpUser));
+    $read();
+    $write(base64_encode($smtpPass));
+    $authRes = $read();
+    if (strpos($authRes, '235') === false) {
+        fclose($socket);
+        return false;
+    }
+
+    $write("MAIL FROM:<{$smtpUser}>");
+    $read();
+    $write("RCPT TO:<{$to}>");
+    $read();
+    $write("DATA");
+    $read();
+
+    $headers = "From: Shibaji Debnath <{$smtpUser}>\r\n";
+    $headers .= "Reply-To: {$replyToName} <{$replyToEmail}>\r\n";
+    $headers .= "To: <{$to}>\r\n";
+    $headers .= "Subject: {$subject}\r\n";
+    $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+    $headers .= "X-Mailer: Native-PHP-SMTP\r\n\r\n";
+
+    $write($headers . $body . "\r\n.");
+    $res = $read();
+    $write("QUIT");
+    fclose($socket);
+
+    return strpos($res, '250') !== false;
+}
+
+// 1. Email to You (Admin Alert)
+$adminSubject = "Advisory Inquiry: {$name} [{$scope}]";
+$adminBody = "Hi Shibaji,\n\nYou have received a new consultation inquiry:\n\n"
+           . "Name: {$name}\n"
+           . "Email: {$email}\n"
+           . "Scope: {$scope}\n"
+           . "IP: {$ip}\n\n"
+           . "Message:\n{$message}\n";
+
+$adminSent = sendViaGmailSMTP($smtpUser, $adminSubject, $adminBody, $email, $name, $smtpUser, $smtpPass);
+
+// 2. Confirmation to Client (Auto-responder)
 $clientSubject = "Inquiry Received: Technical Consultation with Shibaji Debnath";
-$clientBody = "Hi {$name},\n\n";
-$clientBody .= "Thank you for reaching out regarding '{$scope}'.\n\n";
-$clientBody .= "I have received your project details and system requirements. I review incoming architecture and advisory inquiries personally and will get back to you within 24 business hours.\n\n";
-$clientBody .= "Summary of your submission:\n";
-$clientBody .= "--------------------------------------------------\n";
-$clientBody .= "Objective: {$scope}\n";
-$clientBody .= "Message: {$message}\n";
-$clientBody .= "--------------------------------------------------\n\n";
-$clientBody .= "Best regards,\n\n";
-$clientBody .= "Shibaji Debnath\n";
-$clientBody .= "Chief Technology Officer | Senior System Architect\n";
-$clientBody .= "Website: https://shibajidebnath.com\n";
-$clientBody .= "Email: {$myEmail}\n";
-$clientBody .= "LinkedIn: https://linkedin.com/in/shibaji\n";
-$clientBody .= "GitHub: https://github.com/imshibaji";
+$clientBody = "Hi {$name},\n\n"
+            . "Thank you for reaching out regarding '{$scope}'.\n\n"
+            . "I have received your project details and system requirements. I will review your inquiry and follow up within 24 business hours.\n\n"
+            . "Summary of your submission:\n"
+            . "--------------------------------------------------\n"
+            . "Objective: {$scope}\n"
+            . "Message: {$message}\n"
+            . "--------------------------------------------------\n\n"
+            . "Best regards,\n\n"
+            . "Shibaji Debnath\n"
+            . "CTO | Senior System Architect\n"
+            . "https://shibajidebnath.com\n";
 
-$clientHeaders = [
-    'From' => "Shibaji Debnath <{$systemSender}>",
-    'Reply-To' => "Shibaji Debnath <{$myEmail}>",
-    'X-Mailer' => 'PHP/' . phpversion(),
-    'Content-Type' => 'text/plain; charset=UTF-8'
-];
-
-// ক্লায়েন্টকে অটোমেটিক কনফার্মেশন পাঠানো
-$clientSent = mail($email, $clientSubject, $clientBody, $clientHeaders);
-
-// -------------------------------------------------------------
-// Response Delivery
-// -------------------------------------------------------------
 if ($adminSent) {
-    // সফল হলে পরবর্তী রিকোয়েস্টের জন্য নতুন CSRF তৈরি
+    // Send confirmation to user
+    sendViaGmailSMTP($email, $clientSubject, $clientBody, $smtpUser, "Shibaji Debnath", $smtpUser, $smtpPass);
+
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-    
     echo json_encode([
         'success' => true,
-        'client_notified' => $clientSent,
         'new_token' => $_SESSION['csrf_token']
     ]);
 } else {
     http_response_code(500);
     echo json_encode([
-        'success' => false, 
-        'error' => 'Server failed to send email. Please email imshibaji@gmail.com directly.'
+        'success' => false,
+        'error' => 'Server failed to deliver email via SMTP. Please verify SMTP credentials or email directly.'
     ]);
 }

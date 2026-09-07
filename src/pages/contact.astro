@@ -108,13 +108,16 @@ import Layout from '../layouts/Layout.astro';
         <div class="p-8 md:p-10 rounded-3xl border border-sky-100 dark:border-sky-950/80 bg-white dark:bg-[#070d1a] shadow-xl">
           
           <form id="contact-form" class="space-y-6">
-            <!-- Web3Forms Access Key -->
-            <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE" />
-            <input type="hidden" name="subject" value="New Technical Advisory Inquiry - shibajidebnath.com" />
-            <input type="hidden" name="from_name" value="Consultation Portal" />
             
-            <!-- Anti-Spam Honeypot -->
-            <input type="checkbox" name="botcheck" class="hidden" style="display: none;" />
+            <!-- Security Tokens Required By PHP Backend -->
+            <input type="hidden" id="csrf_token" name="csrf_token" value="" />
+            <input type="hidden" id="form_timestamp" name="form_timestamp" value="" />
+
+            <!-- Anti-Spam Honeypot (Hidden from real users) -->
+            <div style="position: absolute; left: -9999px; top: -9999px;" aria-hidden="true">
+              <label for="company_website_url">Leave empty</label>
+              <input type="text" id="company_website_url" name="company_website_url" tabindex="-1" autocomplete="off" />
+            </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
@@ -196,7 +199,7 @@ import Layout from '../layouts/Layout.astro';
             </div>
 
             <div id="result-error" class="hidden p-4 rounded-xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900 text-rose-800 dark:text-rose-300 text-xs font-mono text-center">
-              ✕ Transmission error. Please email directly to <a href="mailto:imshibaji@gmail.com" class="underline font-bold">imshibaji@gmail.com</a>.
+              <span id="error-message">✕ Transmission error. Please email directly to imshibaji@gmail.com.</span>
             </div>
 
           </form>
@@ -222,20 +225,22 @@ import Layout from '../layouts/Layout.astro';
 
       if (!form || !submitBtn) return;
 
-      // Set Time-Trap timestamp on user interaction
-      timeInput.value = Math.floor(Date.now() / 1000).toString();
+      // Set Time-Trap timestamp
+      if (timeInput) {
+        timeInput.value = Math.floor(Date.now() / 1000).toString();
+      }
 
       // Fetch dynamic CSRF token from PHP endpoint
       try {
         const tokenRes = await fetch('/api/csrf.php');
         if (tokenRes.ok) {
           const data = await tokenRes.json();
-          if (data.csrf_token) {
+          if (data.csrf_token && csrfInput) {
             csrfInput.value = data.csrf_token;
           }
         }
       } catch (err) {
-        console.warn('Could not pre-fetch CSRF token. Proceeding with fallback.');
+        console.warn('Could not pre-fetch CSRF token. Proceeding with form submission.');
       }
 
       form.addEventListener('submit', async function (e) {
@@ -265,19 +270,26 @@ import Layout from '../layouts/Layout.astro';
           if (res.ok && json.success) {
             successBox.classList.remove('hidden');
             form.reset();
-            if (json.new_token) {
+            if (timeInput) {
+              timeInput.value = Math.floor(Date.now() / 1000).toString();
+            }
+            if (json.new_token && csrfInput) {
               csrfInput.value = json.new_token;
             }
           } else {
-            errorMsg.textContent = json.error || 'Security verification failed. Please try again.';
+            if (errorMsg) {
+              errorMsg.textContent = json.error || 'Security verification failed. Please try again.';
+            }
             errorBox.classList.remove('hidden');
           }
         } catch (err) {
-          errorMsg.textContent = 'Network communication failure. Please email directly to imshibaji@gmail.com.';
+          if (errorMsg) {
+            errorMsg.textContent = 'Network communication failure. Please email directly to imshibaji@gmail.com.';
+          }
           errorBox.classList.remove('hidden');
         } finally {
           submitBtn.disabled = false;
-          btnText.textContent = 'Transmit Encrypted Advisory Inquiry';
+          btnText.textContent = 'Transmit Advisory Inquiry';
           spinner.classList.add('hidden');
         }
       });
