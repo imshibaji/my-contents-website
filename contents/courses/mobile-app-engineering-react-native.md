@@ -26,6 +26,9 @@ prerequisites: [
   "Basic knowledge of React component concepts and state management",
   "A computer capable of running Android Studio emulator or mobile device with Expo Go"
 ]
+# payment options
+qr_image_url: ""
+custom_payment_url: ""
 ---
 
 <details open>

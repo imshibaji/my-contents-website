@@ -19,6 +19,7 @@
 - Payment Failed: https://shibajidebnath.com/courses/payment-failed
 - Payment Success: https://shibajidebnath.com/courses/payment-success
 - Curated Engineering Experience: https://shibajidebnath.com/experience
+- Pay: https://shibajidebnath.com/pay
 - Privacy Policy & Data Architecture: https://shibajidebnath.com/privacy
 - Terms of Service & Advisory Governance: https://shibajidebnath.com/terms
 

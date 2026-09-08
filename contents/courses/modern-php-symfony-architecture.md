@@ -26,6 +26,9 @@ prerequisites: [
   "Fundamental understanding of SQL databases and HTTP requests",
   "Basic terminal usage and Git version control"
 ]
+# payment options
+qr_image_url: ""
+custom_payment_url: ""
 ---
 
 <details open>

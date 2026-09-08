@@ -26,6 +26,9 @@ prerequisites: [
   "Fundamental understanding of asynchronous programming (Futures/Promises, Streams)",
   "A development machine capable of running Flutter SDK and Android Emulator or iOS Simulator"
 ]
+# payment options
+qr_image_url: ""
+custom_payment_url: ""
 ---
 
 <details open>

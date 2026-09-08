@@ -26,6 +26,9 @@ prerequisites: [
   "Understanding of core web networking concepts (DNS, Ports, HTTP/HTTPS, Reverse Proxies)",
   "Basic experience containerizing applications with Docker"
 ]
+# payment options
+qr_image_url: ""
+custom_payment_url: ""
 ---
 
 <details open>

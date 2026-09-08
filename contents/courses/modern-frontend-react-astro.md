@@ -26,6 +26,9 @@ prerequisites: [
   "Basic JavaScript programming (ES6+ syntax, Promises, and Array methods)",
   "Familiarity with consuming third-party REST APIs"
 ]
+# payment options
+qr_image_url: ""
+custom_payment_url: ""
 ---
 
 <details open>

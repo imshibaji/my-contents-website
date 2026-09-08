@@ -26,6 +26,9 @@ prerequisites: [
   "Familiarity with consuming RESTful APIs and asynchronous event handling",
   "Basic conceptual understanding of Large Language Models and prompt engineering"
 ]
+# payment options
+qr_image_url: ""
+custom_payment_url: ""
 ---
 
 <details open>

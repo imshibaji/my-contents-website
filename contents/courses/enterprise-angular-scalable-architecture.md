@@ -26,6 +26,9 @@ prerequisites: [
   "Understanding of basic single-page application (SPA) lifecycles and REST APIs",
   "Working experience with HTML5 and CSS/SCSS"
 ]
+# payment options
+qr_image_url: ""
+custom_payment_url: ""
 ---
 
 <details open>

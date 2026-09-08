@@ -26,6 +26,9 @@ prerequisites: [
   "Basic familiarity with React JSX, standard useState/useEffect, and component props",
   "Working experience with CSS and HTML DOM events"
 ]
+# payment options
+qr_image_url: ""
+custom_payment_url: ""
 ---
 
 <details open>

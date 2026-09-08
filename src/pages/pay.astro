@@ -1,0 +1,536 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// সেন্ট্রাল ডিফল্ট UPI ও ব্যাংকিং কনফিগারেশন
+const DEFAULT_UPI_CONFIG = {
+  upiId: 'imshibaji-3@okhdfcbank',
+  upiName: 'Shibaji Debnath',
+};
+
+const GLOBAL_BANK_INFO = {
+  accountName: 'Shibaji Debnath',
+  bankName: 'HDFC Bank',
+  accountNumber: '50200090860798',
+  ifscCode: 'HDFC0000106',
+  branch: 'Dum Dum Cantonment, Kolkata, West Bengal',
+  accountType: 'Current'
+};
+
+// PayU গেটওয়ে ফি (২% + ১৮% GST = ২.৩৬%)
+const GATEWAY_SURCHARGE_PERCENT = 2.36;
+---
+
+<Layout 
+  title="Direct Settlement Terminal | Shibaji Debnath"
+  description="Execute custom fee settlements, advisory retainers, or tailored architecture audit payments securely."
+>
+  <main class="py-12 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto flex flex-col justify-center">
+    
+    <!-- Top Progress / Brand Notice -->
+    <div class="mb-8">
+      <a 
+        href="/" 
+        class="text-xs font-mono uppercase tracking-widest text-sky-700 dark:text-sky-400 hover:text-sky-600 dark:hover:text-sky-300 flex items-center gap-1 transition-colors"
+      >
+        &larr; Return to Central Portfolio
+      </a>
+      <h1 class="text-3xl sm:text-4xl font-black text-slate-950 dark:text-white tracking-tight mt-3">
+        Custom Retainer &amp; <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-indigo-600 dark:from-sky-400 dark:to-indigo-400">Payment Terminal</span>
+      </h1>
+      <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-2 max-w-2xl leading-relaxed">
+        Direct clearance channel for bespoke architecture advisory, fractional CTO sprints, or personalized fee settlements.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- Left Column: Manual Form & Multi-Rail Selection -->
+      <div class="lg:col-span-7 space-y-6">
+        
+        <!-- Candidate / Payer Identity Form -->
+        <div class="bg-white dark:bg-[#0b101d]/90 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 sm:p-8 backdrop-blur shadow-xl dark:shadow-2xl space-y-4 transition-colors duration-300">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800/60">
+            <span class="text-xs font-mono tracking-widest uppercase text-emerald-700 dark:text-emerald-400 flex items-center gap-2 font-bold">
+              <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Client Billing Dossier
+            </span>
+            <span class="text-xs font-mono text-slate-500 uppercase">Step 1 of 2</span>
+          </div>
+
+          <!-- Full Name -->
+          <div>
+            <label for="firstname" class="block text-xs font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+              Full Name / Entity *
+            </label>
+            <input 
+              type="text" 
+              id="firstname" 
+              name="firstname" 
+              required 
+              placeholder="e.g. Shibaji Debnath" 
+              class="w-full px-4 py-3 rounded-xl border border-sky-200 dark:border-sky-900 bg-sky-50/20 dark:bg-slate-900/60 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-500 text-sm font-mono"
+            />
+          </div>
+
+          <!-- Email & WhatsApp -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="email" class="block text-xs font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                Billing Email *
+              </label>
+              <input 
+                type="email" 
+                id="email" 
+                name="email" 
+                required 
+                placeholder="client@domain.com" 
+                class="w-full px-4 py-3 rounded-xl border border-sky-200 dark:border-sky-900 bg-sky-50/20 dark:bg-slate-900/60 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-500 text-sm font-mono"
+              />
+            </div>
+
+            <div>
+              <label for="phone" class="block text-xs font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                WhatsApp / Phone *
+              </label>
+              <input 
+                type="tel" 
+                id="phone" 
+                name="phone" 
+                required 
+                placeholder="8981009499" 
+                class="w-full px-4 py-3 rounded-xl border border-sky-200 dark:border-sky-900 bg-sky-50/20 dark:bg-slate-900/60 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-500 text-sm font-mono"
+              />
+            </div>
+          </div>
+
+          <!-- Purpose & Amount -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="purpose" class="block text-xs font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                Purpose / Reference *
+              </label>
+              <input 
+                type="text" 
+                id="purpose" 
+                name="purpose" 
+                required 
+                placeholder="e.g. Architecture Sprint" 
+                class="w-full px-4 py-3 rounded-xl border border-sky-200 dark:border-sky-900 bg-sky-50/20 dark:bg-slate-900/60 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-500 text-sm font-mono"
+              />
+            </div>
+
+            <div>
+              <label for="amount" class="block text-xs font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                Amount (INR ₹) *
+              </label>
+              <div class="relative">
+                <span class="absolute left-3.5 top-3 text-slate-400 dark:text-slate-500 font-mono font-bold">₹</span>
+                <input 
+                  type="number" 
+                  id="amount" 
+                  name="amount" 
+                  min="1" 
+                  step="any" 
+                  required 
+                  placeholder="5000" 
+                  class="w-full pl-8 pr-4 py-3 rounded-xl border border-sky-200 dark:border-sky-900 bg-sky-50/20 dark:bg-slate-900/60 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-500 text-sm font-mono font-bold"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Channel Selection Tabs & Action Area -->
+        <div class="bg-white dark:bg-[#0b101d]/90 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 sm:p-8 backdrop-blur shadow-xl dark:shadow-2xl space-y-6">
+          
+          <div>
+            <span class="text-[11px] font-mono tracking-widest uppercase text-slate-500 dark:text-slate-400">Select Settlement Rail</span>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3 font-mono text-xs">
+              <button type="button" data-tab="payu" class="channel-tab active-tab py-2.5 px-3 rounded-xl border border-sky-500 bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300 font-bold transition-all text-center cursor-pointer">
+                PayU Gateway
+              </button>
+              <button type="button" data-tab="upi" class="channel-tab py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 text-slate-600 dark:text-slate-400 hover:border-slate-400 font-medium transition-all text-center cursor-pointer">
+                Direct UPI
+              </button>
+              <button type="button" data-tab="qr" class="channel-tab py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 text-slate-600 dark:text-slate-400 hover:border-slate-400 font-medium transition-all text-center cursor-pointer">
+                Pay By QR
+              </button>
+              <button type="button" data-tab="netbanking" class="channel-tab py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 text-slate-600 dark:text-slate-400 hover:border-slate-400 font-medium transition-all text-center cursor-pointer">
+                NetBanking
+              </button>
+            </div>
+          </div>
+
+          <!-- Tab 1: PayU Automated Form -->
+          <div id="tab_panel_payu" class="tab-panel space-y-6">
+            <form id="custom_checkout_form" class="space-y-5">
+              <div class="flex items-center justify-between p-4 rounded-xl bg-sky-50 dark:bg-sky-950/20 border border-sky-200 dark:border-sky-500/30">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-lg bg-sky-100 dark:bg-sky-500/20 text-sky-700 dark:text-sky-400 flex items-center justify-center font-bold text-sm">
+                    ⚡
+                  </div>
+                  <div>
+                    <h4 class="text-sm font-bold text-slate-950 dark:text-white">Direct PayU Gateway</h4>
+                    <p class="text-[11px] text-slate-600 dark:text-slate-400">Cards, UPI (GPay/PhonePe), NetBanking &amp; EMI</p>
+                  </div>
+                </div>
+                <span class="text-[10px] font-mono text-sky-800 dark:text-sky-400 px-2.5 py-1 rounded bg-sky-100 dark:bg-sky-500/10 border border-sky-300 dark:border-sky-500/20 uppercase font-bold">
+                  Automated
+                </span>
+              </div>
+
+              <!-- Error Alert Banner -->
+              <div id="terminal_error_box" class="hidden p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 text-rose-700 dark:text-rose-300 text-xs font-mono">
+                <span id="terminal_error_msg">Invalid settlement details.</span>
+              </div>
+
+              <!-- Submit Button -->
+              <button 
+                type="submit" 
+                id="terminal_submit_btn"
+                class="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 dark:from-emerald-500 dark:to-teal-600 hover:from-emerald-500 hover:to-teal-600 dark:hover:from-emerald-400 dark:hover:to-teal-500 text-white font-bold text-sm tracking-wide shadow-xl shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                <span id="terminal_btn_text">Proceed to PayU Gateway</span>
+                <span id="terminal_btn_amount" class="font-mono bg-black/20 px-2 py-0.5 rounded text-xs">₹0</span>
+                <span>&rarr;</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Tab 2: Direct UPI Manual Intent -->
+          <div id="tab_panel_upi" class="tab-panel hidden space-y-4">
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-[#070b14] border border-slate-200 dark:border-slate-800/80 space-y-4 text-xs font-mono">
+              <div>
+                <span class="text-[10px] text-slate-500 uppercase">Merchant VPA / UPI ID</span>
+                <div class="flex items-center justify-between mt-1 p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+                  <span id="upi_id_text" class="font-bold text-slate-950 dark:text-white text-sm truncate">{DEFAULT_UPI_CONFIG.upiId}</span>
+                  <button type="button" id="copy_upi_btn" class="px-3 py-1 rounded bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 hover:bg-sky-200 text-xs font-bold transition-all cursor-pointer">
+                    Copy
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <span class="text-[10px] text-slate-500 uppercase">Payee Name</span>
+                <p id="upi_name_text" class="font-bold text-slate-950 dark:text-white mt-0.5">{DEFAULT_UPI_CONFIG.upiName}</p>
+              </div>
+
+              <a 
+                id="direct_upi_intent_link" 
+                href="#" 
+                class="block w-full py-3.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-center font-bold text-sm tracking-wide transition-all shadow-md shadow-sky-600/20"
+              >
+                Open in UPI App (GPay / PhonePe / Paytm)
+              </a>
+            </div>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed font-mono">
+              * কোনো অতিরিক্ত গেটওয়ে চার্জ নেই (0% Surcharge)। ট্রানজ্যাকশন শেষ হলে স্ক্রিনশট ও UTR ইমেইল অথবা WhatsApp-এ পাঠিয়ে কনফার্ম করুন।
+            </p>
+          </div>
+
+          <!-- Tab 3: Pay By QR Code -->
+          <div id="tab_panel_qr" class="tab-panel hidden space-y-4 text-center">
+            <div class="p-6 rounded-2xl bg-slate-50 dark:bg-[#070b14] border border-slate-200 dark:border-slate-800/80 flex flex-col items-center">
+              <div class="p-4 bg-white rounded-2xl shadow-md border border-slate-200 inline-block">
+                <img id="qr_image_display" src="/api/qr.php" alt="UPI QR Code" class="w-52 h-52 object-contain rounded-lg mx-auto" />
+              </div>
+              <p class="text-xs font-mono text-slate-700 dark:text-slate-300 mt-4 font-bold">
+                Scan to Pay <span id="qr_amount_display" class="text-emerald-600 dark:text-emerald-400">₹0</span>
+              </p>
+              <span class="text-[10px] font-mono text-slate-400 mt-1">GPay • PhonePe • Paytm • Zero Surcharge</span>
+            </div>
+          </div>
+
+          <!-- Tab 4: NetBanking (NEFT / IMPS) -->
+          <div id="tab_panel_netbanking" class="tab-panel hidden space-y-4">
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-[#070b14] border border-slate-200 dark:border-slate-800/80 space-y-2.5 text-xs font-mono">
+              <div class="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800">
+                <span class="text-slate-500">Account Name:</span>
+                <span class="font-bold text-slate-950 dark:text-white">{GLOBAL_BANK_INFO.accountName}</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800">
+                <span class="text-slate-500">Bank Name:</span>
+                <span class="font-bold text-slate-950 dark:text-white">{GLOBAL_BANK_INFO.bankName}</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800">
+                <span class="text-slate-500">Account Number:</span>
+                <span class="font-bold text-slate-950 dark:text-white">{GLOBAL_BANK_INFO.accountNumber}</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800">
+                <span class="text-slate-500">IFSC Code:</span>
+                <span class="font-bold text-emerald-600 dark:text-emerald-400">{GLOBAL_BANK_INFO.ifscCode}</span>
+              </div>
+              <div class="flex justify-between pt-1">
+                <span class="text-slate-500">Branch:</span>
+                <span class="text-slate-700 dark:text-slate-300">{GLOBAL_BANK_INFO.branch}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-center gap-6 text-slate-500 dark:text-slate-500 text-xs font-mono pt-1 flex-wrap">
+            <span class="flex items-center gap-1">🔒 256-Bit SSL</span>
+            <span class="flex items-center gap-1">🛡️ SHA-512 Signed</span>
+            <span class="flex items-center gap-1">⚡ Instant Invoicing</span>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Right Column: Real-Time Dynamic Summary Card -->
+      <div class="lg:col-span-5 bg-white dark:bg-[#0b101d]/90 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 sm:p-8 backdrop-blur shadow-xl dark:shadow-2xl space-y-6 sticky top-8 transition-colors duration-300">
+        
+        <div class="pb-4 border-b border-slate-200 dark:border-slate-800/60">
+          <span class="text-[11px] font-mono tracking-widest uppercase text-slate-500 dark:text-slate-400">Order Dossier</span>
+          <h2 id="summary_purpose" class="text-base sm:text-lg font-black text-slate-950 dark:text-white mt-1 leading-snug break-words">
+            Custom Advisory Settlement
+          </h2>
+          <span class="inline-block mt-2 px-2.5 py-1 rounded bg-sky-100 dark:bg-sky-950/60 text-sky-800 dark:text-sky-400 border border-sky-200 dark:border-sky-800/40 text-[10px] font-mono uppercase font-bold">
+            Ad-hoc Invoice
+          </span>
+        </div>
+
+        <div class="space-y-3 text-xs font-mono text-slate-700 dark:text-slate-300">
+          <div class="flex justify-between items-center py-1 border-b border-slate-100 dark:border-slate-800/40">
+            <span class="text-slate-500 dark:text-slate-400">Billed Party:</span>
+            <span id="summary_name" class="font-bold text-slate-950 dark:text-slate-100 truncate max-w-[160px]">--</span>
+          </div>
+          <div class="flex justify-between items-center py-1 border-b border-slate-100 dark:border-slate-800/40">
+            <span class="text-slate-500 dark:text-slate-400">Recipient:</span>
+            <span class="font-bold text-slate-950 dark:text-slate-100">{DEFAULT_UPI_CONFIG.upiName}</span>
+          </div>
+          <div class="flex justify-between items-center py-1 border-b border-slate-100 dark:border-slate-800/40">
+            <span class="text-slate-500 dark:text-slate-400">Base Principal:</span>
+            <span id="summary_base_amount" class="font-bold text-slate-950 dark:text-slate-100">₹0.00</span>
+          </div>
+          
+          <!-- ডাইনামিক সারচার্জ লাইন -->
+          <div class="flex justify-between items-center py-1 border-b border-dashed border-slate-200 dark:border-slate-800">
+            <span class="text-slate-500 dark:text-slate-400">
+              Gateway Fee <span id="surcharge_badge" class="text-[10px] text-sky-600 dark:text-sky-400 font-mono">(2.36%)</span>
+            </span>
+            <span id="summary_gateway_fee" class="font-bold text-rose-600 dark:text-rose-400">₹0.00</span>
+          </div>
+        </div>
+
+        <!-- Payable Hero -->
+        <div class="pt-4 border-t border-slate-200 dark:border-slate-800/80 flex items-baseline justify-between">
+          <div>
+            <span class="block text-xs font-mono uppercase tracking-wider text-slate-500 dark:text-slate-400">Net Remittance</span>
+            <span class="text-[10px] text-slate-400 dark:text-slate-500" id="total_guarantee_label">Includes gateway surcharge</span>
+          </div>
+          <div class="text-right">
+            <span id="summary_amount_total" class="text-2xl sm:text-3xl font-black text-sky-700 dark:text-sky-400 font-mono">₹0</span>
+            <span class="block text-[10px] font-mono text-slate-400 dark:text-slate-500">INR</span>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-slate-200 dark:border-slate-800/40 text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+          Supports Credit/Debit Cards, UPI (Google Pay, PhonePe, Paytm), and Corporate NetBanking. Official receipt is dispatched directly to the billing email.
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <script define:vars={{ DEFAULT_UPI_CONFIG, GATEWAY_SURCHARGE_PERCENT }} is:inline>
+    function initCustomCheckoutTerminal() {
+      const form = document.getElementById('custom_checkout_form');
+      const nameInput = document.getElementById('firstname');
+      const emailInput = document.getElementById('email');
+      const phoneInput = document.getElementById('phone');
+      const purposeInput = document.getElementById('purpose');
+      const amountInput = document.getElementById('amount');
+      
+      const submitBtn = document.getElementById('terminal_submit_btn');
+      const btnText = document.getElementById('terminal_btn_text');
+      const btnAmount = document.getElementById('terminal_btn_amount');
+      const errorBox = document.getElementById('terminal_error_box');
+      const errorMsg = document.getElementById('terminal_error_msg');
+
+      const summaryName = document.getElementById('summary_name');
+      const summaryPurpose = document.getElementById('summary_purpose');
+      const summaryBaseAmount = document.getElementById('summary_base_amount');
+      const summaryGatewayFee = document.getElementById('summary_gateway_fee');
+      const summaryTotal = document.getElementById('summary_amount_total');
+      const surchargeBadge = document.getElementById('surcharge_badge');
+      const guaranteeLabel = document.getElementById('total_guarantee_label');
+
+      const directUpiLink = document.getElementById('direct_upi_intent_link');
+      const qrImageDisplay = document.getElementById('qr_image_display');
+      const qrAmountDisplay = document.getElementById('qr_amount_display');
+      const copyUpiBtn = document.getElementById('copy_upi_btn');
+
+      if (!nameInput || !amountInput) return;
+
+      let currentSelectedRail = 'payu';
+
+      // URL Query params দিয়ে প্রি-পপুলেট সাপোর্ট
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('amount')) amountInput.value = params.get('amount');
+      if (params.get('purpose')) purposeInput.value = params.get('purpose');
+      if (params.get('name')) nameInput.value = params.get('name');
+      if (params.get('email')) emailInput.value = params.get('email');
+      if (params.get('phone')) phoneInput.value = params.get('phone');
+
+      // লাইভ প্রিভিউ ও ফাইন্যান্সিয়াল ক্যালকুলেটর
+      function syncFinancials() {
+        const baseAmount = parseFloat(amountInput.value) || 0;
+        const cleanName = nameInput.value.trim() || 'Candidate';
+        const cleanPurpose = purposeInput.value.trim() || 'Custom Advisory Settlement';
+        const safeNote = cleanPurpose.replace(/[^a-zA-Z0-9]/g, '').slice(0, 15) || 'Advisory';
+
+        let surcharge = 0;
+
+        if (currentSelectedRail === 'payu') {
+          surcharge = Math.round((baseAmount * (GATEWAY_SURCHARGE_PERCENT / 100)) * 100) / 100;
+          summaryGatewayFee.textContent = `+₹${surcharge.toFixed(2)}`;
+          summaryGatewayFee.className = "font-bold text-rose-600 dark:text-rose-400";
+          surchargeBadge.textContent = `(${GATEWAY_SURCHARGE_PERCENT}%)`;
+          guaranteeLabel.textContent = "Includes PayU surcharge";
+        } else {
+          surcharge = 0;
+          summaryGatewayFee.textContent = "Waived (₹0.00)";
+          summaryGatewayFee.className = "font-bold text-emerald-600 dark:text-emerald-400";
+          surchargeBadge.textContent = "(Direct Rail)";
+          guaranteeLabel.textContent = "Zero Gateway Surcharge";
+        }
+
+        const totalPayable = Math.round((baseAmount + surcharge) * 100) / 100;
+
+        // ইনভয়েস ও বাটন আপডেট
+        summaryName.textContent = cleanName;
+        summaryPurpose.textContent = cleanPurpose;
+        summaryBaseAmount.textContent = `₹${baseAmount.toLocaleString('en-IN')}`;
+        summaryTotal.textContent = `₹${totalPayable.toLocaleString('en-IN')}`;
+        btnAmount.textContent = `₹${totalPayable.toLocaleString('en-IN')}`;
+
+        // UPI ও QR আপডেট (ডিরেক্ট রেলে সারচার্জ ছাড়া মূল অ্যামাউন্ট চার্জ হবে)
+        qrAmountDisplay.textContent = `₹${baseAmount.toLocaleString('en-IN')}`;
+        const upiUri = `upi://pay?pa=${encodeURIComponent(DEFAULT_UPI_CONFIG.upiId)}&pn=${encodeURIComponent(DEFAULT_UPI_CONFIG.upiName)}&am=${baseAmount.toFixed(2)}&cu=INR&tn=${safeNote}`;
+        directUpiLink.href = upiUri;
+
+        // লোকাল PHP QR কোড জেনারেটরে কল পাঠানো
+        qrImageDisplay.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiUri)}`;
+      }
+
+      nameInput.addEventListener('input', syncFinancials);
+      purposeInput.addEventListener('input', syncFinancials);
+      amountInput.addEventListener('input', syncFinancials);
+      syncFinancials();
+
+      // কপি বাটন
+      if (copyUpiBtn) {
+        copyUpiBtn.onclick = () => {
+          navigator.clipboard.writeText(DEFAULT_UPI_CONFIG.upiId);
+          copyUpiBtn.textContent = 'Copied!';
+          setTimeout(() => {
+            copyUpiBtn.textContent = 'Copy';
+          }, 2000);
+        };
+      }
+
+      // চ্যানেল সুইচিং লজিক
+      const tabs = document.querySelectorAll('.channel-tab');
+      const panels = document.querySelectorAll('.tab-panel');
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          const selectedRail = tab.dataset.tab;
+          currentSelectedRail = selectedRail;
+
+          tabs.forEach((t) => {
+            t.classList.remove('active-tab', 'border-sky-500', 'bg-sky-50', 'dark:bg-sky-950/40', 'text-sky-700', 'dark:text-sky-300', 'font-bold');
+            t.classList.add('border-slate-200', 'dark:border-slate-800', 'bg-slate-50', 'dark:bg-slate-900/60', 'text-slate-600', 'dark:text-slate-400');
+          });
+          tab.classList.add('active-tab', 'border-sky-500', 'bg-sky-50', 'dark:bg-sky-950/40', 'text-sky-700', 'dark:text-sky-300', 'font-bold');
+
+          panels.forEach((p) => p.classList.add('hidden'));
+          const activePanel = document.getElementById(`tab_panel_${selectedRail}`);
+          if (activePanel) activePanel.classList.remove('hidden');
+
+          syncFinancials();
+        });
+      });
+
+      // PayU ফর্ম সাবমিট হ্যান্ডলার
+      if (form && !form.dataset.initialized) {
+        form.dataset.initialized = 'true';
+
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          errorBox.classList.add('hidden');
+
+          const parsedAmount = parseFloat(amountInput.value);
+          if (isNaN(parsedAmount) || parsedAmount <= 0) {
+            errorMsg.textContent = 'Please enter a valid amount greater than zero.';
+            errorBox.classList.remove('hidden');
+            return;
+          }
+
+          submitBtn.disabled = true;
+          btnText.textContent = 'Generating Secure Session...';
+
+          const payload = {
+            firstname: nameInput.value.trim(),
+            email: emailInput.value.trim(),
+            phone: phoneInput.value.trim(),
+            course_id: 'custom-payment',
+            course_title: purposeInput.value.trim(),
+            amount: parsedAmount,
+            payment_plan: 'full'
+          };
+
+          try {
+            const res = await fetch('/api/payu/init.php', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              },
+              body: JSON.stringify(payload)
+            });
+
+            const data = await res.json();
+
+            if (data.status === 'success') {
+              btnText.textContent = 'Redirecting to Gateway...';
+
+              const payuForm = document.createElement('form');
+              payuForm.method = 'POST';
+              payuForm.action = data.action;
+
+              for (const [key, val] of Object.entries(data.params)) {
+                const hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = key;
+                hidden.value = String(val);
+                payuForm.appendChild(hidden);
+              }
+
+              document.body.appendChild(payuForm);
+              payuForm.submit();
+            } else {
+              errorMsg.textContent = data.message || 'Payment initiation failed.';
+              errorBox.classList.remove('hidden');
+              submitBtn.disabled = false;
+              btnText.textContent = 'Proceed to PayU Gateway';
+            }
+          } catch (err) {
+            errorMsg.textContent = 'Network communication failure. Please check backend PHP service.';
+            errorBox.classList.remove('hidden');
+            submitBtn.disabled = false;
+            btnText.textContent = 'Proceed to PayU Gateway';
+          }
+        });
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCustomCheckoutTerminal);
+    } else {
+      initCustomCheckoutTerminal();
+    }
+    document.addEventListener('astro:page-load', initCustomCheckoutTerminal);
+  </script>
+</Layout>

@@ -25,6 +25,9 @@ prerequisites: [
   "Basic knowledge of HTML, CSS, and any programming language (JavaScript/Node, PHP, Python, etc.)",
   "A computer with internet access and willingness to work with terminal commands"
 ]
+# payment options
+qr_image_url: ""
+custom_payment_url: ""
 ---
 
 <details open>

@@ -51,30 +51,45 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     exit;
 }
 
-// ৩. ক্যাটালগ ভ্যালিডেশন
-if (!isset($COURSE_CATALOG[$courseSlug])) {
-    http_response_code(404);
-    echo json_encode([
-        'status'  => 'error',
-        'message' => "Requested course '{$courseSlug}' not found in server catalog."
-    ]);
-    exit;
+// ৩. ক্যাটালগ ভ্যালিডেশন এবং কাস্টম পেমেন্ট ফলব্যাক
+if ($courseSlug === 'custom-payment' || !isset($COURSE_CATALOG[$courseSlug])) {
+    $clientAmount = (float)($data['amount'] ?? 0.00);
+    $customPurpose = trim((string)($data['course_title'] ?? $data['purpose'] ?? 'Custom Advisory Settlement'));
+
+    if ($clientAmount <= 0.00) {
+        http_response_code(422);
+        echo json_encode(['status' => 'error', 'message' => 'A valid payment amount is required.']);
+        exit;
+    }
+
+    $course = [
+        'title'             => $customPurpose,
+        'price_full'        => $clientAmount,
+        'price_installment' => 0.00,
+        'currency'          => '₹'
+    ];
+} else {
+    $course = $COURSE_CATALOG[$courseSlug];
 }
 
-$course = $COURSE_CATALOG[$courseSlug];
-
+// বেস প্রাইস নির্ধারণ
 if ($paymentPlan === 'installment' && isset($course['price_installment']) && (float)$course['price_installment'] > 0) {
-    $price = (float)$course['price_installment'];
+    $basePrice = (float)$course['price_installment'];
     $planLabel = "Milestone Split";
 } else {
-    $price = (float)($course['price_full'] ?? 0.00);
+    $basePrice = (float)($course['price_full'] ?? 0.00);
     $planLabel = "Full Cohort Access";
 }
 
+// ৪. PayU গেটওয়ে সারচার্জ হিসাব (২.৩৬% চার্জ যোগ)
+$surchargeRate = 0.0236; // ২% + ১৮% GST = ২.৩৬%
+$gatewayCharge = round($basePrice * $surchargeRate, 2);
+$finalPayable  = $basePrice + $gatewayCharge;
+
 $txnid = 'TXN_' . strtoupper(bin2hex(random_bytes(4))) . '_' . time();
 
-// ৪. ফ্রি কোর্স ফ্লো (Price <= 0)
-if ($price <= 0.00) {
+// ৫. ফ্রি কোর্স ফ্লো (Price <= 0)
+if ($basePrice <= 0.00) {
     $adminSub = "🎁 [Free Enrollment] " . htmlspecialchars($firstname) . " - " . htmlspecialchars($course['title']);
     $adminBody = "
     <div style='font-family: monospace, sans-serif; background-color: #0b1329; color: #f8fafc; padding: 24px; border-radius: 12px;'>
@@ -108,8 +123,8 @@ if ($price <= 0.00) {
     exit;
 }
 
-// ৫. পেইড কোর্স ফ্লো (PayU SHA-512 হ্যাশ জেনারেশন)
-$amount = number_format($price, 2, '.', '');
+// ৬. পেইড কোর্স ফ্লো (PayU SHA-512 হ্যাশ জেনারেশন)
+$amount = number_format($finalPayable, 2, '.', '');
 $cleanTitle = (string)preg_replace('/[^a-zA-Z0-9_\- ]/', '', $course['title']);
 $productinfo = substr(trim($cleanTitle . ' ' . $planLabel), 0, 80);
 
@@ -121,7 +136,9 @@ $leadBody = "
     <p><strong>WhatsApp:</strong> " . htmlspecialchars($phone) . "</p>
     <p><strong>Course:</strong> " . htmlspecialchars($course['title']) . "</p>
     <p><strong>Plan:</strong> " . htmlspecialchars($planLabel) . "</p>
-    <p><strong>Amount:</strong> ₹" . $amount . " INR</p>
+    <p><strong>Base Amount:</strong> ₹" . number_format($basePrice, 2) . " INR</p>
+    <p><strong>Surcharge:</strong> ₹" . number_format($gatewayCharge, 2) . " INR</p>
+    <p><strong>Total Payable:</strong> ₹" . $amount . " INR</p>
     <p><strong>Txn ID:</strong> " . $txnid . "</p>
 </div>
 ";
@@ -155,4 +172,4 @@ echo json_encode([
         'udf2'        => $udf2,
     ]
 ]);
-exit; // <--- এক্সিকিউশন নিশ্চিতভাবে থামানোর জন্য
+exit;

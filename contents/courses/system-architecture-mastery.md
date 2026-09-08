@@ -26,6 +26,9 @@ prerequisites: [
   "Basic knowledge of relational databases and RESTful API development",
   "Working familiarity with Git and terminal environments"
 ]
+# payment options
+qr_image_url: ""
+custom_payment_url: ""
 ---
 
 <details open>

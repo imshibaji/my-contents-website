@@ -26,6 +26,9 @@ prerequisites: [
   "Experience integrating relational databases with backend runtimes (Node.js, Go, Python, or PHP)",
   "Basic knowledge of indexes and database constraints"
 ]
+# payment options
+qr_image_url: ""
+custom_payment_url: ""
 ---
 
 <details open>

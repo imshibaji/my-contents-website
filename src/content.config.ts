@@ -51,6 +51,19 @@ const courses = defineCollection({
     videoTrailerUrl: z.string().optional().default(''),
     tags: z.array(z.string()).default([]),
     prerequisites: z.array(z.string()).default([]),
+
+    // payment options
+    upi_name: z.string().optional(),
+    upi_id: z.string().optional(),
+    qr_image_url: z.string().optional(),
+    custom_payment_url: z.string().optional(),
+
+    // other payment options
+    other_payment_title: z.string().optional(),
+    other_payment_url: z.string().optional(),
+    other_payment_note: z.string().optional(),
+    other_qr_image: z.string().optional(),
+    other_qr_label: z.string().optional(),
   }),
 });
 

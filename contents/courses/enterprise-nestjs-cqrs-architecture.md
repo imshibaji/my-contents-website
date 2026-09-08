@@ -26,6 +26,9 @@ prerequisites: [
   "Working experience building RESTful APIs with Node.js or NestJS",
   "Familiarity with SQL relational databases and basic Docker container usage"
 ]
+# payment options
+qr_image_url: ""
+custom_payment_url: ""
 ---
 
 <details open>
