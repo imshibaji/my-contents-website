@@ -4,7 +4,7 @@ description: "A beginner-friendly, zero-code architectural guide on running priv
 pubDate: 2026-08-25
 tags: ["AI Automation", "n8n", "Flowise", "Docker", "Ollama", "Local LLM", "No Code"]
 readingTime: "8 min read"
-# featuredImage: "/images/n8n-flowise-local-ai.png"
+featuredImage: ""
 videoUrl: "https://www.youtube.com/embed/TeLLfKnd17A"
 videoDuration: "PT30M34S"
 ---

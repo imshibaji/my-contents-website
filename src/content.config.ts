@@ -43,6 +43,7 @@ const courses = defineCollection({
     originalPrice: z.number().default(0),
     discountBadge: z.string().optional(),
     offerText: z.string().optional(),
+    installmentNumber: z.number().default(1),
     installmentPrice: z.number().default(0),
     installmentPlanText: z.string().optional(),
     

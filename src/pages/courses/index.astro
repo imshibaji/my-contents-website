@@ -10,30 +10,15 @@ const courses = (await getCollection('courses')).sort(
 const allCategories = ["All", ...new Set(courses.map(c => c.data.category))];
 const allLevels = ["All", "Beginner", "Intermediate", "Advanced"];
 
-// function getCourseThumbnail(c: any) {
-//   if (c.data.featuredImage) return c.data.featuredImage;
-//   if (c.data.videoTrailerUrl) {
-//     const match = c.data.videoTrailerUrl.match(/(?:embed\/|v=|vi\/|youtu\.be\/|\/v\/)([^#&?]*).*/);
-//     const videoId = (match && match[1]) ? match[1] : null;
-//     if (videoId) return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
-//   }
-//   return "/profile.png";
-// }
-
 function getCourseThumbnail(c: any) {
-  // ১. যদি featuredImage দেওয়া থাকে, তবে সেটিই সবার আগে রিটার্ন করবে
   if (c.data.featuredImage && c.data.featuredImage.trim() !== "") {
     return c.data.featuredImage;
   }
-  
-  // ২. featuredImage না থাকলে YouTube ট্রেইলার থেকে থাম্বনেইল আনবে
   if (c.data.videoTrailerUrl) {
     const match = c.data.videoTrailerUrl.match(/(?:embed\/|v=|vi\/|youtu\.be\/|\/v\/)([^#&?]*).*/);
     const videoId = (match && match[1]) ? match[1] : null;
     if (videoId) return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
   }
-  
-  // ৩. কোনোটিই না থাকলে ডিফল্ট ইমেজ
   return "/profile.png";
 }
 
@@ -61,59 +46,78 @@ const coursesSchema = {
 >
   <script type="application/ld+json" set:html={JSON.stringify(coursesSchema)} slot="head" />
 
-  <!-- Compact & Centered Hero Section -->
-  <header class="relative overflow-hidden py-10 md:py-14 border-b border-sky-100 dark:border-sky-950/50 bg-white/40 dark:bg-[#040813]">
-    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[750px] h-[250px] bg-gradient-to-tr from-sky-400/15 via-cyan-400/10 to-transparent dark:from-sky-600/20 dark:via-sky-400/10 blur-[100px] rounded-full pointer-events-none -z-10"></div>
+  <!-- Hero Section (Mobile Optimized) -->
+  <header class="relative overflow-hidden py-8 sm:py-12 md:py-14 border-b border-sky-100 dark:border-sky-950/50 bg-white/40 dark:bg-[#040813]">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[350px] sm:w-[750px] h-[250px] bg-gradient-to-tr from-sky-400/15 via-cyan-400/10 to-transparent dark:from-sky-600/20 dark:via-sky-400/10 blur-[90px] rounded-full pointer-events-none -z-10"></div>
 
-    <div class="max-w-5xl mx-auto px-6 text-center">
-      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-sky-200 dark:border-sky-900/80 bg-sky-50 dark:bg-sky-950/40 text-xs font-mono font-semibold text-sky-700 dark:text-sky-300 mb-4 shadow-xs">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-sky-200 dark:border-sky-900/80 bg-sky-50 dark:bg-sky-950/40 text-[11px] sm:text-xs font-mono font-semibold text-sky-700 dark:text-sky-300 mb-3">
         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
         Cohort Enrollment Open
       </div>
 
-      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.18] max-w-4xl mx-auto">
+      <h1 class="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight sm:leading-[1.18] max-w-4xl mx-auto">
         Production Engineering & <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-cyan-500 to-sky-400">Architecture Academies</span>
       </h1>
 
-      <p class="text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mt-3.5 leading-relaxed font-normal">
+      <p class="text-xs sm:text-sm md:text-base text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mt-3 leading-relaxed font-normal">
         Step beyond basic tutorials. Master high-concurrency distributed systems, NestJS microservices, and autonomous AI agents through battle-tested blueprints.
       </p>
 
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-3xl mx-auto mt-8 pt-6 border-t border-sky-100 dark:border-sky-950/80 text-center">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 max-w-3xl mx-auto mt-6 pt-5 border-t border-sky-100 dark:border-sky-950/80 text-center">
         <div>
-          <span class="block text-2xl sm:text-3xl font-extrabold font-mono text-sky-600 dark:text-sky-400 leading-tight">1-on-1</span>
-          <span class="text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-1 block">Architecture Reviews</span>
+          <span class="block text-xl sm:text-3xl font-extrabold font-mono text-sky-600 dark:text-sky-400">1-on-1</span>
+          <span class="text-[10px] sm:text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-0.5 block">Architecture Reviews</span>
         </div>
         <div>
-          <span class="block text-2xl sm:text-3xl font-extrabold font-mono text-emerald-600 dark:text-emerald-400 leading-tight">100%</span>
-          <span class="text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-1 block">Production Stacks</span>
+          <span class="block text-xl sm:text-3xl font-extrabold font-mono text-emerald-600 dark:text-emerald-400">100%</span>
+          <span class="text-[10px] sm:text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-0.5 block">Production Stacks</span>
         </div>
         <div>
-          <span class="block text-2xl sm:text-3xl font-extrabold font-mono text-cyan-600 dark:text-cyan-400 leading-tight">Ex-Google</span>
-          <span class="text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-1 block">Architect Mentorship</span>
+          <span class="block text-xl sm:text-3xl font-extrabold font-mono text-cyan-600 dark:text-cyan-400">Ex-Google</span>
+          <span class="text-[10px] sm:text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-0.5 block">Architect Mentorship</span>
         </div>
         <div>
-          <span class="block text-2xl sm:text-3xl font-extrabold font-mono text-amber-500 dark:text-amber-400 leading-tight">Live</span>
-          <span class="text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-1 block">Interactive Cohorts</span>
+          <span class="block text-xl sm:text-3xl font-extrabold font-mono text-amber-500 dark:text-amber-400">Live</span>
+          <span class="text-[10px] sm:text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-0.5 block">Interactive Cohorts</span>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- 2-Column Catalog: Filters + Grid -->
-  <div class="max-w-6xl mx-auto px-6 py-12 lg:py-16">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+  <!-- Main Container -->
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+    
+    <!-- Mobile Filter Toggle Bar (দেখা যাবে শুধু ট্যাবলেটের নিচে) -->
+    <div class="lg:hidden mb-6 flex items-center justify-between gap-3 p-3.5 rounded-2xl bg-white dark:bg-[#070d1a] border border-sky-100 dark:border-sky-950">
+      <button 
+        id="mobile-filter-toggle"
+        type="button" 
+        class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-sky-600 text-white text-xs font-mono font-bold"
+      >
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+        </svg>
+        <span>Filter Programs</span>
+      </button>
+
+      <span class="text-xs font-mono text-slate-500">
+        <span id="mobile-total-count">{courses.length}</span> Courses
+      </span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
       
-      <!-- LEFT COLUMN: Filters -->
-      <aside class="lg:col-span-4 sticky top-28 self-start">
-        <div class="p-6 rounded-3xl border border-sky-100 dark:border-sky-950/80 bg-white dark:bg-[#070d1a] shadow-xs space-y-6">
+      <!-- LEFT COLUMN: Filters (Desktop Sticky, Mobile Collapsible) -->
+      <aside id="filter-sidebar" class="hidden lg:block lg:col-span-4 lg:sticky lg:top-24 self-start">
+        <div class="p-5 sm:p-6 rounded-3xl border border-sky-100 dark:border-sky-950/80 bg-white dark:bg-[#070d1a] shadow-xs space-y-5">
           
-          <div class="flex items-center justify-between pb-4 border-b border-sky-100 dark:border-sky-950">
+          <div class="flex items-center justify-between pb-3 border-b border-sky-100 dark:border-sky-950">
             <h2 class="text-xs font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
               <svg class="w-4 h-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
               </svg>
-              Filter Programs
+              Filter Options
             </h2>
             <button 
               id="reset-filters-btn" 
@@ -125,36 +129,36 @@ const coursesSchema = {
           </div>
 
           <!-- Search Box -->
-          <div class="space-y-2">
+          <div class="space-y-1.5">
             <label for="course-search" class="block text-[11px] font-mono font-bold uppercase tracking-wider text-slate-400">
-              Search Keywords
+              Keywords
             </label>
             <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-sky-500">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-sky-500">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
               <input 
                 type="text" 
                 id="course-search" 
-                placeholder="NestJS, Docker, Redis..." 
-                class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-sky-200 dark:border-sky-900 bg-sky-50/20 dark:bg-slate-900/60 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-500 text-xs font-medium"
+                placeholder="NestJS, Docker, React..." 
+                class="w-full pl-8 pr-3 py-2 rounded-xl border border-sky-200 dark:border-sky-900 bg-sky-50/20 dark:bg-slate-900/60 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-500 text-xs font-medium"
               />
             </div>
           </div>
 
           <!-- Topic Filters -->
-          <div class="space-y-2.5">
+          <div class="space-y-2">
             <span class="block text-[11px] font-mono font-bold uppercase tracking-wider text-slate-400">
-              Topic:
+              Topic
             </span>
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap gap-1.5" id="category-button-group">
               {allCategories.map((cat, idx) => (
                 <button 
                   type="button" 
                   data-category-btn={cat} 
-                  class={`category-filter-btn px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer border ${idx === 0 ? 'bg-sky-600 text-white border-sky-600 shadow-sm' : 'bg-sky-50/60 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-sky-100 dark:border-sky-950 hover:border-sky-400'}`}
+                  class={`category-filter-btn px-2.5 py-1.5 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer border ${idx === 0 ? 'bg-sky-600 text-white border-sky-600 shadow-xs' : 'bg-sky-50/50 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-sky-100 dark:border-sky-950 hover:border-sky-400'}`}
                 >
                   {cat}
                 </button>
@@ -163,16 +167,16 @@ const coursesSchema = {
           </div>
 
           <!-- Level Filters -->
-          <div class="space-y-2.5 pt-4 border-t border-sky-100 dark:border-sky-950">
+          <div class="space-y-2 pt-3 border-t border-sky-100 dark:border-sky-950">
             <span class="block text-[11px] font-mono font-bold uppercase tracking-wider text-slate-400">
-              Experience Level:
+              Experience Level
             </span>
-            <div class="flex flex-wrap gap-1.5">
+            <div class="flex flex-wrap gap-1.5" id="level-button-group">
               {allLevels.map((lvl, idx) => (
                 <button 
                   type="button" 
                   data-level-btn={lvl}
-                  class={`level-filter-btn text-xs font-mono px-3 py-1.5 rounded-lg border transition-all cursor-pointer ${idx === 0 ? 'border-sky-500 bg-sky-500 text-white' : 'border-sky-100 dark:border-sky-950 bg-sky-50/40 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:border-sky-400'}`}
+                  class={`level-filter-btn text-xs font-mono px-2.5 py-1.5 rounded-lg border transition-all cursor-pointer ${idx === 0 ? 'border-sky-500 bg-sky-500 text-white' : 'border-sky-100 dark:border-sky-950 bg-sky-50/40 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:border-sky-400'}`}
                 >
                   {lvl}
                 </button>
@@ -183,19 +187,20 @@ const coursesSchema = {
         </div>
       </aside>
 
-      <!-- RIGHT COLUMN: Course Cards -->
-      <main class="lg:col-span-8 min-w-0">
-        <div id="courses-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- RIGHT COLUMN: Course Cards & Pagination -->
+      <main class="lg:col-span-8 min-w-0" id="main-catalog-content">
+        <div id="courses-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
           {courses.map((course) => {
             const thumb = getCourseThumbnail(course);
             const hasVideo = !!course.data.videoTrailerUrl;
             const currency = course.data.currency || "₹";
             const price = Number(course.data.price ?? 0);
             const originalPrice = Number(course.data.originalPrice ?? 0);
+            const courseSlug = course.id.replace(/\.md$/, '');
 
             return (
               <article 
-                class="course-card group relative rounded-3xl p-5 bg-white dark:bg-[#070e1c] border border-sky-100 dark:border-sky-900/60 hover:border-sky-400/80 dark:hover:border-sky-500/70 shadow-sm hover:shadow-xl hover:shadow-sky-500/10 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
+                class="course-card group relative rounded-2xl sm:rounded-3xl p-4 sm:p-5 bg-white dark:bg-[#070e1c] border border-sky-100 dark:border-sky-900/60 hover:border-sky-400/80 dark:hover:border-sky-500/70 shadow-xs hover:shadow-xl hover:shadow-sky-500/10 transition-all duration-300 flex flex-col justify-between"
                 data-title={course.data.title.toLowerCase()}
                 data-desc={course.data.description.toLowerCase()}
                 data-category={course.data.category}
@@ -203,8 +208,8 @@ const coursesSchema = {
                 data-tags={(course.data.tags || []).join(",").toLowerCase()}
               >
                 <div>
-                  <!-- 16:9 Thumbnail Frame -->
-                  <a href={`/courses/${course.id}`} class="block relative w-full aspect-video rounded-2xl overflow-hidden mb-4 bg-slate-950 border border-sky-100 dark:border-sky-950 group-hover:opacity-95 transition-opacity">
+                  <!-- 16:9 Thumbnail -->
+                  <a href={`/courses/${courseSlug}`} class="block relative w-full aspect-video rounded-xl sm:rounded-2xl overflow-hidden mb-3.5 bg-slate-950 border border-sky-100 dark:border-sky-950 group-hover:opacity-95 transition-opacity">
                     <img 
                       src={thumb} 
                       alt={course.data.title}
@@ -212,85 +217,63 @@ const coursesSchema = {
                       loading="lazy"
                     />
 
-                    <!-- Badges on Thumbnail -->
-                    <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5 z-10">
-                      <span class="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-950/80 text-sky-300 backdrop-blur-md border border-sky-500/30">
+                    <!-- Badges -->
+                    <div class="absolute top-2 left-2 flex items-center gap-1.5 z-10">
+                      <span class="text-[9px] sm:text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-950/80 text-sky-300 backdrop-blur-md border border-sky-500/30">
                         {course.data.level}
                       </span>
-                      <span class="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-300 backdrop-blur-md border border-emerald-500/30">
+                      <span class="text-[9px] sm:text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-300 backdrop-blur-md border border-emerald-500/30">
                         {course.data.status}
                       </span>
                     </div>
 
                     {hasVideo && (
                       <div class="absolute inset-0 bg-black/20 flex items-center justify-center">
-                        <div class="w-9 h-9 rounded-full bg-white/90 dark:bg-slate-900/90 text-sky-600 flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
-                          <svg class="w-4 h-4 fill-current ml-0.5" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/90 dark:bg-slate-900/90 text-sky-600 flex items-center justify-center shadow-lg">
+                          <svg class="w-3.5 h-3.5 fill-current ml-0.5" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                         </div>
                       </div>
                     )}
                   </a>
 
-                  <!-- Clean Meta Pill Badges (Wrapped gracefully) -->
-                  <div class="flex flex-wrap items-center gap-1.5 text-[11px] font-mono mb-3">
-                    <span class="px-2 py-0.5 rounded-md bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-200/60 dark:border-sky-900/60 font-medium">
+                  <!-- Meta Badges -->
+                  <div class="flex flex-wrap items-center gap-1.5 text-[10px] sm:text-[11px] font-mono mb-2.5">
+                    <span class="px-2 py-0.5 rounded-md bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-200/60 dark:border-sky-900/60">
                       ⏱️ {course.data.duration}
                     </span>
                     <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800">
                       {course.data.totalLessons} Lessons
                     </span>
-                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800">
-                      {course.data.mode}
-                    </span>
                   </div>
 
                   <!-- Title -->
-                  <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors line-clamp-2 leading-snug tracking-tight">
-                    <a href={`/courses/${course.id}`}>
+                  <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors line-clamp-2 leading-snug">
+                    <a href={`/courses/${courseSlug}`}>
                       {course.data.title}
                     </a>
                   </h2>
 
                   <!-- Description -->
-                  <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-2 leading-relaxed line-clamp-2 font-normal">
+                  <p class="text-xs text-slate-600 dark:text-slate-300 mt-1.5 leading-relaxed line-clamp-2">
                     {course.data.description}
                   </p>
                 </div>
 
-                <!-- Bottom Pricing & Action Strip (Balanced & Single-line Button) -->
-                <div class="pt-4 mt-5 border-t border-sky-100 dark:border-sky-950 flex items-end justify-between gap-3">
+                <!-- Bottom Pricing & Action Button -->
+                <div class="pt-3.5 mt-4 border-t border-sky-100 dark:border-sky-950 flex items-center justify-between gap-2">
                   <div class="min-w-0">
                     {price === 0 ? (
-                      <div class="flex items-baseline gap-1.5">
-                        <span class="text-lg font-black font-mono text-emerald-600 dark:text-emerald-400">
-                          Free
-                        </span>
-                        {originalPrice > 0 && (
-                          <span class="text-xs font-mono line-through text-slate-400">
-                            {currency}{originalPrice.toLocaleString('en-IN')}
-                          </span>
-                        )}
-                      </div>
+                      <span class="text-base sm:text-lg font-black font-mono text-emerald-600 dark:text-emerald-400">
+                        Free
+                      </span>
                     ) : (
-                      <div>
-                        <div class="flex flex-wrap items-baseline gap-1.5">
-                          <span class="text-lg font-black font-mono text-slate-900 dark:text-white tracking-tight">
-                            {currency}{price.toLocaleString('en-IN')}
-                          </span>
-                          {originalPrice > price && (
-                            <span class="text-xs font-mono line-through text-slate-400">
-                              {currency}{originalPrice.toLocaleString('en-IN')}
-                            </span>
-                          )}
-                          {course.data.discountBadge && (
-                            <span class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-rose-500/15 text-rose-500 border border-rose-500/30 whitespace-nowrap">
-                              {course.data.discountBadge}
-                            </span>
-                          )}
-                        </div>
-                        {course.data.offerText && (
-                          <span class="block text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-medium leading-tight mt-1 truncate">
-                            {course.data.offerText}
+                      <div class="flex flex-wrap items-baseline gap-1">
+                        <span class="text-base sm:text-lg font-black font-mono text-slate-900 dark:text-white tracking-tight">
+                          {currency}{price.toLocaleString('en-IN')}
+                        </span>
+                        {originalPrice > price && (
+                          <span class="text-[10px] sm:text-xs font-mono line-through text-slate-400">
+                            {currency}{originalPrice.toLocaleString('en-IN')}
                           </span>
                         )}
                       </div>
@@ -298,8 +281,8 @@ const coursesSchema = {
                   </div>
 
                   <a 
-                    href={`/courses/${course.id}`} 
-                    class="shrink-0 inline-flex items-center justify-center px-4 py-2 rounded-xl text-xs font-mono font-bold text-white bg-sky-600 hover:bg-sky-500 shadow-md shadow-sky-600/20 transition-all whitespace-nowrap"
+                    href={`/courses/${courseSlug}`} 
+                    class="shrink-0 inline-flex items-center justify-center px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs font-mono font-bold text-white bg-sky-600 hover:bg-sky-500 shadow-xs transition-all"
                   >
                     {price === 0 ? 'Start Free →' : 'Enroll →'}
                   </a>
@@ -311,25 +294,25 @@ const coursesSchema = {
         </div>
 
         <!-- Empty State -->
-        <div id="no-courses-msg" class="hidden py-16 text-center">
-          <div class="w-12 h-12 mx-auto rounded-2xl bg-sky-50 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-900 text-sky-600 dark:text-sky-400 flex items-center justify-center mb-3">
-            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/></svg>
+        <div id="no-courses-msg" class="hidden py-14 text-center">
+          <div class="w-10 h-10 mx-auto rounded-2xl bg-sky-50 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-900 text-sky-600 dark:text-sky-400 flex items-center justify-center mb-3">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/></svg>
           </div>
-          <h3 class="text-base font-bold text-slate-900 dark:text-white">No courses match your filter</h3>
-          <p class="text-xs font-mono text-slate-500 mt-1">Try clearing search terms or changing your level selection.</p>
+          <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white">No courses match your filter</h3>
+          <p class="text-xs font-mono text-slate-500 mt-1">Try clearing search terms or resetting filters.</p>
         </div>
 
-        <!-- Pagination Controls -->
-        <div id="pagination-controls" class="mt-12 pt-6 border-t border-sky-100 dark:border-sky-950 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div class="text-xs font-mono text-slate-500 dark:text-slate-400">
-            Showing <span id="page-item-start" class="font-bold text-slate-800 dark:text-slate-200">1</span>-<span id="page-item-end" class="font-bold text-slate-800 dark:text-slate-200">4</span> of <span id="total-filtered-count" class="font-bold text-slate-800 dark:text-slate-200">{courses.length}</span> programs
+        <!-- Responsive Pagination Controls -->
+        <div id="pagination-controls" class="mt-8 sm:mt-12 pt-5 sm:pt-6 border-t border-sky-100 dark:border-sky-950 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="text-xs font-mono text-slate-500 dark:text-slate-400 order-2 sm:order-1">
+            Showing <span id="page-item-start" class="font-bold text-slate-800 dark:text-slate-200">1</span>-<span id="page-item-end" class="font-bold text-slate-800 dark:text-slate-200">4</span> of <span id="total-filtered-count" class="font-bold text-slate-800 dark:text-slate-200">{courses.length}</span>
           </div>
 
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1.5 sm:gap-2 order-1 sm:order-2">
             <button 
               id="prev-page-btn" 
               type="button" 
-              class="px-3.5 py-1.5 rounded-xl border border-sky-200 dark:border-sky-900 bg-white dark:bg-slate-900 text-xs font-mono font-bold text-slate-700 dark:text-slate-300 hover:border-sky-500 disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
+              class="px-3 py-1.5 rounded-xl border border-sky-200 dark:border-sky-900 bg-white dark:bg-slate-900 text-xs font-mono font-bold text-slate-700 dark:text-slate-300 hover:border-sky-500 disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer"
             >
               &larr; Prev
             </button>
@@ -337,7 +320,7 @@ const coursesSchema = {
             <button 
               id="next-page-btn" 
               type="button" 
-              class="px-3.5 py-1.5 rounded-xl border border-sky-200 dark:border-sky-900 bg-white dark:bg-slate-900 text-xs font-mono font-bold text-slate-700 dark:text-slate-300 hover:border-sky-500 disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
+              class="px-3 py-1.5 rounded-xl border border-sky-200 dark:border-sky-900 bg-white dark:bg-slate-900 text-xs font-mono font-bold text-slate-700 dark:text-slate-300 hover:border-sky-500 disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer"
             >
               Next &rarr;
             </button>
@@ -350,9 +333,9 @@ const coursesSchema = {
   </div>
 </Layout>
 
-<!-- Client-Side Search, Filter & Pagination Engine -->
+<!-- JavaScript Engine: Filters + Pagination + Mobile Drawer -->
 <script is:inline>
-  function initCourseCatalogEngine() {
+  function setupCourseCatalogEngine() {
     const searchInput = document.getElementById('course-search');
     const resetBtn = document.getElementById('reset-filters-btn');
     const categoryBtns = document.querySelectorAll('.category-filter-btn');
@@ -367,6 +350,17 @@ const coursesSchema = {
     const itemStartEl = document.getElementById('page-item-start');
     const itemEndEl = document.getElementById('page-item-end');
     const totalFilteredEl = document.getElementById('total-filtered-count');
+    const mobileTotalCountEl = document.getElementById('mobile-total-count');
+
+    // Mobile filter toggle
+    const mobileToggleBtn = document.getElementById('mobile-filter-toggle');
+    const filterSidebar = document.getElementById('filter-sidebar');
+
+    if (mobileToggleBtn && filterSidebar) {
+      mobileToggleBtn.onclick = () => {
+        filterSidebar.classList.toggle('hidden');
+      };
+    }
 
     if (!cards.length) return;
 
@@ -396,6 +390,14 @@ const coursesSchema = {
       renderPaginatedView();
     }
 
+    function scrollToTop() {
+      const target = document.getElementById('main-catalog-content');
+      if (target) {
+        const offset = target.getBoundingClientRect().top + window.pageYOffset - 80;
+        window.scrollTo({ top: offset, behavior: 'smooth' });
+      }
+    }
+
     function renderPaginatedView() {
       const totalItems = filteredCards.length;
       const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
@@ -403,17 +405,20 @@ const coursesSchema = {
       if (currentPage > totalPages) currentPage = totalPages;
       if (currentPage < 1) currentPage = 1;
 
-      cards.forEach(card => card.style.display = 'none');
+      // Hide all first
+      cards.forEach(card => card.classList.add('hidden'));
 
+      // Show current page items
       const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
       const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalItems);
 
       for (let i = startIndex; i < endIndex; i++) {
         if (filteredCards[i]) {
-          filteredCards[i].style.display = 'flex';
+          filteredCards[i].classList.remove('hidden');
         }
       }
 
+      // Empty states & Counts
       if (totalItems === 0) {
         noCoursesMsg?.classList.remove('hidden');
         paginationControls?.classList.add('hidden');
@@ -425,17 +430,20 @@ const coursesSchema = {
       if (itemStartEl) itemStartEl.textContent = totalItems === 0 ? '0' : (startIndex + 1).toString();
       if (itemEndEl) itemEndEl.textContent = endIndex.toString();
       if (totalFilteredEl) totalFilteredEl.textContent = totalItems.toString();
+      if (mobileTotalCountEl) mobileTotalCountEl.textContent = totalItems.toString();
 
+      // Prev / Next button states
       if (prevBtn) prevBtn.disabled = currentPage === 1;
       if (nextBtn) nextBtn.disabled = currentPage === totalPages;
 
+      // Page Number buttons
       if (pageNumberBtnsContainer) {
         pageNumberBtnsContainer.innerHTML = '';
         for (let p = 1; p <= totalPages; p++) {
           const btn = document.createElement('button');
           btn.type = 'button';
           btn.textContent = p.toString();
-          btn.className = `w-7 h-7 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer ${
+          btn.className = `w-7 h-7 sm:w-8 sm:h-8 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer ${
             p === currentPage 
               ? 'bg-sky-600 text-white shadow-xs' 
               : 'border border-sky-100 dark:border-sky-900 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:border-sky-400'
@@ -443,32 +451,35 @@ const coursesSchema = {
           btn.onclick = () => {
             currentPage = p;
             renderPaginatedView();
-            window.scrollTo({ top: document.getElementById('courses-grid')?.offsetTop - 100, behavior: 'smooth' });
+            scrollToTop();
           };
           pageNumberBtnsContainer.appendChild(btn);
         }
       }
     }
 
+    // Search event
     searchInput?.addEventListener('input', (e) => {
       searchQuery = e.target.value.toLowerCase().trim();
       applyFilters();
     });
 
+    // Category click
     categoryBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         categoryBtns.forEach(b => {
-          b.classList.remove('bg-sky-600', 'text-white', 'border-sky-600', 'shadow-sm');
-          b.classList.add('bg-sky-50/60', 'dark:bg-slate-900', 'text-slate-700', 'dark:text-slate-300', 'border-sky-100', 'dark:border-sky-950');
+          b.classList.remove('bg-sky-600', 'text-white', 'border-sky-600', 'shadow-xs');
+          b.classList.add('bg-sky-50/50', 'dark:bg-slate-900', 'text-slate-700', 'dark:text-slate-300', 'border-sky-100', 'dark:border-sky-950');
         });
-        btn.classList.remove('bg-sky-50/60', 'dark:bg-slate-900', 'text-slate-700', 'dark:text-slate-300', 'border-sky-100', 'dark:border-sky-950');
-        btn.classList.add('bg-sky-600', 'text-white', 'border-sky-600', 'shadow-sm');
+        btn.classList.remove('bg-sky-50/50', 'dark:bg-slate-900', 'text-slate-700', 'dark:text-slate-300', 'border-sky-100', 'dark:border-sky-950');
+        btn.classList.add('bg-sky-600', 'text-white', 'border-sky-600', 'shadow-xs');
 
         selectedCategory = btn.getAttribute('data-category-btn') || 'All';
         applyFilters();
       });
     });
 
+    // Level click
     levelBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         levelBtns.forEach(b => {
@@ -483,6 +494,7 @@ const coursesSchema = {
       });
     });
 
+    // Reset filters
     resetBtn?.addEventListener('click', () => {
       if (searchInput) searchInput.value = '';
       searchQuery = '';
@@ -491,11 +503,11 @@ const coursesSchema = {
 
       categoryBtns.forEach((b, i) => {
         if (i === 0) {
-          b.classList.add('bg-sky-600', 'text-white', 'border-sky-600');
-          b.classList.remove('bg-sky-50/60', 'dark:bg-slate-900', 'text-slate-700', 'dark:text-slate-300');
+          b.classList.add('bg-sky-600', 'text-white', 'border-sky-600', 'shadow-xs');
+          b.classList.remove('bg-sky-50/50', 'dark:bg-slate-900', 'text-slate-700', 'dark:text-slate-300');
         } else {
-          b.classList.remove('bg-sky-600', 'text-white', 'border-sky-600');
-          b.classList.add('bg-sky-50/60', 'dark:bg-slate-900', 'text-slate-700', 'dark:text-slate-300');
+          b.classList.remove('bg-sky-600', 'text-white', 'border-sky-600', 'shadow-xs');
+          b.classList.add('bg-sky-50/50', 'dark:bg-slate-900', 'text-slate-700', 'dark:text-slate-300');
         }
       });
 
@@ -512,11 +524,12 @@ const coursesSchema = {
       applyFilters();
     });
 
+    // Prev / Next click
     prevBtn?.addEventListener('click', () => {
       if (currentPage > 1) {
         currentPage--;
         renderPaginatedView();
-        window.scrollTo({ top: document.getElementById('courses-grid')?.offsetTop - 100, behavior: 'smooth' });
+        scrollToTop();
       }
     });
 
@@ -525,13 +538,18 @@ const coursesSchema = {
       if (currentPage < totalPages) {
         currentPage++;
         renderPaginatedView();
-        window.scrollTo({ top: document.getElementById('courses-grid')?.offsetTop - 100, behavior: 'smooth' });
+        scrollToTop();
       }
     });
 
     applyFilters();
   }
 
-  initCourseCatalogEngine();
-  document.addEventListener('astro:after-swap', initCourseCatalogEngine);
+  // ইভেন্ট লিসেনার সেটআপ
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupCourseCatalogEngine);
+  } else {
+    setupCourseCatalogEngine();
+  }
+  document.addEventListener('astro:page-load', setupCourseCatalogEngine);
 </script>

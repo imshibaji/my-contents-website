@@ -15,6 +15,7 @@ price: 30000
 originalPrice: 50000
 discountBadge: "40% OFF"
 offerText: "Founding Cohort • Limited to 20 Seats"
+installmentNumber: 2
 installmentPrice: 15000
 installmentPlanText: "Pay in 2 Monthly Milestones (₹15,000 x 2)"
 featuredImage: "/images/courses/high-performance-postgresql.svg"

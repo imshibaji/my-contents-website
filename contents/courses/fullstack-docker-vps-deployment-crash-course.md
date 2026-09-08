@@ -15,6 +15,7 @@ price: 999
 originalPrice: 2999
 discountBadge: "67% OFF"
 offerText: "Community Access • Limited Seats"
+installmentNumber: 1
 installmentPrice: 0
 installmentPlanText: "One-Time Accessible Community Fee"
 featuredImage: "/images/courses/docker-vps-crash-course.svg"

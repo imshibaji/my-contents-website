@@ -1,0 +1,186 @@
+---
+// src/components/CookieConsent.astro
+---
+
+<!-- Consent Banner Overlay / Floating Card -->
+<div 
+  id="cookie-consent-banner" 
+  class="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-md z-50 transform translate-y-24 opacity-0 pointer-events-none transition-all duration-500 ease-out"
+  role="dialog"
+  aria-live="polite"
+  aria-label="Cookie consent management"
+>
+  <div class="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-white/95 dark:bg-[#070e1c]/95 border border-sky-100 dark:border-sky-900/80 shadow-2xl backdrop-blur-md">
+    
+    <!-- Header with Icon -->
+    <div class="flex items-center gap-3 mb-3">
+      <div class="w-8 h-8 rounded-xl bg-sky-50 dark:bg-sky-950/70 border border-sky-200 dark:border-sky-800/60 flex items-center justify-center text-sky-600 dark:text-sky-400 font-mono text-sm">
+        🛡️
+      </div>
+      <div>
+        <h3 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white leading-tight">
+          Privacy &amp; Data Telemetry
+        </h3>
+        <span class="text-[10px] font-mono text-sky-600 dark:text-sky-400">
+          Google Consent Mode v2
+        </span>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+      We utilize anonymous telemetry to assess application latency, course engagement, and optimize architectural advisory experiences.
+    </p>
+
+    <!-- Detailed Options (Collapsible Preferences) -->
+    <div id="consent-detailed-options" class="hidden mb-4 p-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-2.5 text-xs font-mono">
+      <div class="flex items-center justify-between">
+        <span class="text-slate-700 dark:text-slate-300">Essential Core</span>
+        <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 font-bold">REQUIRED</span>
+      </div>
+      <div class="flex items-center justify-between">
+        <label for="consent-analytics" class="text-slate-600 dark:text-slate-400 cursor-pointer">Performance Telemetry</label>
+        <input type="checkbox" id="consent-analytics" checked class="rounded border-slate-300 dark:border-slate-700 text-sky-600 focus:ring-sky-500 cursor-pointer" />
+      </div>
+      <div class="flex items-center justify-between">
+        <label for="consent-marketing" class="text-slate-600 dark:text-slate-400 cursor-pointer">Ad &amp; Audience Personalization</label>
+        <input type="checkbox" id="consent-marketing" class="rounded border-slate-300 dark:border-slate-700 text-sky-600 focus:ring-sky-500 cursor-pointer" />
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-col sm:flex-row items-center gap-2 pt-1">
+      <button 
+        type="button" 
+        id="btn-accept-all" 
+        class="w-full sm:w-auto flex-1 py-2.5 px-4 rounded-xl text-xs font-mono font-bold text-white bg-sky-600 hover:bg-sky-500 shadow-md shadow-sky-600/20 transition-all cursor-pointer text-center"
+      >
+        Accept All
+      </button>
+
+      <button 
+        type="button" 
+        id="btn-reject-all" 
+        class="w-full sm:w-auto py-2.5 px-3 rounded-xl text-xs font-mono font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700/60 transition-all cursor-pointer text-center"
+      >
+        Reject Non-Essential
+      </button>
+
+      <button 
+        type="button" 
+        id="btn-customize-toggle" 
+        class="text-[11px] font-mono text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 underline sm:no-underline py-1 sm:px-2 cursor-pointer"
+      >
+        Customize
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script is:inline>
+  // Google tag dataLayer fallback
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+
+  function initConsentManager() {
+    const banner = document.getElementById('cookie-consent-banner');
+    const acceptBtn = document.getElementById('btn-accept-all');
+    const rejectBtn = document.getElementById('btn-reject-all');
+    const toggleBtn = document.getElementById('btn-customize-toggle');
+    const detailsDiv = document.getElementById('consent-detailed-options');
+    const analyticsCheckbox = document.getElementById('consent-analytics');
+    const marketingCheckbox = document.getElementById('consent-marketing');
+
+    if (!banner) return;
+
+    const savedConsent = localStorage.getItem('user_cookie_consent_v2');
+
+    // ব্যবহারকারী যদি আগেই কোনো সিদ্ধান্ত নিয়ে থাকেন
+    if (savedConsent) {
+      try {
+        const state = JSON.parse(savedConsent);
+        gtag('consent', 'update', {
+          'analytics_storage': state.analytics ? 'granted' : 'denied',
+          'ad_storage': state.marketing ? 'granted' : 'denied',
+          'ad_user_data': state.marketing ? 'granted' : 'denied',
+          'ad_personalization': state.marketing ? 'granted' : 'denied'
+        });
+      } catch (e) {}
+      return;
+    }
+
+    // ব্যানার শো করার জন্য অ্যানিমেশন
+    setTimeout(() => {
+      banner.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
+      banner.classList.add('translate-y-0', 'opacity-100');
+    }, 900);
+
+    function hideBanner() {
+      banner.classList.remove('translate-y-0', 'opacity-100');
+      banner.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
+    }
+
+    // Accept All
+    acceptBtn?.addEventListener('click', () => {
+      const consentState = { analytics: true, marketing: true, timestamp: Date.now() };
+      localStorage.setItem('user_cookie_consent_v2', JSON.stringify(consentState));
+
+      gtag('consent', 'update', {
+        'analytics_storage': 'granted',
+        'ad_storage': 'granted',
+        'ad_user_data': 'granted',
+        'ad_personalization': 'granted'
+      });
+
+      hideBanner();
+    });
+
+    // Reject Non-Essential
+    rejectBtn?.addEventListener('click', () => {
+      const consentState = { analytics: false, marketing: false, timestamp: Date.now() };
+      localStorage.setItem('user_cookie_consent_v2', JSON.stringify(consentState));
+
+      gtag('consent', 'update', {
+        'analytics_storage': 'denied',
+        'ad_storage': 'denied',
+        'ad_user_data': 'denied',
+        'ad_personalization': 'denied'
+      });
+
+      hideBanner();
+    });
+
+    // Toggle Customize Accordion
+    toggleBtn?.addEventListener('click', () => {
+      if (detailsDiv.classList.contains('hidden')) {
+        detailsDiv.classList.remove('hidden');
+        toggleBtn.textContent = 'Save Selection';
+        toggleBtn.className = 'text-xs font-mono font-bold text-sky-600 dark:text-sky-400 hover:underline py-1 px-2 cursor-pointer';
+      } else {
+        // Save customized choice
+        const isAnalytics = analyticsCheckbox?.checked ?? false;
+        const isMarketing = marketingCheckbox?.checked ?? false;
+
+        const consentState = { analytics: isAnalytics, marketing: isMarketing, timestamp: Date.now() };
+        localStorage.setItem('user_cookie_consent_v2', JSON.stringify(consentState));
+
+        gtag('consent', 'update', {
+          'analytics_storage': isAnalytics ? 'granted' : 'denied',
+          'ad_storage': isMarketing ? 'granted' : 'denied',
+          'ad_user_data': isMarketing ? 'granted' : 'denied',
+          'ad_personalization': isMarketing ? 'granted' : 'denied'
+        });
+
+        hideBanner();
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initConsentManager);
+  } else {
+    initConsentManager();
+  }
+  document.addEventListener('astro:page-load', initConsentManager);
+</script>

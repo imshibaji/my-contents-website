@@ -156,7 +156,7 @@ export async function generateLlmsFile() {
       urlPrefix: 'articles',
     },
     {
-      sectionTitle: 'Software Engineering Courses & Bootcamps',
+      sectionTitle: 'Software Engineering Courses & Mentorship',
       dirName: 'courses',
       urlPrefix: 'courses',
     },
@@ -170,7 +170,7 @@ export async function generateLlmsFile() {
   // Auto-fetch static page coordinates
   const primaryPages = discoverStaticPages(siteUrl);
 
-  let content = `# Shibaji Debnath - System Architect & Fractional CTO, Mentor
+  let content = `# Shibaji Debnath - CTO | System Architect | Mentor
 > Senior Full-Stack Software Engineer, Mentor & Fractional CTO specializing in high-concurrency distributed systems, applied agentic AI, and microservice architectures.
 
 ## Core Capabilities

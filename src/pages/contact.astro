@@ -1,5 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+// আপনার Google Ads Conversion Label (Google Ads Goals/Conversions থেকে প্রাপ্ত)
+const GOOGLE_ADS_ID = 'AW-16766094351'; // 👈 আপনার Ads ID দিন
+const ADS_CONVERSION_LABEL = 'Executive_Consultation'; // 👈 আপনার Conversion Label দিন
 ---
 
 <Layout 
@@ -185,7 +189,7 @@ import Layout from '../layouts/Layout.astro';
             <button 
               type="submit" 
               id="submit-btn" 
-              class="w-full py-4 rounded-xl font-mono font-bold text-sm text-white bg-sky-600 hover:bg-sky-500 shadow-lg shadow-sky-600/20 transition-all cursor-pointer flex items-center justify-center gap-2"
+              class="w-full py-4 rounded-xl font-mono font-bold text-sm text-white bg-sky-600 hover:bg-sky-500 shadow-lg shadow-sky-600/20 transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               <span id="btn-text">Transmit Advisory Inquiry</span>
               <svg id="spinner" class="hidden animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
@@ -211,8 +215,8 @@ import Layout from '../layouts/Layout.astro';
     </div>
   </main>
 
-  <!-- Client-Side Form Handler Script -->
-  <script is:inline>
+  <!-- Client-Side Form Handler & Conversion Tracking Script -->
+  <script is:inline define:vars={{ GOOGLE_ADS_ID, ADS_CONVERSION_LABEL }}>
     async function initSecureContact() {
       const form = document.getElementById('contact-form');
       const submitBtn = document.getElementById('submit-btn');
@@ -269,8 +273,26 @@ import Layout from '../layouts/Layout.astro';
           const json = await res.json();
 
           if (res.ok && json.success) {
+            if (typeof window.gtag === 'function') {
+              // GA4 স্ট্যান্ডার্ড লিড ইভেন্ট
+              window.gtag('event', 'generate_lead', {
+                event_category: 'Consultation',
+                event_label: payload.engagement_scope || 'Advisory Inquiry'
+              });
+
+              // Google Ads Conversion ইভেন্ট
+              if (GOOGLE_ADS_ID && ADS_CONVERSION_LABEL && ADS_CONVERSION_LABEL !== 'YOUR_CONVERSION_LABEL') {
+                window.gtag('event', 'conversion', {
+                  send_to: `${GOOGLE_ADS_ID}/${ADS_CONVERSION_LABEL}`,
+                  value: 1.0,
+                  currency: 'INR'
+                });
+              }
+            }
+
             successBox.classList.remove('hidden');
             form.reset();
+
             if (timeInput) {
               timeInput.value = Math.floor(Date.now() / 1000).toString();
             }
@@ -296,8 +318,13 @@ import Layout from '../layouts/Layout.astro';
       });
     }
 
-    initSecureContact();
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initSecureContact);
+    } else {
+      initSecureContact();
+    }
     document.addEventListener('astro:after-swap', initSecureContact);
+    document.addEventListener('astro:page-load', initSecureContact);
   </script>
 
 </Layout>

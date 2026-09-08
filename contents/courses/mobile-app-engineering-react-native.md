@@ -15,6 +15,7 @@ price: 26999
 originalPrice: 45000
 discountBadge: "40% OFF"
 offerText: "Limited Cohort • 15 Seats"
+installmentNumber: 2
 installmentPrice: 14000
 installmentPlanText: "Pay in 2 Monthly Milestones (₹14,000 x 2)"
 featuredImage: "/images/courses/mobile-app-engineering-react-native.svg"

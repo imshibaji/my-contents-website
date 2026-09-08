@@ -25,7 +25,8 @@ const embedVideoUrl = getEmbedUrl(entry.data.videoTrailerUrl);
 const currency = entry.data.currency || "₹";
 const price = Number(entry.data.price ?? 0);
 const originalPrice = Number(entry.data.originalPrice ?? 0);
-const installmentPrice = Number(entry.data.installmentPrice ?? (price > 0 ? Math.round(price / 4) : 0));
+const installmentNumber = entry.data.installmentNumber || 4;
+const installmentPrice = Number(entry.data.installmentPrice ?? (price > 0 ? Math.round(price / installmentNumber) : 0));
 const hasInstallment = installmentPrice > 0 && price > 0;
 
 const courseDetailSchema = {
@@ -292,7 +293,7 @@ const courseDetailSchema = {
                   <input type="radio" name="detail_plan" value="installment" class="w-4 h-4 text-sky-600 focus:ring-0 cursor-pointer" />
                   <div>
                     <span class="block font-bold text-slate-900 dark:text-white">Quarterly Milestones</span>
-                    <span class="block text-[10px] text-slate-400">4 quarterly payments</span>
+                    <span class="block text-[10px] text-slate-400">{entry.data.installmentPlanText}</span>
                   </div>
                 </div>
                 <span class="font-bold text-slate-900 dark:text-white">{currency}{installmentPrice.toLocaleString('en-IN')}</span>

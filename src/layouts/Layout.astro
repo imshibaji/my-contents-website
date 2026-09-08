@@ -2,6 +2,10 @@
 import '../styles/global.css';
 import Navbar from '../components/Navbar.astro';
 import Footer from './Footer.astro';
+import CookieConsent from '../components/CookieConsent.astro';
+
+const GA_MEASUREMENT_ID = 'G-25F8G4W39Y'; // 👈 আপনার আইডি দিয়ে পরিবর্তন করুন
+const GOOGLE_ADS_ID     = 'AW-16766094351';
 
 interface Props {
   title: string;
@@ -170,6 +174,74 @@ const schemaGraph = {
       }
       window.localStorage.setItem('theme', theme);
     </script>
+
+    <!-- ১. Google Consent Mode v2 (সবসময় শীর্ষে থাকবে) -->
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+
+      gtag('consent', 'default', {
+        'ad_storage': 'denied',
+        'analytics_storage': 'denied',
+        'ad_user_data': 'denied',
+        'ad_personalization': 'denied',
+        'wait_for_update': 500
+      });
+
+      try {
+        const savedConsent = localStorage.getItem('user_cookie_consent_v2');
+        if (savedConsent) {
+          const state = JSON.parse(savedConsent);
+          gtag('consent', 'update', {
+            'analytics_storage': state.analytics ? 'granted' : 'denied',
+            'ad_storage': state.marketing ? 'granted' : 'denied',
+            'ad_user_data': state.marketing ? 'granted' : 'denied',
+            'ad_personalization': state.marketing ? 'granted' : 'denied'
+          });
+        }
+      } catch (e) {}
+    </script>
+
+    <!-- ২. Google Tags Loader (gtag.js) -->
+    <script 
+      is:inline 
+      async 
+      src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+    ></script>
+
+    <script is:inline define:vars={{ GA_MEASUREMENT_ID, GOOGLE_ADS_ID }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+      gtag('js', new Date());
+
+      // Google Analytics ইনিশিয়ালাইজ
+      gtag('config', GA_MEASUREMENT_ID, { send_page_view: false });
+
+      // Google Ads ইনিশিয়ালাইজ
+      if (GOOGLE_ADS_ID) {
+        gtag('config', GOOGLE_ADS_ID);
+      }
+    </script>
+
+    <!-- ৩. Astro Page View ট্র্যাকিং -->
+    <script is:inline define:vars={{ GA_MEASUREMENT_ID }}>
+      function trackPageView() {
+        if (typeof gtag === 'function') {
+          gtag('event', 'page_view', {
+            page_title: document.title,
+            page_location: window.location.href,
+            page_path: window.location.pathname
+          });
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', trackPageView);
+      } else {
+        trackPageView();
+      }
+      document.addEventListener('astro:page-load', trackPageView);
+    </script>
   </head>
   <body class="bg-sky-50/30 text-slate-800 dark:bg-[#030712] dark:text-slate-100 font-sans transition-colors duration-300 antialiased selection:bg-sky-500 selection:text-white flex flex-col min-h-screen">
     <Navbar />
@@ -177,5 +249,6 @@ const schemaGraph = {
       <slot />
     </main>
     <Footer />
+    <CookieConsent />
   </body>
 </html>

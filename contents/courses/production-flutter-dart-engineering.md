@@ -15,6 +15,7 @@ price: 24999
 originalPrice: 42000
 discountBadge: "40% OFF"
 offerText: "Limited Cohort • 15 Seats"
+installmentNumber: 2
 installmentPrice: 13000
 installmentPlanText: "Pay in 2 Monthly Milestones (₹13,000 x 2)"
 featuredImage: "/images/courses/production-flutter-dart.svg"

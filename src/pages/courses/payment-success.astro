@@ -1,38 +1,121 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+
+// Google Ads Purchase Conversion Credentials
+const GOOGLE_ADS_ID = 'AW-16766094351'; // 👈 আপনার Ads ID বসান
+const ADS_PURCHASE_CONVERSION_LABEL = 'Purchased'; // 👈 Ads Purchase Conversion Label বসান
 ---
 
 <Layout title="Enrollment Confirmed | Shibaji Debnath" description="Payment successfully verified.">
-  <div class="min-h-screen py-20 flex items-center justify-center px-6">
-    <div class="max-w-lg w-full p-8 sm:p-10 rounded-3xl border border-emerald-500/30 bg-white dark:bg-[#070e1c] shadow-2xl text-center space-y-5">
+  <div class="min-h-screen py-16 sm:py-20 flex items-center justify-center px-4 sm:px-6 bg-slate-50 dark:bg-[#040813] transition-colors duration-300">
+    <div class="max-w-lg w-full p-6 sm:p-10 rounded-3xl border border-emerald-500/30 bg-white dark:bg-[#070e1c] shadow-2xl text-center space-y-6">
       
-      <div class="w-16 h-16 mx-auto rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-500 text-2xl font-bold">
+      <!-- Verified Badge -->
+      <div class="w-16 h-16 mx-auto rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 text-3xl font-bold shadow-lg shadow-emerald-500/10">
         ✓
       </div>
 
-      <div class="space-y-1">
-        <span class="text-xs font-mono uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-bold">Payment Verified</span>
-        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Cohort Seat Confirmed!</h1>
+      <div class="space-y-1.5">
+        <span class="text-xs font-mono uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-bold">Payment Verified &amp; Logged</span>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Cohort Seat Confirmed!</h1>
       </div>
 
-      <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
-        Thank you for enrolling. A receipt and onboarding instructions have been dispatched to your email.
+      <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+        Thank you for enrolling. Your admission invoice and architecture sandbox credentials have been automatically dispatched to your email.
       </p>
 
-      <div class="p-4 rounded-2xl bg-sky-50/50 dark:bg-slate-900/50 border border-sky-100 dark:border-sky-900/60 text-xs font-mono text-left space-y-1.5 text-slate-600 dark:text-slate-300">
-        <p>• Status: <span class="text-emerald-500 font-bold">Active / Paid</span></p>
-        <p>• Workspace Dispatch: <span class="text-slate-800 dark:text-slate-200 font-bold">&lt; 12 Hours</span></p>
+      <!-- Dynamic Transaction Details Card -->
+      <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-[#0b1222] border border-slate-200 dark:border-slate-800/80 text-xs font-mono text-left space-y-2 text-slate-700 dark:text-slate-300">
+        <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800/60">
+          <span class="text-slate-500 dark:text-slate-400">Enrolled Program:</span>
+          <span id="display-course-name" class="font-bold text-slate-900 dark:text-white truncate max-w-[200px]">Technical Cohort</span>
+        </div>
+        <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800/60">
+          <span class="text-slate-500 dark:text-slate-400">Transaction ID:</span>
+          <span id="display-txn-id" class="font-bold text-slate-800 dark:text-slate-200">--</span>
+        </div>
+        <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800/60">
+          <span class="text-slate-500 dark:text-slate-400">Amount Paid:</span>
+          <span id="display-amount" class="font-bold text-emerald-600 dark:text-emerald-400">₹0.00</span>
+        </div>
+        <div class="flex justify-between items-center pt-1">
+          <span class="text-slate-500 dark:text-slate-400">Status:</span>
+          <span class="text-emerald-600 dark:text-emerald-400 font-bold uppercase">Active / Verified</span>
+        </div>
       </div>
 
-      <div class="pt-4 flex flex-col sm:flex-row gap-3">
-        <a href="/courses" class="flex-1 py-3 rounded-xl border border-sky-200 dark:border-sky-900 bg-white dark:bg-slate-900 text-xs font-mono font-bold text-slate-700 dark:text-slate-200 hover:border-sky-500 transition-all">
-          Browse Courses
+      <!-- Action Navigation Links -->
+      <div class="pt-2 flex flex-col sm:flex-row gap-3">
+        <a href="/courses" class="flex-1 py-3 px-4 rounded-xl border border-sky-200 dark:border-sky-900 bg-white dark:bg-slate-900 text-xs font-mono font-bold text-slate-700 dark:text-slate-200 hover:border-sky-500 transition-all text-center">
+          Browse Programs
         </a>
-        <a href="/contact" class="flex-1 py-3 rounded-xl bg-sky-600 hover:bg-sky-500 text-xs font-mono font-bold text-white transition-all shadow-md shadow-sky-600/20">
-          Direct Support
+        <a href="/contact" class="flex-1 py-3 px-4 rounded-xl bg-sky-600 hover:bg-sky-500 text-xs font-mono font-bold text-white transition-all shadow-md shadow-sky-600/20 text-center">
+          Advisory Direct
         </a>
       </div>
 
     </div>
   </div>
+
+  <!-- Dynamic Parameter Resolution & Purchase Conversion Tracking -->
+  <script is:inline define:vars={{ GOOGLE_ADS_ID, ADS_PURCHASE_CONVERSION_LABEL }}>
+    function initConfirmedEnrollment() {
+      const params = new URLSearchParams(window.location.search);
+      const txnid = params.get('txnid') || params.get('txn_id') || `TXN_${Date.now()}`;
+      const amount = parseFloat(params.get('amount') || '0');
+      const course = params.get('course') || 'Technical Architecture Cohort';
+
+      // UI আপডেট
+      const txnEl = document.getElementById('display-txn-id');
+      const amtEl = document.getElementById('display-amount');
+      const courseEl = document.getElementById('display-course-name');
+
+      if (txnEl) txnEl.textContent = txnid;
+      if (amtEl) amtEl.textContent = `₹${amount.toLocaleString('en-IN')}`;
+      if (courseEl) courseEl.textContent = course;
+
+      // ডুপ্লিকেট কনভার্সন রিলোড রোধে sessionStorage চেক
+      const conversionStorageKey = `converted_${txnid}`;
+      if (sessionStorage.getItem(conversionStorageKey)) {
+        return;
+      }
+
+      // ==========================================
+      // Purchase Conversion Dispatch (GA4 & Google Ads)
+      // ==========================================
+      if (typeof window.gtag === 'function') {
+        // ১. GA4 E-Commerce Purchase Event
+        window.gtag('event', 'purchase', {
+          transaction_id: txnid,
+          value: amount,
+          currency: 'INR',
+          items: [{
+            item_name: course,
+            item_category: 'Course Enrollment',
+            price: amount,
+            quantity: 1
+          }]
+        });
+
+        // ২. Google Ads Conversion Event
+        if (GOOGLE_ADS_ID && ADS_PURCHASE_CONVERSION_LABEL && ADS_PURCHASE_CONVERSION_LABEL !== 'YOUR_PURCHASE_CONVERSION_LABEL') {
+          window.gtag('event', 'conversion', {
+            send_to: `${GOOGLE_ADS_ID}/${ADS_PURCHASE_CONVERSION_LABEL}`,
+            value: amount,
+            currency: 'INR',
+            transaction_id: txnid
+          });
+        }
+
+        sessionStorage.setItem(conversionStorageKey, 'true');
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initConfirmedEnrollment);
+    } else {
+      initConfirmedEnrollment();
+    }
+    document.addEventListener('astro:page-load', initConfirmedEnrollment);
+  </script>
 </Layout>

@@ -15,6 +15,7 @@ price: 80000
 originalPrice: 120000
 discountBadge: "33% OFF"
 offerText: "Founding Cohort • Limited to 15 Seats"
+installmentNumber: 4
 installmentPrice: 20000
 installmentPlanText: "Pay in 4 Quarterly Milestones (₹25,000 x 4)"
 featuredImage: "/images/courses/enterprise-system-architecture.svg"

@@ -11,9 +11,9 @@ videoUrl: "https://www.youtube.com/embed/kY6ruLKLnsY"
 videoDuration: "PT29M01S"
 ---
 
-While running AI workflows locally on your laptop is suitable for rapid prototyping, real-world enterprise automations need to run 24/7 on dedicated cloud infrastructure [00:00:50]. Relying on external proprietary APIs—such as OpenAI, Anthropic, or Google Gemini—creates recurring per-token overhead and introduces unpredictable monthly billing [00:01:20].
+While running AI workflows locally on your laptop is suitable for rapid prototyping, real-world enterprise automations need to run 24/7 on dedicated cloud infrastructure. Relying on external proprietary APIs—such as OpenAI, Anthropic, or Google Gemini—creates recurring per-token overhead and introduces unpredictable monthly billing.
 
-The ultimate alternative for software architects and startups is self-hosting: combining **n8n** (the open-source workflow automation standard) [00:00:17] with **Ollama** (local and self-hosted open-weight LLMs) [00:01:52] on a budget-friendly **Virtual Private Server (VPS)** [00:01:02].
+The ultimate alternative for software architects and startups is self-hosting: combining **n8n** (the open-source workflow automation standard) with **Ollama** (local and self-hosted open-weight LLMs) on a budget-friendly **Virtual Private Server (VPS)**.
 
 In this architectural walkthrough, we break down how to provision a production-ready VPS environment, deploy containerized n8n, and run private AI workflows around the clock.
 
