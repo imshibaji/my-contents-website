@@ -80,13 +80,13 @@ const courseCatalog = courses.map((c) => ({
           </div>
 
           <!-- Checkout Action Terminal Form -->
-          <form id="checkout_gateway_form" action="/api/payu/init.php" method="POST" class="bg-white dark:bg-[#0b101d]/90 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 sm:p-8 backdrop-blur shadow-xl dark:shadow-2xl space-y-6 transition-colors duration-300">
+          <form id="checkout_gateway_form" class="bg-white dark:bg-[#0b101d]/90 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 sm:p-8 backdrop-blur shadow-xl dark:shadow-2xl space-y-6 transition-colors duration-300">
             <!-- Hidden Fields Dispatched to /api/payu/init.php -->
-            <input type="hidden" name="course_slug" id="pay_course_slug" value="" />
+            <input type="hidden" name="course_id" id="pay_course_slug" value="" />
             <input type="hidden" name="course_title" id="pay_course_title" value="" />
             <input type="hidden" name="payment_plan" id="pay_payment_plan" value="full" />
             <input type="hidden" name="amount" id="pay_amount" value="0" />
-            <input type="hidden" name="full_name" id="pay_full_name" value="" />
+            <input type="hidden" name="firstname" id="pay_full_name" value="" />
             <input type="hidden" name="email" id="pay_email" value="" />
             <input type="hidden" name="phone" id="pay_phone" value="" />
 
@@ -98,7 +98,7 @@ const courseCatalog = courses.map((c) => ({
                   </div>
                   <div>
                     <h4 class="text-sm font-bold text-slate-950 dark:text-white">Direct PayU Payment Gateway</h4>
-                    <p class="text-[11px] text-slate-600 dark:text-slate-400">Cards, UPI (GPay/PhonePe), NetBanking & EMI</p>
+                    <p class="text-[11px] text-slate-600 dark:text-slate-400">Cards, UPI (GPay/PhonePe), NetBanking &amp; EMI</p>
                   </div>
                 </div>
                 <span class="text-[10px] font-mono text-sky-800 dark:text-sky-400 px-2.5 py-1 rounded bg-sky-100 dark:bg-sky-500/10 border border-sky-300 dark:border-sky-500/20 uppercase font-bold">
@@ -107,14 +107,19 @@ const courseCatalog = courses.map((c) => ({
               </div>
             </div>
 
+            <!-- Dynamic Error Feedback Notice -->
+            <div id="checkout_error_box" class="hidden p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 text-rose-700 dark:text-rose-300 text-xs font-mono">
+              <span id="checkout_error_text">Payment initiation error.</span>
+            </div>
+
             <button 
               type="submit" 
               id="pay_btn"
-              class="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 dark:from-emerald-500 dark:to-teal-600 hover:from-emerald-500 hover:to-teal-600 dark:hover:from-emerald-400 dark:hover:to-teal-500 text-white font-bold text-base tracking-wide shadow-xl shadow-emerald-500/30 dark:shadow-emerald-500/20 hover:shadow-emerald-500/40 dark:hover:shadow-emerald-500/30 transition-all flex items-center justify-center gap-3 cursor-pointer"
+              class="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 dark:from-emerald-500 dark:to-teal-600 hover:from-emerald-500 hover:to-teal-600 dark:hover:from-emerald-400 dark:hover:to-teal-500 text-white font-bold text-base tracking-wide shadow-xl shadow-emerald-500/30 dark:shadow-emerald-500/20 hover:shadow-emerald-500/40 dark:hover:shadow-emerald-500/30 transition-all flex items-center justify-center gap-3 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              <span>Initiate Secure Transaction</span>
+              <span id="btn_action_label">Initiate Secure Transaction</span>
               <span id="btn_amount_display" class="font-mono bg-black/20 dark:bg-black/30 px-2.5 py-1 rounded text-sm">₹0</span>
-              <span>&rarr;</span>
+              <span id="btn_arrow">&rarr;</span>
             </button>
 
             <div class="flex items-center justify-center gap-6 text-slate-500 dark:text-slate-500 text-xs font-mono pt-2 flex-wrap">
@@ -156,7 +161,7 @@ const courseCatalog = courses.map((c) => ({
               <span id="invoice_scholarship_discount" class="font-mono text-emerald-700 dark:text-emerald-400 font-semibold">-₹0</span>
             </div>
             <div class="flex justify-between items-center py-1">
-              <span class="text-slate-500 dark:text-slate-400">Architecture Sandbox & Labs</span>
+              <span class="text-slate-500 dark:text-slate-400">Architecture Sandbox &amp; Labs</span>
               <span class="font-mono text-emerald-700 dark:text-emerald-400 font-semibold">Covered</span>
             </div>
             <div class="flex justify-between items-center py-1">
@@ -190,7 +195,7 @@ const courseCatalog = courses.map((c) => ({
     </div>
   </div>
 
-  <!-- Client-Side Invoice Resolution Script -->
+  <!-- Client-Side Invoice Resolution & Gateway Redirection Script -->
   <script define:vars={{ courseCatalog }}>
     function initCheckoutPage() {
       const params = new URLSearchParams(window.location.search);
@@ -246,7 +251,7 @@ const courseCatalog = courses.map((c) => ({
       if (invFinalEl) invFinalEl.textContent = `₹${payableAmount.toLocaleString('en-IN')}`;
       if (btnAmountEl) btnAmountEl.textContent = `₹${payableAmount.toLocaleString('en-IN')}`;
 
-      // ৬. হিডেন ফর্ম ফিল্ডস পপুলেট করা (যা /api/payu/init.php এ যাবে)
+      // ৬. হিডেন ফর্ম ফিল্ডস পপুলেট করা
       const paySlugInput = document.getElementById('pay_course_slug');
       const payTitleInput = document.getElementById('pay_course_title');
       const payPlanInput = document.getElementById('pay_payment_plan');
@@ -262,15 +267,84 @@ const courseCatalog = courses.map((c) => ({
       if (payNameInput) payNameInput.value = name;
       if (payEmailInput) payEmailInput.value = email;
       if (payPhoneInput) payPhoneInput.value = phone;
+
+      // ৭. গেটওয়ে ইন্টারসেপ্টর (Fetch API দিয়ে হ্যাশ এনে PayU গেটওয়েতে ব্রাউজার সাবমিট)
+      const form = document.getElementById('checkout_gateway_form');
+      const payBtn = document.getElementById('pay_btn');
+      const btnActionLabel = document.getElementById('btn_action_label');
+      const errorBox = document.getElementById('checkout_error_box');
+      const errorText = document.getElementById('checkout_error_text');
+
+      if (form && !form.dataset.initialized) {
+        form.dataset.initialized = 'true';
+
+        form.addEventListener('submit', async function (e) {
+          e.preventDefault();
+
+          if (errorBox) errorBox.classList.add('hidden');
+          if (payBtn) payBtn.disabled = true;
+          if (btnActionLabel) btnActionLabel.textContent = 'Securing Gateway Session...';
+
+          const formData = new FormData(form);
+          const payload = Object.fromEntries(formData.entries());
+
+          try {
+            const res = await fetch('/api/payu/init.php', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              },
+              body: JSON.stringify(payload)
+            });
+
+            const data = await res.json();
+
+            if (data.status === 'success') {
+              // ফ্রি কোর্স হলে সরাসরি সাকসেস পেজে
+              if (data.is_free) {
+                window.location.href = data.redirect_url;
+                return;
+              }
+
+              // পেইড কোর্স হলে ডাইনামিক ফর্ম বানিয়ে PayU-তে ব্রাউজার সাবমিট
+              if (btnActionLabel) btnActionLabel.textContent = 'Redirecting to PayU...';
+
+              const payuForm = document.createElement('form');
+              payuForm.method = 'POST';
+              payuForm.action = data.action;
+
+              for (const [key, val] of Object.entries(data.params)) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = String(val);
+                payuForm.appendChild(input);
+              }
+
+              document.body.appendChild(payuForm);
+              payuForm.submit();
+            } else {
+              if (errorText) errorText.textContent = data.message || 'Payment initiation failed.';
+              if (errorBox) errorBox.classList.remove('hidden');
+              if (payBtn) payBtn.disabled = false;
+              if (btnActionLabel) btnActionLabel.textContent = 'Initiate Secure Transaction';
+            }
+          } catch (err) {
+            if (errorText) errorText.textContent = 'Network communication failure. Please check backend PHP service.';
+            if (errorBox) errorBox.classList.remove('hidden');
+            if (payBtn) payBtn.disabled = false;
+            if (btnActionLabel) btnActionLabel.textContent = 'Initiate Secure Transaction';
+          }
+        });
+      }
     }
 
-    // Runs on initial load
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initCheckoutPage);
     } else {
       initCheckoutPage();
     }
-    // Runs on View Transitions navigation
     document.addEventListener('astro:page-load', initCheckoutPage);
   </script>
 </Layout>

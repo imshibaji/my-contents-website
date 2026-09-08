@@ -2,9 +2,9 @@
 // api/payu/config.php
 declare(strict_types=1);
 
-// 1. CORS Headers for decoupled Astro client calls
+// ১. CORS Headers (Astro ফ্রন্টএন্ড থেকে ডিকাপলড কলের জন্য)
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -12,42 +12,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-// 2. PayU Merchant Credentials (TEST or PROD)
-define('PAYU_MODE', 'TEST'); // লাইভে তোলার সময় 'PROD' হিসেবে সেট করুন
-define('PAYU_MERCHANT_KEY', 'YOUR_PAYU_KEY');
-define('PAYU_MERCHANT_SALT', 'YOUR_PAYU_SALT');
+// ২. PayU মার্চেন্ট ক্রেডেনশিয়াল (TEST বা PROD)
+define('PAYU_MODE', 'TEST'); // লাইভ প্রোডাকশনে নেওয়ার সময় 'PROD' করুন
+define('PAYU_MERCHANT_KEY', '59xiPf');
+define('PAYU_MERCHANT_SALT', 'BwhFF78ZpGIXAu3rCG7Qa1DkgEzI1mxQ');
 
 define('PAYU_BASE_URL', PAYU_MODE === 'PROD' 
     ? 'https://secure.payu.in/_payment' 
     : 'https://test.payu.in/_payment'
 );
 
-// 3. Domain & Webhook URLs
+// ৩. সাইট ও কলব্যাক URLs
 define('SITE_URL', 'https://shibajidebnath.com');
-define('PAYU_SUCCESS_URL', SITE_URL . '/api/payu/response.php');
-define('PAYU_FAILURE_URL', SITE_URL . '/api/payu/response.php');
+define('PAYU_SUCCESS_URL', SITE_URL . '/courses/payment-success');
+define('PAYU_FAILURE_URL', SITE_URL . '/courses/payment-failed');
 
-// 4. Admin Telemetry / Lead Capture Email
 define('ADMIN_EMAIL', 'imshibaji@gmail.com');
 
-// 5. Server-Side Catalog Mapping (Zero-Tampering Security)
-// ক্লায়েন্ট থেকে পাঠানো স্লাগ ও পেমেন্ট প্ল্যান অনুযায়ী সঠিক মূল্য নির্ধারিত হবে
-$COURSE_CATALOG = [
-    'system-architecture-mastery' => [
-        'title' => 'Enterprise System Architecture & Microservices (12 Months)',
-        'price_full' => 80000.00,
-        'price_installment' => 20000.00,
-        'currency' => '₹'
-    ],
-    'sample-free-course' => [
-        'title' => 'Introduction to Linux & Containerization Fundamentals',
-        'price_full' => 0.00,
-        'price_installment' => 0.00,
-        'currency' => '₹'
-    ]
-];
+// ৪. অটোমেটিক course_catalog.json রেজোলিউশন ইঞ্জিন (Multi-path fallback)
+function loadCourseCatalog(): array {
+    $candidatePaths = [
+        // ১. config.php যদি api/payu বা public/api/payu-তে থাকে (api/course_catalog.json)
+        __DIR__ . '/../course_catalog.json',
+        // ২. রুট থেকে public/api/course_catalog.json
+        dirname(__DIR__, 2) . '/public/api/course_catalog.json',
+        // ৩. রুট থেকে dist/api/course_catalog.json (প্রোডাকশন বিল্ড)
+        dirname(__DIR__, 2) . '/dist/api/course_catalog.json',
+        // ৪. ওয়েব সার্ভারের DOCUMENT_ROOT ফলব্যাক
+        ($_SERVER['DOCUMENT_ROOT'] ?? '') . '/api/course_catalog.json',
+        ($_SERVER['DOCUMENT_ROOT'] ?? '') . '/course_catalog.json',
+    ];
 
-// 6. Lightweight HTML Email Dispatcher
+    foreach ($candidatePaths as $path) {
+        if (!empty($path) && file_exists($path) && is_readable($path)) {
+            // PHP file cache বাইপাস করে সবসময় লেটেস্ট ফাইল রিড করা
+            clearstatcache(true, $path);
+            $content = (string)file_get_contents($path);
+            $decoded = json_decode($content, true);
+            if (is_array($decoded) && !empty($decoded)) {
+                return $decoded;
+            }
+        }
+    }
+
+    error_log('[PayU Config Warning] course_catalog.json could not be located in candidate paths.');
+    return [];
+}
+
+// গ্লোবাল ভ্যারিয়েবলে ক্যাটালগ লোড করা
+$COURSE_CATALOG = loadCourseCatalog();
+
+// ৫. লাইটওয়েট ইমেইল নোটিফিকেশন ডিসপ্যাচার
 function dispatchNotificationMail(string $to, string $subject, string $htmlBody): bool {
     $headers  = "MIME-Version: 1.0\r\n";
     $headers .= "Content-type: text/html; charset=UTF-8\r\n";
@@ -55,5 +70,5 @@ function dispatchNotificationMail(string $to, string $subject, string $htmlBody)
     $headers .= "Reply-To: " . ADMIN_EMAIL . "\r\n";
     $headers .= "X-Mailer: PHP/" . phpversion();
 
-    return mail($to, $subject, $htmlBody, $headers);
+    return @mail($to, $subject, $htmlBody, $headers);
 }

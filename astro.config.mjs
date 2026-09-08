@@ -3,6 +3,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 import { generateLlmsFile } from './src/utils/generateLlms';
 import sitemap from '@astrojs/sitemap';
+import courseCatalogPlugin from './src/utils/courseCatalogPlugin';
 
 // https://astro.build/config
 export default defineConfig({
@@ -31,6 +32,7 @@ export default defineConfig({
   },
 
   integrations: [
+    courseCatalogPlugin(),
     sitemap({
       // টেকনিক্যাল ফাইল ও ডায়নামিক এন্ডপয়েন্ট সাইটম্যাপ থেকে বাদ দেওয়া
       filter: (page) => !page.includes('/api/') && !page.includes('/courses/payment-success'),

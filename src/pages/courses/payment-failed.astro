@@ -2,32 +2,92 @@
 import Layout from '../../layouts/Layout.astro';
 ---
 
-<Layout title="Transaction Incomplete | Shibaji Debnath" description="Payment could not be completed.">
-  <div class="min-h-screen py-20 flex items-center justify-center px-6">
-    <div class="max-w-lg w-full p-8 sm:p-10 rounded-3xl border border-rose-500/30 bg-white dark:bg-[#070e1c] shadow-2xl text-center space-y-5">
+<Layout title="Payment Incomplete | Shibaji Debnath" description="The transaction could not be completed.">
+  <div class="min-h-screen py-16 sm:py-20 flex items-center justify-center px-4 sm:px-6 bg-slate-50 dark:bg-[#040813] transition-colors duration-300">
+    <div class="max-w-lg w-full p-6 sm:p-10 rounded-3xl border border-rose-500/30 bg-white dark:bg-[#070e1c] shadow-2xl text-center space-y-6">
       
-      <div class="w-16 h-16 mx-auto rounded-full bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-500 text-2xl font-bold">
+      <!-- Warning Badge -->
+      <div class="w-16 h-16 mx-auto rounded-full bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-500 text-3xl font-bold shadow-lg shadow-rose-500/10">
         ✕
       </div>
 
-      <div class="space-y-1">
+      <div class="space-y-1.5">
         <span class="text-xs font-mono uppercase tracking-wider text-rose-600 dark:text-rose-400 font-bold">Transaction Unsuccessful</span>
-        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Payment Incomplete</h1>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Payment Not Completed</h1>
       </div>
 
-      <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
-        The transaction was cancelled or declined by your bank. Any debited funds are typically refunded automatically within 24–48 hours.
+      <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+        Your payment attempt was interrupted, declined by your bank, or cancelled. If any amount was debited, it will be automatically refunded by your bank within 3–5 working days.
       </p>
 
-      <div class="pt-4 flex flex-col sm:flex-row gap-3">
-        <a href="/courses/checkout" class="flex-1 py-3 rounded-xl bg-sky-600 hover:bg-sky-500 text-xs font-mono font-bold text-white transition-all shadow-md shadow-sky-600/20">
-          Try Again
+      <!-- Transaction Context Box -->
+      <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-[#0b1222] border border-slate-200 dark:border-slate-800/80 text-xs font-mono text-left space-y-2 text-slate-700 dark:text-slate-300">
+        <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800/60">
+          <span class="text-slate-500 dark:text-slate-400">Target Cohort:</span>
+          <span id="fail_course" class="font-bold text-slate-900 dark:text-white truncate max-w-[200px]">Technical Program</span>
+        </div>
+        <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800/60">
+          <span class="text-slate-500 dark:text-slate-400">Transaction ID:</span>
+          <span id="fail_txnid" class="font-bold text-slate-800 dark:text-slate-200">--</span>
+        </div>
+        <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800/60">
+          <span class="text-slate-500 dark:text-slate-400">Status:</span>
+          <span class="text-rose-500 font-bold uppercase">Declined / Incomplete</span>
+        </div>
+        <div class="flex justify-between items-center pt-1">
+          <span class="text-slate-500 dark:text-slate-400">Reason:</span>
+          <span id="fail_reason" class="text-slate-600 dark:text-slate-400 truncate max-w-[200px]">Cancelled</span>
+        </div>
+      </div>
+
+      <!-- Action Navigation Buttons -->
+      <div class="pt-2 flex flex-col sm:flex-row gap-3">
+        <a 
+          id="retry_btn" 
+          href="/courses/checkout" 
+          class="flex-1 py-3 px-4 rounded-xl bg-sky-600 hover:bg-sky-500 text-xs font-mono font-bold text-white transition-all shadow-md shadow-sky-600/20 text-center flex items-center justify-center gap-1.5"
+        >
+          <span>↻</span> Retry Checkout
         </a>
-        <a href="/contact" class="flex-1 py-3 rounded-xl border border-sky-200 dark:border-sky-900 bg-white dark:bg-slate-900 text-xs font-mono font-bold text-slate-700 dark:text-slate-200 hover:border-sky-500 transition-all">
-          Contact Advisory
+        <a 
+          href="/contact" 
+          class="flex-1 py-3 px-4 rounded-xl border border-sky-200 dark:border-sky-900 bg-white dark:bg-slate-900 text-xs font-mono font-bold text-slate-700 dark:text-slate-200 hover:border-sky-500 transition-all text-center"
+        >
+          Contact Support
         </a>
       </div>
 
     </div>
   </div>
+
+  <script is:inline>
+    function initFailedPayment() {
+      const params = new URLSearchParams(window.location.search);
+      const txnid = params.get('txnid') || '--';
+      const course = params.get('course') || '';
+      const plan = params.get('plan') || 'full';
+      const reason = params.get('reason') || 'Transaction was declined or cancelled.';
+
+      const txnEl = document.getElementById('fail_txnid');
+      const courseEl = document.getElementById('fail_course');
+      const reasonEl = document.getElementById('fail_reason');
+      const retryBtn = document.getElementById('retry_btn');
+
+      if (txnEl) txnEl.textContent = txnid;
+      if (courseEl && course) courseEl.textContent = course;
+      if (reasonEl) reasonEl.textContent = reason;
+
+      // রি-ট্রাই বাটনে ক্লিক করলে আগের কোর্স ও প্ল্যানসহ চেকআউট পেজে ফিরিয়ে নিয়ে যাওয়া
+      if (retryBtn && course) {
+        retryBtn.href = `/courses/checkout?course=${encodeURIComponent(course)}&plan=${encodeURIComponent(plan)}`;
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initFailedPayment);
+    } else {
+      initFailedPayment();
+    }
+    document.addEventListener('astro:page-load', initFailedPayment);
+  </script>
 </Layout>
