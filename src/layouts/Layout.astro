@@ -39,7 +39,7 @@ const schemaGraph = {
       "alternateName": ["Shibaji", "imshibaji"],
       "jobTitle": "Chief Technology Officer & Senior System Architect",
       "url": siteUrl,
-      "image": `${siteUrl}/profile.jpg`,
+      "image": `${siteUrl}/${ogImage || '/profile.jpg'}?w=200&h=200&fit=crop&auto=format&bg=444`,
       "sameAs": [
         "https://github.com/imshibaji",
         "https://linkedin.com/in/shibaji"
@@ -69,8 +69,52 @@ const schemaGraph = {
         "Vue",
         "Next.js",
         "Astro",
-        "OpenAI APIs"
+        "OpenAI APIs",
+        "n8n"
       ],
+      "hasOccupation": [
+        {
+          "@type": "Occupation",
+          "name": "Chief Technology Officer"
+        },
+        {
+          "@type": "Occupation",
+          "name": "Lead Technical Consultant"
+        },
+        {
+          "@type": "Occupation",
+          "name": "Senior System Architect"
+        },
+        {
+          "@type": "Occupation",
+          "name": "Training & Consulting Coach"
+        },
+        {
+          "@type": "Occupation",
+          "name": "Mentor & Trainer"
+        }
+      ],
+      "talksAbout": [
+        "NestJS",
+        "Agentic AI Workflows",
+        "Model Context Protocol (MCP)",
+        "Microservices Architecture",
+        "Laravel",
+        "LeafPHP",
+        "PostgreSQL",
+        "Redis Streams",
+        "Docker Containerization",
+        "Flutter",
+        "Angular",
+        "React",
+        "Vue",
+        "Next.js",
+        "Astro",
+        "OpenAI APIs",
+        "n8n"
+      ],
+      "title": title,
+      "keywords": keywords,
       "description": description
     },
     {
@@ -85,7 +129,7 @@ const schemaGraph = {
         "Agentic AI & MCP Integration",
         "High-Concurrency Performance Audits"
       ],
-      "areaServed": ["Worldwide", "India", "United States"],
+      "areaServed": ["Worldwide", "India", "Europe", "Australia", "United States"],
       "hasOfferCatalog": {
         "@type": "OfferCatalog",
         "name": "Technical Leadership Offerings",

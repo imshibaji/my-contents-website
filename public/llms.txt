@@ -24,6 +24,8 @@
 - Terms of Service & Advisory Governance: https://shibajidebnath.com/terms
 
 ## Published Architectural Blueprints & Articles
+- [Building Production Agentic Workflows with Model Context Protocol (MCP)](https://shibajidebnath.com/articles/building-production-agentic-workflows-with-mcp): Learn how to build resilient, cost-controlled agentic architectures using the open Model Context Protocol (MCP). Features dual TypeScript and Python implementations, resource governance, and isolated deployment patterns.
+- [Why 90% of Early-Stage Startups Over-Engineer Their Cloud Infrastructure](https://shibajidebnath.com/articles/stop-overengineering-startup-cloud): Early-stage startups frequently adopt hyperscaler complexity before achieving product-market fit. This guide deconstructs the enterprise cargo cult and provides a production-grade single-node deployment blueprint handling thousands of requests per second for under $50/month.
 - [Self-Hosting n8n & Ollama on a VPS: Production AI Workflows Without Third-Party API Bills](https://shibajidebnath.com/articles/n8n-hostinger-vps-ollama-setup): Learn how to bypass recurring OpenAI and Anthropic token charges by deploying self-hosted n8n and Ollama on a Hostinger VPS. This guide walks through Linux server configuration, Docker provisioning, and running private AI agents 24/7.
 - [How to Build a 100% Free Local AI Chatbot with n8n, Flowise & Ollama](https://shibajidebnath.com/articles/n8n-flowise-local-ai-setup): A beginner-friendly, zero-code architectural guide on running private AI chatbots locally using Docker, n8n, Flowise, and Ollama without recurring API bills.
 

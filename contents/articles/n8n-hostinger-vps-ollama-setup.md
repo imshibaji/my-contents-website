@@ -21,17 +21,17 @@ In this architectural walkthrough, we break down how to provision a production-r
 
 ## Why Migrate from Local Machine to Cloud VPS?
 
-1. **24/7 Uninterrupted Trigger Execution:** Automated webhooks, customer intake flows, and scheduled CRON scripts continue running without relying on your personal machine staying awake [00:00:55].
-2. **Predictable Flat Infrastructure Costs:** Rather than getting billed per token or per API request, you pay a fixed VPS fee, enjoying unlimited LLM inference on your self-managed server [00:01:58].
-3. **Data Isolation & Compliance:** Customer inquiries, internal documentation, and operational data remain strictly within your private server instance [00:01:52].
+1. **24/7 Uninterrupted Trigger Execution:** Automated webhooks, customer intake flows, and scheduled CRON scripts continue running without relying on your personal machine staying awake.
+2. **Predictable Flat Infrastructure Costs:** Rather than getting billed per token or per API request, you pay a fixed VPS fee, enjoying unlimited LLM inference on your self-managed server.
+3. **Data Isolation & Compliance:** Customer inquiries, internal documentation, and operational data remain strictly within your private server instance.
 
 ---
 
 ## Architectural Stack Overview
 
-* **Cloud Infrastructure:** Hostinger KVM VPS running Ubuntu 22.04 LTS [00:01:02].
-* **Automation Orchestration:** n8n deployed via containerized Docker instances [00:00:17].
-* **Inference Engine:** Ollama running open-source models (such as Llama 3 or Mistral) [00:01:52].
+* **Cloud Infrastructure:** Hostinger KVM VPS running Ubuntu 22.04 LTS.
+* **Automation Orchestration:** n8n deployed via containerized Docker instances.
+* **Inference Engine:** Ollama running open-source models (such as Llama 3 or Mistral).
 * **Networking & Security:** Reverse proxy with SSL/TLS encryption for safe webhook ingestion.
 
 ---
@@ -39,11 +39,11 @@ In this architectural walkthrough, we break down how to provision a production-r
 ## Step-by-Step VPS Provisioning & Deployment
 
 ### Step 1: Selecting the Right VPS Configuration
-When running AI models alongside workflow engines, memory allocation is your main consideration [00:01:58]:
+When running AI models alongside workflow engines, memory allocation is your main consideration:
 * **Starter / Light Agents (7B quantized models):** At least 4 vCPU cores and 8GB–16GB RAM is recommended to handle both the OS and Ollama model context in memory.
 * **Standard Workflows without LLMs:** 2 vCPU cores and 4GB RAM are sufficient.
 
-Pick an OS image based on Ubuntu or Debian for maximum stability and long-term package support [00:02:06].
+Pick an OS image based on Ubuntu or Debian for maximum stability and long-term package support.
 
 ### Step 2: Server Security & SSH Access
 Log into your server instance via your terminal:
@@ -65,7 +65,7 @@ sudo ufw enable
 
 ### Step 3: Installing Docker & Docker Compose
 
-Containerization is the cleanest method to maintain n8n and its persistent data volumes [00:02:31]:
+Containerization is the cleanest method to maintain n8n and its persistent data volumes:
 
 ```bash
 # Install official Docker package
@@ -115,7 +115,7 @@ Access the dashboard via `http://YOUR_SERVER_IP:5678`, register your owner accou
 
 ## Wiring Ollama Inside n8n Workflows
 
-Inside your n8n visual builder [00:27:36]:
+Inside your n8n visual builder:
 
 1. Add a **Chat Trigger** or **Webhook** node.
 2. Connect an **AI Agent Node** or **Basic LLM Chain**.
@@ -140,7 +140,7 @@ Yes. However, if multiple concurrent users invoke Ollama, response queues will s
 
 **How does n8n compare with Zapier or Make on a VPS?**
 
-Unlike SaaS solutions that charge per step execution, self-hosted n8n gives you unlimited workflow executions without escalating cost tiers [00:00:17].
+Unlike SaaS solutions that charge per step execution, self-hosted n8n gives you unlimited workflow executions without escalating cost tiers.
 
 **Do I need a domain name for this setup?**
 

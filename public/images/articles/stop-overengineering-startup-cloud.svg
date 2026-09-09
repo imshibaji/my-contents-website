@@ -1,0 +1,121 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090D16"/>
+      <stop offset="50%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#060911"/>
+    </linearGradient>
+
+    <!-- Grid Pattern -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1E293B" stroke-width="1" stroke-opacity="0.4"/>
+    </pattern>
+
+    <!-- Radial Glows -->
+    <radialGradient id="glow-cyan" cx="85%" cy="10%" r="50%">
+      <stop offset="0%" stop-color="#0EA5E9" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#0EA5E9" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow-red" cx="15%" cy="90%" r="45%">
+      <stop offset="0%" stop-color="#EF4444" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#EF4444" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Card Gradients -->
+    <linearGradient id="card-red-border" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EF4444" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#7F1D1D" stop-opacity="0.3"/>
+    </linearGradient>
+    <linearGradient id="card-green-border" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#064E3B" stop-opacity="0.3"/>
+    </linearGradient>
+  </defs>
+
+  <style>
+    .font-sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+    .font-mono { font-family: "SF Mono", "Fira Code", "Roboto Mono", Menlo, monospace; }
+  </style>
+
+  <!-- Layer: Background -->
+  <g id="Layer-Background">
+    <rect width="1200" height="630" fill="url(#bg-grad)"/>
+    <rect width="1200" height="630" fill="url(#grid)"/>
+    <rect width="1200" height="630" fill="url(#glow-cyan)"/>
+    <rect width="1200" height="630" fill="url(#glow-red)"/>
+  </g>
+
+  <!-- Layer: Header & Category Badge -->
+  <g id="Layer-Header" class="font-sans">
+    <!-- Category Badge -->
+    <g id="Category-Badge" class="font-mono">
+      <rect x="60" y="48" width="270" height="32" rx="6" fill="#0F172A" fill-opacity="0.8" stroke="#38BDF8" stroke-width="1.2"/>
+      <circle cx="76" cy="64" r="4" fill="#38BDF8"/>
+      <text x="90" y="70" fill="#38BDF8" font-size="12" font-weight="700" letter-spacing="1.2">DEVOPS &amp; ARCHITECTURE</text>
+    </g>
+
+    <!-- Main Title -->
+    <g id="Main-Title">
+      <text x="60" y="132" fill="#F8FAFC" font-size="40" font-weight="800" letter-spacing="-0.5">Why 90% of Early-Stage Startups</text>
+      <text x="60" y="184" fill="#FB7185" font-size="40" font-weight="800" letter-spacing="-0.5">Over-Engineer Their Cloud</text>
+    </g>
+
+    <!-- Subtitle -->
+    <text x="60" y="228" fill="#94A3B8" font-size="19" font-weight="400">
+      The $3,500/mo Kubernetes cargo cult vs. A $30/mo production single-node reality.
+    </text>
+  </g>
+
+  <!-- Layer: Comparison Cards -->
+  <g id="Layer-Comparison-Cards">
+    <!-- Left Card: Over-Engineered -->
+    <g id="Card-Over-Engineered" class="font-sans">
+      <rect x="60" y="265" width="520" height="260" rx="14" fill="#140E17" fill-opacity="0.85" stroke="url(#card-red-border)" stroke-width="1.8"/>
+      
+      <!-- Pill -->
+      <rect x="84" y="287" width="165" height="26" rx="5" fill="#450A0A" fill-opacity="0.8" stroke="#EF4444" stroke-width="1"/>
+      <text x="96" y="304" fill="#F87171" font-size="11" font-weight="700" class="font-mono" letter-spacing="1">OVER-ENGINEERED</text>
+      
+      <!-- Card Title -->
+      <text x="84" y="344" fill="#FECACA" font-size="21" font-weight="700">The $3,500/Month Trap</text>
+      
+      <!-- List Items -->
+      <g fill="#CBD5E1" font-size="14.5" font-weight="400">
+        <text x="84" y="380">• Multi-region Kubernetes (EKS) + Service Mesh</text>
+        <text x="84" y="408">• 8 Microservices + Managed Kafka event brokers</text>
+        <text x="84" y="436">• Multi-AZ RDS + Distributed Tracing agents</text>
+        <text x="84" y="464">• Hidden NAT Gateway &amp; cross-AZ transfer fees</text>
+        <text x="84" y="494" fill="#FCA5A5" font-weight="600" class="font-mono" font-size="13">Capacity: 50 req/s | Actual Traffic: &lt;5 req/s</text>
+      </g>
+    </g>
+
+    <!-- Right Card: Lean Reality -->
+    <g id="Card-Lean-Solution" class="font-sans">
+      <rect x="620" y="265" width="520" height="260" rx="14" fill="#0A1626" fill-opacity="0.85" stroke="url(#card-green-border)" stroke-width="1.8"/>
+      
+      <!-- Pill -->
+      <rect x="644" y="287" width="130" height="26" rx="5" fill="#064E3B" fill-opacity="0.8" stroke="#10B981" stroke-width="1"/>
+      <text x="656" y="304" fill="#34D399" font-size="11" font-weight="700" class="font-mono" letter-spacing="1">LEAN REALITY</text>
+      
+      <!-- Card Title -->
+      <text x="644" y="344" fill="#A7F3D0" font-size="21" font-weight="700">The $30/Month Blueprint</text>
+      
+      <!-- List Items -->
+      <g fill="#CBD5E1" font-size="14.5" font-weight="400">
+        <text x="644" y="380">• 1 Bare-Metal VPS (4 vCPU / 8GB RAM / NVMe)</text>
+        <text x="644" y="408">• Docker Compose + Traefik (Automated Let's Encrypt)</text>
+        <text x="644" y="436">• PostgreSQL 16 (WAL) + PgBouncer connection pool</text>
+        <text x="644" y="464">• Encrypted S3/R2 offsite snapshots via systemd</text>
+        <text x="644" y="494" fill="#6EE7B7" font-weight="600" class="font-mono" font-size="13">Capacity: 3,000+ req/s | Cost Reduction: 98%</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Layer: Footer & Author Branding -->
+  <g id="Layer-Footer" class="font-mono">
+    <line x1="60" y1="560" x2="1140" y2="560" stroke="#334155" stroke-width="1" stroke-opacity="0.7"/>
+    <text x="60" y="588" fill="#64748B" font-size="13" letter-spacing="1">PRODUCTION ARCHITECTURE PLAYBOOK</text>
+    <text x="965" y="588" fill="#38BDF8" font-size="13" font-weight="700" letter-spacing="0.8">BY SHIBAJI DEBNATH</text>
+  </g>
+</svg>
