@@ -13,7 +13,7 @@ tags:
   - Docker
   - Kubernetes
 readingTime: 12 min
-featuredImage: /images/articles/stop-overengineering-startup-cloud.svg
+featuredImage: /images/articles/stop-overengineering-startup-cloud.png
 ---
 
 ## 1. The Hook & The Problem Space
