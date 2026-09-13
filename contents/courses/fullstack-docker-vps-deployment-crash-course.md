@@ -11,9 +11,9 @@ language: "Bengali, Hindi & English"
 mode: "Live Mentorship"
 status: "Enrolling Now"
 currency: "₹"
-price: 999
+price: 100
 originalPrice: 2999
-discountBadge: "67% OFF"
+discountBadge: "Discount"
 offerText: "Community Access • Limited Seats"
 installmentNumber: 1
 installmentPrice: 0

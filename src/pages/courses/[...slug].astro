@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getCollection, render } from 'astro:content';
+import { calculateDiscountPercentage } from '../../utils/discountCalculator';
 
 export async function getStaticPaths() {
   const courses = await getCollection('courses');
@@ -28,6 +29,7 @@ const originalPrice = Number(entry.data.originalPrice ?? 0);
 const installmentNumber = entry.data.installmentNumber || 4;
 const installmentPrice = Number(entry.data.installmentPrice ?? (price > 0 ? Math.round(price / installmentNumber) : 0));
 const hasInstallment = installmentPrice > 0 && price > 0;
+const discountPercentage = (calculateDiscountPercentage(originalPrice, price)).toFixed(0);
 
 const courseDetailSchema = {
   "@context": "https://schema.org",
@@ -244,7 +246,7 @@ const courseDetailSchema = {
                   )}
                   {entry.data.discountBadge && (
                     <span id="display-discount-badge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-rose-500/15 text-rose-500 border border-rose-500/30 whitespace-nowrap">
-                      {entry.data.discountBadge}
+                      {discountPercentage}% OFF
                     </span>
                   )}
                 </div>
@@ -345,7 +347,7 @@ const courseDetailSchema = {
   </div>
 </Layout>
 
-<script is:inline define:vars={{ courseId: entry.id, currency, price, installmentPrice, originalPrice }}>
+<script is:inline define:vars={{ courseId: entry.id, currency, price, installmentPrice, originalPrice, discountPercentage, embedVideoUrl }}>
   const radios = document.querySelectorAll('input[name="detail_plan"]');
   const enrollBtn = document.getElementById('detail-enroll-btn');
   const heroEnrollBtn = document.getElementById('hero-enroll-btn');

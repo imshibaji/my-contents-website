@@ -11,12 +11,12 @@ language: "Bengali, Hindi & English"
 mode: "Live Mentorship"
 status: "Enrolling Now"
 currency: "₹"
-price: 35000
+price: 999
 originalPrice: 60000
 discountBadge: "42% OFF"
 offerText: "Founding Cohort • Limited to 20 Seats"
-installmentNumber: 2
-installmentPrice: 18000
+installmentNumber: 3
+installmentPrice: 20000
 installmentPlanText: "Pay in 2 Bi-Monthly Milestones (₹18,000 x 2)"
 featuredImage: "/images/courses/agentic-ai-mcp-architecture.svg"
 videoTrailerUrl: ""
