@@ -19,11 +19,13 @@
 - Payment Failed: https://shibajidebnath.com/courses/payment-failed
 - Payment Success: https://shibajidebnath.com/courses/payment-success
 - Curated Engineering Experience: https://shibajidebnath.com/experience
+- Online Training: https://shibajidebnath.com/online-training
 - Pay: https://shibajidebnath.com/pay
 - Privacy Policy & Data Architecture: https://shibajidebnath.com/privacy
 - Terms of Service & Advisory Governance: https://shibajidebnath.com/terms
 
 ## Published Architectural Blueprints & Articles
+- [How to Stop Paying Cloud API Bills by Running Private LLMs via Ollama](https://shibajidebnath.com/articles/stop-paying-cloud-api-bills-private-llm-ollama): Cut out SaaS LLM API fees entirely. Learn how to configure a high-throughput, private local inference stack using Google's Apache-licensed Gemma 4 and Alibaba's Qwen 3.5 with Ollama, reverse proxy security, and production TypeScript and Python integrations.
 - [The New Seniority Ladder: Why 'Architect-Level AI Engineer' Is the Highest-Paid Skill You're Not Building](https://shibajidebnath.com/articles/agentic-ai-career-seniority): The AI gold rush is over; the architecture shortage is just beginning. This guide explains why senior engineers who ship production agentic systems with MCP are out-earning peers, and the concrete 16-week mentorship blueprint to become one.
 - [Why Your Architecture Never Ships: The Review Gap Holding Working Engineers Back](https://shibajidebnath.com/articles/architecture-review-gap): The difference between a senior and a principal engineer is rarely raw coding skill — it's whether anyone has ever torn down your architecture. A practical guide to closing the review gap and building a portfolio that interviews believe.
 - [Building Production Agentic Workflows with Model Context Protocol (MCP)](https://shibajidebnath.com/articles/building-production-agentic-workflows-with-mcp): Learn how to build resilient, cost-controlled agentic architectures using the open Model Context Protocol (MCP). Features dual TypeScript and Python implementations, resource governance, and isolated deployment patterns.

@@ -16,7 +16,7 @@ originalPrice: 60000
 discountBadge: "42% OFF"
 offerText: "Founding Cohort • Limited to 20 Seats"
 installmentNumber: 3
-installmentPrice: 20000
+installmentPrice: 18000
 installmentPlanText: "Pay in 2 Bi-Monthly Milestones (₹18,000 x 2)"
 featuredImage: "/images/courses/agentic-ai-mcp-architecture.svg"
 videoTrailerUrl: ""
