@@ -15,7 +15,7 @@
     "discountBadge": "37% OFF",
     "offerText": "Limited Cohort • 15 Seats",
     "installmentNumber": 2,
-    "price_installment": 13000,
+    "price_installment": 10000,
     "installmentPlanText": "Pay in 2 Monthly Milestones (₹13,000 x 2)"
   },
   "autonomous-agentic-ai-mcp-architecture": {
@@ -53,7 +53,7 @@
     "discountBadge": "37% OFF",
     "offerText": "Limited Cohort • 15 Seats",
     "installmentNumber": 2,
-    "price_installment": 13000,
+    "price_installment": 10000,
     "installmentPlanText": "Pay in 2 Monthly Milestones (₹13,000 x 2)"
   },
   "enterprise-nestjs-cqrs-architecture": {
@@ -67,7 +67,7 @@
     "mode": "Live Mentorship",
     "status": "Enrolling Now",
     "currency": "₹",
-    "price_full": 2999,
+    "price_full": 45000,
     "originalPrice": 75000,
     "discountBadge": "40% OFF",
     "offerText": "Founding Cohort • Limited to 20 Seats",
