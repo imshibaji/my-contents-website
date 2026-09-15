@@ -46,6 +46,8 @@ const courses = defineCollection({
     installmentNumber: z.number().default(1),
     installmentPrice: z.number().default(0),
     installmentPlanText: z.string().optional(),
+    priceBtn1Text: z.string().default('Enroll Now'),
+    priceBtn2Text: z.string().default('Installment Plan'),
     
     featuredImage: z.string().optional().default(''),
     videoTrailerUrl: z.string().optional().default(''),

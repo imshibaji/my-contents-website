@@ -72,7 +72,9 @@ const courseDetailSchema = {
           <h1 class="text-3xl sm:text-4xl lg:text-[2.85rem] font-black text-slate-900 dark:text-white tracking-tight leading-[1.14]">
             {entry.data.title}
           </h1>
-
+          <h2 class="ml-2 md:ml-4 -mt-4 text-md sm:text-lg lg:text-xl font-black text-sky-600 dark:text-sky-300 tracking-tight leading-[1.14]">
+            -- {entry.data.mode}
+          </h2>
           <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
             {entry.data.description}
           </p>
@@ -280,7 +282,7 @@ const courseDetailSchema = {
                 <div class="flex items-center gap-2.5">
                   <input type="radio" name="detail_plan" value="full" checked class="w-4 h-4 text-sky-600 focus:ring-0 cursor-pointer" />
                   <div>
-                    <span class="block font-bold text-slate-900 dark:text-white">Full 1-Year Access</span>
+                    <span class="block font-bold text-slate-900 dark:text-white">{entry.data.priceBtn1Text}</span>
                     <span class="block text-[10px] text-emerald-600 dark:text-emerald-400">Save {currency}{(originalPrice - price).toLocaleString('en-IN')}</span>
                   </div>
                 </div>
@@ -294,7 +296,7 @@ const courseDetailSchema = {
                 <div class="flex items-center gap-2.5">
                   <input type="radio" name="detail_plan" value="installment" class="w-4 h-4 text-sky-600 focus:ring-0 cursor-pointer" />
                   <div>
-                    <span class="block font-bold text-slate-900 dark:text-white">Quarterly Milestones</span>
+                    <span class="block font-bold text-slate-900 dark:text-white">{entry.data.priceBtn2Text}</span>
                     <span class="block text-[10px] text-slate-400">{entry.data.installmentPlanText}</span>
                   </div>
                 </div>
