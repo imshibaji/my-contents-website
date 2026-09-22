@@ -1,0 +1,12 @@
+# 1. Enable the rewrite engine
+RewriteEngine On
+RewriteBase /
+
+# 2. If the requested URL is not an actual existing file
+RewriteCond %{REQUEST_FILENAME} !-f
+
+# 3. And the requested URL is not an actual existing folder
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# 4. Redirect to the homepage using a 302 temporary redirect
+RewriteRule ^(.*)$ / [R=302,L]

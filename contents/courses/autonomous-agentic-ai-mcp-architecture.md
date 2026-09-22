@@ -1,5 +1,5 @@
 ---
-order: 5
+order: 2
 title: "Autonomous Agentic AI, MCP Server Architecture & Applied LLMs"
 description: "A 4-month advanced AI engineering mentorship. Master autonomous multi-agent orchestration, Model Context Protocol (MCP) server architecture, local air-gapped LLMs with Ollama, vector-backed RAG, and production n8n automation."
 summary: "16-week applied AI engineering accelerator featuring 32 live interactive sessions, custom MCP protocol development, LangGraph stateful agent graphs, Qdrant/pgvector embedding pipelines, and enterprise LLM production deployments."
@@ -8,16 +8,16 @@ level: "Intermediate to Advanced"
 duration: "4 Months (16 Weeks)"
 totalLessons: 32
 language: "Bengali, Hindi & English"
-mode: "Live Mentorship"
+mode: "Live 1-on-1 Mentorship"
 status: "Enrolling Now"
 currency: "₹"
-price: 999
+price: 45000
 originalPrice: 60000
 discountBadge: "42% OFF"
 offerText: "Founding Cohort • Limited to 20 Seats"
 installmentNumber: 3
-installmentPrice: 18000
-installmentPlanText: "Pay in 2 Bi-Monthly Milestones (₹18,000 x 2)"
+installmentPrice: 15000
+installmentPlanText: "Pay in 2 Bi-Monthly Milestones (₹15,000 x 3)"
 featuredImage: "/images/courses/agentic-ai-mcp-architecture.svg"
 videoTrailerUrl: ""
 tags: ["Agentic AI", "MCP Protocol", "LangGraph", "Ollama", "pgvector", "n8n", "Python", "TypeScript"]

@@ -11,7 +11,7 @@ language: "Bengali, Hindi & English"
 mode: "Live Mentorship"
 status: "Enrolling Now"
 currency: "₹"
-price: 999
+price: 30000
 originalPrice: 50000
 discountBadge: "40% OFF"
 offerText: "Founding Cohort • Limited to 20 Seats"
