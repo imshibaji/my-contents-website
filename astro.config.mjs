@@ -9,6 +9,13 @@ import courseCatalogPlugin from './src/utils/courseCatalogPlugin';
 export default defineConfig({
   output: 'static', // প্রতি পেজ সম্পূর্ণ স্ট্যাটিক HTML হিসেবে বিল্ড হবে
   site: 'https://shibajidebnath.com', // প্রোডাকশন ডোমেন
+  redirects: {
+    '/training': '/courses',
+    '/trainings/': '/courses',
+    '/mentoring': '/courses',
+    '/mentors': '/courses',
+    '/online-training': '/courses',
+  },
   
   markdown: {
     shikiConfig: {

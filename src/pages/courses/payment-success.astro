@@ -4,6 +4,20 @@ import Layout from '../../layouts/Layout.astro';
 // Google Ads Purchase Conversion Credentials
 const GOOGLE_ADS_ID = 'AW-16766094351'; // 👈 আপনার Ads ID বসান
 const ADS_PURCHASE_CONVERSION_LABEL = 'Purchased'; // 👈 Ads Purchase Conversion Label বসান
+
+// URL ডেটা
+const urlData = new URL(Astro.url);
+let txnid = urlData.searchParams.get('txn_id');
+let amount = urlData.searchParams.get('amount') || urlData.searchParams.get('price');
+let course = urlData.searchParams.get('course');
+
+// URL ডেটা by Post Request
+if (Astro.request.method === 'POST') {
+  const data = await Astro.request.formData();
+  txnid = data.get('txn_id')?.toString() || null;
+  amount = (data.get('amount') || data.get('price'))?.toString() || null;
+  course = data.get('course')?.toString() || null;
+}
 ---
 
 <Layout title="Enrollment Confirmed | Shibaji Debnath" description="Payment successfully verified.">
@@ -58,12 +72,12 @@ const ADS_PURCHASE_CONVERSION_LABEL = 'Purchased'; // 👈 Ads Purchase Conversi
   </div>
 
   <!-- Dynamic Parameter Resolution & Purchase Conversion Tracking -->
-  <script is:inline define:vars={{ GOOGLE_ADS_ID, ADS_PURCHASE_CONVERSION_LABEL }}>
+  <script is:inline define:vars={{ GOOGLE_ADS_ID, ADS_PURCHASE_CONVERSION_LABEL, txnid, amount, course }}>
     function initConfirmedEnrollment() {
       const params = new URLSearchParams(window.location.search);
-      const txnid = params.get('txnid') || params.get('txn_id') || `TXN_${Date.now()}`;
-      const amount = parseFloat(params.get('amount') || '0');
-      const course = params.get('course') || 'Technical Architecture Cohort';
+      const txnid = txnid || params.get('txnid') || params.get('txn_id') || `TXN_${Date.now()}`;
+      const amount = amount || parseFloat(params.get('amount') || '0');
+      const course = course || params.get('course') || 'Technical Architecture Cohort';
 
       // UI আপডেট
       const txnEl = document.getElementById('display-txn-id');

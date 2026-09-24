@@ -19,12 +19,14 @@
 - Payment Failed: https://shibajidebnath.com/courses/payment-failed
 - Payment Success: https://shibajidebnath.com/courses/payment-success
 - Curated Engineering Experience: https://shibajidebnath.com/experience
-- Online Training: https://shibajidebnath.com/online-training
 - Pay: https://shibajidebnath.com/pay
 - Privacy Policy & Data Architecture: https://shibajidebnath.com/privacy
 - Terms of Service & Advisory Governance: https://shibajidebnath.com/terms
 
 ## Published Architectural Blueprints & Articles
+- [Architecting High-Throughput TypeScript APIs with NestJS and Fastify](https://shibajidebnath.com/articles/architecting-high-throughput-typescript-apis-nestjs-fastify): Eliminating V8 serialization bottlenecks and event-loop lag by replacing default Express runtimes with Fastify, schema-compiled JSON serialization, and zero-allocation routing in NestJS.
+- [Clean Architecture in Flutter: Structuring Enterprise Cross-Platform Applications](https://shibajidebnath.com/articles/clean-architecture-flutter-enterprise-applications): How decoupling domain business logic from the Flutter widget tree and Dart UI isolate eliminates cascading frame drops, isolate event-loop starvation, and multi-team code regressions.
+- [Why We Replaced Heavy SPAs with Astro: Achieving Sub-Second LCP in Production](https://shibajidebnath.com/articles/why-we-replaced-heavy-spas-with-astro-sub-second-lcp): How replacing client-heavy SPAs with Astro's Islands Architecture reduced frontend bundle footprints, curbed CDN bandwidth costs, and brought Largest Contentful Paint down to 480ms on low-tier mobile networks.
 - [Monolith First vs Microservices: An Ex-Google Architect’s Decision Framework](https://shibajidebnath.com/articles/monolith-first-vs-microservices-architect-decision-framework): Understand when to build a modular monolith and when microservices are genuinely necessary. Includes a concrete decision tree, infrastructure stack breakdowns, and dual-language boundary decoupling patterns.
 - [Building Production-Ready AI Agents with LangChain and TypeScript](https://shibajidebnath.com/articles/building-production-ready-ai-agents-langchain-typescript): Most tutorials showcase LangChain in Python using trivial toy examples. This guide shifts to production full-stack engineering with TypeScript (ES Modules), detailing model routing, Zod/Pydantic tool calling, and live runtime debugging.
 - [How to Stop Paying Cloud API Bills by Running Private LLMs via Ollama](https://shibajidebnath.com/articles/stop-paying-cloud-api-bills-private-llm-ollama): Cut out SaaS LLM API fees entirely. Learn how to configure a high-throughput, private local inference stack using Google's Apache-licensed Gemma 4 and Alibaba's Qwen 3.5 with Ollama, reverse proxy security, and production TypeScript and Python integrations.
