@@ -18,7 +18,7 @@ offerText: "Founding Cohort • Limited to 20 Seats"
 installmentNumber: 3
 installmentPrice: 15000
 installmentPlanText: "Pay in 3 Bi-Monthly Milestones (₹15,000 x 3)"
-featuredImage: "/images/courses/enterprise-nestjs-cqrs.svg"
+featuredImage: "/images/courses/enterprise-nestjs-cqrs.png"
 videoTrailerUrl: ""
 tags: ["NestJS", "CQRS", "Event Sourcing", "Kafka", "BullMQ", "PostgreSQL", "Redis", "TypeScript"]
 prerequisites: [

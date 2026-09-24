@@ -18,7 +18,7 @@ offerText: "Founding Cohort • Limited to 15 Seats"
 installmentNumber: 4
 installmentPrice: 20000
 installmentPlanText: "Pay in 4 Quarterly Milestones (₹25,000 x 4)"
-featuredImage: "/images/courses/enterprise-system-architecture.svg"
+featuredImage: "/images/courses/enterprise-system-architecture.png"
 videoTrailerUrl: ""
 tags: ["System Architecture", "NestJS", "Kubernetes", "Redis", "Kafka", "PostgreSQL", "Docker", "Agentic AI"]
 prerequisites: [

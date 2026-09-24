@@ -18,7 +18,7 @@ offerText: "Founding Cohort • Limited to 20 Seats"
 installmentNumber: 2
 installmentPrice: 15000
 installmentPlanText: "Pay in 2 Monthly Milestones (₹15,000 x 2)"
-featuredImage: "/images/courses/high-performance-postgresql.svg"
+featuredImage: "/images/courses/high-performance-postgresql.png"
 videoTrailerUrl: ""
 tags: ["PostgreSQL", "Query Optimization", "PgBouncer", "Database Internals", "MVCC", "Indexing", "Performance Tuning", "SQL"]
 prerequisites: [

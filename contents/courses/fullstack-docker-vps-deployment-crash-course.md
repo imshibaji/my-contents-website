@@ -18,7 +18,7 @@ offerText: "Community Access • Limited Seats"
 installmentNumber: 1
 installmentPrice: 0
 installmentPlanText: "One-Time Accessible Community Fee"
-featuredImage: "/images/courses/docker-vps-crash-course.svg"
+featuredImage: "/images/courses/docker-vps-crash-course.png"
 videoTrailerUrl: ""
 tags: ["Docker", "Linux", "VPS Deployment", "Nginx", "Git", "PostgreSQL", "Full-Stack"]
 prerequisites: [

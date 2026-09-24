@@ -18,7 +18,7 @@ offerText: "Founding Cohort • Limited to 20 Seats"
 installmentNumber: 3
 installmentPrice: 15000
 installmentPlanText: "Pay in 2 Bi-Monthly Milestones (₹15,000 x 3)"
-featuredImage: "/images/courses/agentic-ai-mcp-architecture.svg"
+featuredImage: "/images/courses/agentic-ai-mcp-architecture.png"
 videoTrailerUrl: ""
 tags: ["Agentic AI", "MCP Protocol", "LangGraph", "Ollama", "pgvector", "n8n", "Python", "TypeScript"]
 prerequisites: [

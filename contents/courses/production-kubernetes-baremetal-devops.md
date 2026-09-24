@@ -18,7 +18,7 @@ offerText: "Founding Cohort • Limited to 20 Seats"
 installmentNumber: 2
 installmentPrice: 18000
 installmentPlanText: "Pay in 2 Bi-Monthly Milestones (₹18,000 x 2)"
-featuredImage: "/images/courses/production-kubernetes-devops.svg"
+featuredImage: "/images/courses/production-kubernetes-devops.png"
 videoTrailerUrl: ""
 tags: ["Kubernetes", "Docker", "Linux", "Traefik", "CI/CD", "Prometheus", "Grafana", "Bash"]
 prerequisites: [

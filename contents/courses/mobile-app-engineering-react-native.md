@@ -18,7 +18,7 @@ offerText: "Limited Cohort • 15 Seats"
 installmentNumber: 2
 installmentPrice: 14000
 installmentPlanText: "Pay in 2 Monthly Milestones (₹14,000 x 2)"
-featuredImage: "/images/courses/mobile-app-engineering-react-native.svg"
+featuredImage: "/images/courses/mobile-app-engineering-react-native.png"
 videoTrailerUrl: ""
 tags: ["React Native", "Expo", "TypeScript", "Mobile Apps", "SQLite", "Reanimated", "Android", "iOS"]
 prerequisites: [

@@ -18,7 +18,7 @@ offerText: "Limited Cohort • 15 Seats"
 installmentNumber: 2
 installmentPrice: 13000
 installmentPlanText: "Pay in 2 Monthly Milestones (₹13,000 x 2)"
-featuredImage: "/images/courses/production-flutter-dart.svg"
+featuredImage: "/images/courses/production-flutter-dart.png"
 videoTrailerUrl: ""
 tags: ["Flutter", "Dart", "BLoC", "Clean Architecture", "SQLite", "Android", "iOS", "Fastlane"]
 prerequisites: [

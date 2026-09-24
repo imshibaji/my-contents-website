@@ -18,7 +18,7 @@ offerText: "Limited Cohort • 15 Seats"
 installmentNumber: 2
 installmentPrice: 13000
 installmentPlanText: "Pay in 2 Monthly Milestones (₹13,000 x 2)"
-featuredImage: "/images/courses/modern-frontend-react-astro.svg"
+featuredImage: "/images/courses/modern-frontend-react-astro.png"
 videoTrailerUrl: ""
 tags: ["React", "TypeScript", "Astro", "Tailwind CSS", "Zustand", "TanStack Query", "Vite"]
 prerequisites: [

@@ -18,7 +18,7 @@ offerText: "Limited Cohort • 15 Seats"
 installmentNumber: 2
 installmentPrice: 10000
 installmentPlanText: "Pay in 2 Monthly Milestones (₹13,000 x 2)"
-featuredImage: "/images/courses/enterprise-angular-signals.svg"
+featuredImage: "/images/courses/enterprise-angular-signals.png"
 videoTrailerUrl: ""
 tags: ["Angular", "TypeScript", "Signals", "RxJS", "Nx Monorepo", "Micro-Frontends", "NgRx"]
 prerequisites: [
