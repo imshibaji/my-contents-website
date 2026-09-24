@@ -15,6 +15,7 @@ export default defineConfig({
     '/mentoring': '/courses',
     '/mentors': '/courses',
     '/online-training': '/courses',
+    '/trainings/react-native-app-development/': '/courses/mobile-app-engineering-react-native',
   },
   
   markdown: {
