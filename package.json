@@ -6,7 +6,8 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "build": "astro build",
+    "build": "astro build && npm run verify:deploy",
+    "verify:deploy": "node scripts/verify-deploy.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "dev:astro": "astro dev",

@@ -2,7 +2,22 @@
 // public/api/payu/init.php
 declare(strict_types=1);
 
-require_once __DIR__ . '/config.php';
+// config.php না থাকলে require_once একটি fatal error দেয়, ফলে খালি 500 body আসে
+// (কোনো JSON বা CORS header ছাড়াই) — ফ্রন্টএন্ডের জন্য সেটি অনিশ্চয়তা তৈরি করে।
+// তাই ফাইলটি আগে পরীক্ষা করে স্পষ্ট ত্রুটি ফেরত দেওয়া হচ্ছে।
+$payuConfigPath = __DIR__ . '/config.php';
+if (!is_file($payuConfigPath)) {
+    error_log('[PayU] Missing required file: ' . $payuConfigPath);
+    http_response_code(500);
+    header('Content-Type: application/json; charset=UTF-8');
+    echo json_encode([
+        'status'  => 'error',
+        'code'    => 'payu_config_missing',
+        'message' => 'Payment gateway is not installed on the server. Please contact support.',
+    ]);
+    exit;
+}
+require_once $payuConfigPath;
 
 header('Content-Type: application/json; charset=UTF-8');
 

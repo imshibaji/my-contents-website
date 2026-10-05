@@ -20,19 +20,23 @@ if (session_status() === PHP_SESSION_NONE) {
 // ==========================================
 // SMTP Credentials & Global Config
 // ==========================================
-define('SMTP_GMAIL_USER', 'imshibaji@gmail.com');
-define('SMTP_GMAIL_PASS', 'YOUR_16_DIGIT_GMAIL_APP_PASSWORD'); // 👈 আপনার ১৬ ডিজিটের অ্যাপ পাসওয়ার্ড দিন
+if (!defined('SMTP_GMAIL_USER')) {
+    define('SMTP_GMAIL_USER', getenv('SMTP_GMAIL_USER') ?: 'imshibaji@gmail.com');
+}
+if (!defined('SMTP_GMAIL_PASS')) {
+    define('SMTP_GMAIL_PASS', getenv('SMTP_GMAIL_PASS') ?: '');
+}
 
 /**
  * Lightweight Native Socket SMTP Sender (Re-usable Helper)
  */
 function sendViaGmailSMTP(
-    string $to, 
-    string $subject, 
-    string $body, 
-    string $replyToEmail, 
-    string $replyToName, 
-    string $smtpUser = SMTP_GMAIL_USER, 
+    string $to,
+    string $subject,
+    string $body,
+    string $replyToEmail,
+    string $replyToName,
+    string $smtpUser = SMTP_GMAIL_USER,
     string $smtpPass = SMTP_GMAIL_PASS,
     bool $isHtml = false
 ): bool {

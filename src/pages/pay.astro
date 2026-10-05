@@ -66,7 +66,9 @@ const GATEWAY_SURCHARGE_PERCENT = 2.36;
               type="text" 
               id="firstname" 
               name="firstname" 
+              form="custom_checkout_form"
               required 
+              autocomplete="name"
               placeholder="e.g. Shibaji Debnath" 
               class="w-full px-4 py-3 rounded-xl border border-sky-200 dark:border-sky-900 bg-sky-50/20 dark:bg-slate-900/60 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-500 text-sm font-mono"
             />
@@ -82,7 +84,9 @@ const GATEWAY_SURCHARGE_PERCENT = 2.36;
                 type="email" 
                 id="email" 
                 name="email" 
+                form="custom_checkout_form"
                 required 
+                autocomplete="email"
                 placeholder="client@domain.com" 
                 class="w-full px-4 py-3 rounded-xl border border-sky-200 dark:border-sky-900 bg-sky-50/20 dark:bg-slate-900/60 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-500 text-sm font-mono"
               />
@@ -96,7 +100,12 @@ const GATEWAY_SURCHARGE_PERCENT = 2.36;
                 type="tel" 
                 id="phone" 
                 name="phone" 
+                form="custom_checkout_form"
                 required 
+                autocomplete="tel"
+                inputmode="numeric"
+                pattern="[0-9+]{10,15}"
+                title="Enter a valid 10-15 digit phone number."
                 placeholder="8981009499" 
                 class="w-full px-4 py-3 rounded-xl border border-sky-200 dark:border-sky-900 bg-sky-50/20 dark:bg-slate-900/60 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-500 text-sm font-mono"
               />
@@ -113,6 +122,7 @@ const GATEWAY_SURCHARGE_PERCENT = 2.36;
                 type="text" 
                 id="purpose" 
                 name="purpose" 
+                form="custom_checkout_form"
                 required 
                 placeholder="e.g. Architecture Sprint" 
                 class="w-full px-4 py-3 rounded-xl border border-sky-200 dark:border-sky-900 bg-sky-50/20 dark:bg-slate-900/60 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-500 text-sm font-mono"
@@ -129,9 +139,11 @@ const GATEWAY_SURCHARGE_PERCENT = 2.36;
                   type="number" 
                   id="amount" 
                   name="amount" 
+                  form="custom_checkout_form"
                   min="1" 
                   step="any" 
                   required 
+                  inputmode="decimal"
                   placeholder="5000" 
                   class="w-full pl-8 pr-4 py-3 rounded-xl border border-sky-200 dark:border-sky-900 bg-sky-50/20 dark:bg-slate-900/60 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-500 text-sm font-mono font-bold"
                 />
@@ -163,6 +175,9 @@ const GATEWAY_SURCHARGE_PERCENT = 2.36;
 
           <!-- Tab 1: PayU Automated Form -->
           <div id="tab_panel_payu" class="tab-panel space-y-6">
+            <!-- ইনপুটগুলো এই ফর্মের বাইরে (ট্যাব প্যানেলের উপরে) অবস্থিত, তাই form="custom_checkout_form"
+                 অ্যাট্রিবিউট দিয়ে সেগুলোকে ফর্মের সাথে যুক্ত করা হয়েছে — না হলে native required
+                 validation কখনোই চালু হবে না। -->
             <form id="custom_checkout_form" class="space-y-5">
               <div class="flex items-center justify-between p-4 rounded-xl bg-sky-50 dark:bg-sky-950/20 border border-sky-200 dark:border-sky-500/30">
                 <div class="flex items-center gap-3">
@@ -232,8 +247,13 @@ const GATEWAY_SURCHARGE_PERCENT = 2.36;
           <div id="tab_panel_qr" class="tab-panel hidden space-y-4 text-center">
             <div class="p-6 rounded-2xl bg-slate-50 dark:bg-[#070b14] border border-slate-200 dark:border-slate-800/80 flex flex-col items-center">
               <div class="p-4 bg-white rounded-2xl shadow-md border border-slate-200 inline-block">
-                <img id="qr_image_display" src="/api/qr.php" alt="UPI QR Code" class="w-52 h-52 object-contain rounded-lg mx-auto" />
+                <img id="qr_image_display" src="" alt="UPI QR Code" width="208" height="208" class="w-52 h-52 object-contain rounded-lg mx-auto" />
               </div>
+              <p id="qr_fallback_note" class="hidden mt-3 p-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/60 text-amber-800 dark:text-amber-300 text-xs font-mono">
+                <span id="qr_fallback_reason">QR ইমেজ লোড হচ্ছে না।</span>
+                নিচের VPA ব্যবহার করে সরাসরি অ্যাপ থেকেও পেমেন্ট করতে পারেন:
+                <span class="font-bold">{DEFAULT_UPI_CONFIG.upiId}</span>
+              </p>
               <p class="text-xs font-mono text-slate-700 dark:text-slate-300 mt-4 font-bold">
                 Scan to Pay <span id="qr_amount_display" class="text-emerald-600 dark:text-emerald-400">₹0</span>
               </p>
@@ -252,13 +272,26 @@ const GATEWAY_SURCHARGE_PERCENT = 2.36;
                 <span class="text-slate-500">Bank Name:</span>
                 <span class="font-bold text-slate-950 dark:text-white">{GLOBAL_BANK_INFO.bankName}</span>
               </div>
-              <div class="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800">
+              <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
                 <span class="text-slate-500">Account Number:</span>
-                <span class="font-bold text-slate-950 dark:text-white">{GLOBAL_BANK_INFO.accountNumber}</span>
+                <span class="flex items-center gap-2">
+                  <span class="font-bold text-slate-950 dark:text-white">{GLOBAL_BANK_INFO.accountNumber}</span>
+                  <button type="button" data-copy-value={GLOBAL_BANK_INFO.accountNumber} class="copy-rail-btn px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-[10px] font-bold transition-all cursor-pointer">Copy</button>
+                </span>
               </div>
-              <div class="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800">
+              <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
                 <span class="text-slate-500">IFSC Code:</span>
-                <span class="font-bold text-emerald-600 dark:text-emerald-400">{GLOBAL_BANK_INFO.ifscCode}</span>
+                <span class="flex items-center gap-2">
+                  <span class="font-bold text-emerald-600 dark:text-emerald-400">{GLOBAL_BANK_INFO.ifscCode}</span>
+                  <button type="button" data-copy-value={GLOBAL_BANK_INFO.ifscCode} class="copy-rail-btn px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-[10px] font-bold transition-all cursor-pointer">Copy</button>
+                </span>
+              </div>
+              <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                <span class="text-slate-500">UPI / VPA (same bank):</span>
+                <span class="flex items-center gap-2">
+                  <span class="font-bold text-slate-950 dark:text-white truncate">{DEFAULT_UPI_CONFIG.upiId}</span>
+                  <button type="button" data-copy-value={DEFAULT_UPI_CONFIG.upiId} class="copy-rail-btn px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-[10px] font-bold transition-all cursor-pointer">Copy</button>
+                </span>
               </div>
               <div class="flex justify-between pt-1">
                 <span class="text-slate-500">Branch:</span>
@@ -336,6 +369,10 @@ const GATEWAY_SURCHARGE_PERCENT = 2.36;
 
   <script define:vars={{ DEFAULT_UPI_CONFIG, GATEWAY_SURCHARGE_PERCENT }} is:inline>
     function initCustomCheckoutTerminal() {
+      // এই ফাংশন DOMContentLoaded ও astro:page-load দুটোতেই ডাকা হয়, তাই একই
+      // পেজে দুইবার বাইন্ড না হয় তার জন্য idempotent রাখা হচ্ছে।
+      if (document.body.dataset.payTerminalReady === 'true') return;
+
       const form = document.getElementById('custom_checkout_form');
       const nameInput = document.getElementById('firstname');
       const emailInput = document.getElementById('email');
@@ -359,10 +396,16 @@ const GATEWAY_SURCHARGE_PERCENT = 2.36;
 
       const directUpiLink = document.getElementById('direct_upi_intent_link');
       const qrImageDisplay = document.getElementById('qr_image_display');
+      const qrFallback = document.getElementById('qr_fallback_note');
+      const qrFallbackReason = document.getElementById('qr_fallback_reason');
       const qrAmountDisplay = document.getElementById('qr_amount_display');
       const copyUpiBtn = document.getElementById('copy_upi_btn');
 
       if (!nameInput || !amountInput) return;
+
+      // DOM রেডি হওয়ার পরেই ফ্ল্যাগ সেট করা হচ্ছে, যাতে বাদ পড়া এলিমেন্টের
+      // জন্য পরের কলে আবার চেষ্টা করা যায়।
+      document.body.dataset.payTerminalReady = 'true';
 
       let currentSelectedRail = 'payu';
 
@@ -407,12 +450,64 @@ const GATEWAY_SURCHARGE_PERCENT = 2.36;
         btnAmount.textContent = `₹${totalPayable.toLocaleString('en-IN')}`;
 
         // UPI ও QR আপডেট (ডিরেক্ট রেলে সারচার্জ ছাড়া মূল অ্যামাউন্ট চার্জ হবে)
-        qrAmountDisplay.textContent = `₹${baseAmount.toLocaleString('en-IN')}`;
+        if (qrAmountDisplay) {
+          qrAmountDisplay.textContent = `₹${baseAmount.toLocaleString('en-IN')}`;
+        }
         const upiUri = `upi://pay?pa=${encodeURIComponent(DEFAULT_UPI_CONFIG.upiId)}&pn=${encodeURIComponent(DEFAULT_UPI_CONFIG.upiName)}&am=${baseAmount.toFixed(2)}&cu=INR&tn=${safeNote}`;
-        directUpiLink.href = upiUri;
+        const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiUri)}`;
+        // Zero amount must never produce a payable intent/QR, otherwise scanning
+        // it would attempt a Rs 0 charge.
+        const isAmountUsable = baseAmount > 0;
 
-        // লোকাল PHP QR কোড জেনারেটরে কল পাঠানো
-        qrImageDisplay.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiUri)}`;
+        if (directUpiLink) {
+          if (isAmountUsable) {
+            directUpiLink.href = upiUri;
+            directUpiLink.classList.remove('opacity-50', 'pointer-events-none', 'cursor-not-allowed');
+          } else {
+            directUpiLink.removeAttribute('href');
+            directUpiLink.classList.add('opacity-50', 'pointer-events-none', 'cursor-not-allowed');
+          }
+        }
+
+        if (qrImageDisplay) {
+          qrImageDisplay.classList.toggle('opacity-40', !isAmountUsable);
+          if (isAmountUsable) {
+            qrImageDisplay.alt = `UPI QR code for ${DEFAULT_UPI_CONFIG.upiId}`;
+            // Reassigning src on every keystroke refetches the remote QR image,
+            // so only update it when the payload actually changed.
+            if (qrImageDisplay.getAttribute('src') !== qrSrc) {
+              qrImageDisplay.src = qrSrc;
+            }
+          } else {
+            qrImageDisplay.removeAttribute('src');
+            qrImageDisplay.alt = 'Enter an amount to generate the UPI QR code';
+          }
+        }
+
+        // QR image টা third-party service থেকে আসে, তাই ব্লক হলে খালি বাক্স না দেখিয়ে
+        // VPA টা দেখানো হচ্ছে যাতে টাকা পাঠানোর পথ বন্ধ হয়ে না যায়।
+        if (qrFallback) {
+          if (qrFallbackReason) {
+            qrFallbackReason.textContent = isAmountUsable
+              ? 'QR ইমেজ লোড করা যায়নি।'
+              : 'অ্যামাউন্ট দিলেই QR তৈরি হবে।';
+          }
+          qrFallback.classList.toggle('hidden', isAmountUsable && !qrImageDisplayFailed);
+        }
+      }
+
+      let qrImageDisplayFailed = false;
+      if (qrImageDisplay) {
+        qrImageDisplay.addEventListener('error', () => {
+          qrImageDisplayFailed = true;
+          qrImageDisplay.classList.add('hidden');
+          if (qrFallback) qrFallback.classList.remove('hidden');
+        });
+        qrImageDisplay.addEventListener('load', () => {
+          qrImageDisplayFailed = false;
+          qrImageDisplay.classList.remove('hidden');
+          if (qrFallback) qrFallback.classList.add('hidden');
+        });
       }
 
       nameInput.addEventListener('input', syncFinancials);
@@ -420,15 +515,41 @@ const GATEWAY_SURCHARGE_PERCENT = 2.36;
       amountInput.addEventListener('input', syncFinancials);
       syncFinancials();
 
-      // কপি বাটন
+      // কপি বাটন (UPI VPA এবং ব্যাংক ডিটেইলস — data-copy-value থেকে value নেয়)
+      async function copyToClipboard(value, button) {
+        const originalLabel = button.textContent;
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(value);
+          } else {
+            // http:// লোকাল ডেভে clipboard API কাজ করে না, তাই fallback
+            const helper = document.createElement('textarea');
+            helper.value = value;
+            helper.setAttribute('readonly', '');
+            helper.style.position = 'fixed';
+            helper.style.opacity = '0';
+            document.body.appendChild(helper);
+            helper.select();
+            document.execCommand('copy');
+            document.body.removeChild(helper);
+          }
+          button.textContent = 'Copied!';
+        } catch {
+          button.textContent = 'Copy failed';
+        }
+        setTimeout(() => {
+          button.textContent = originalLabel;
+        }, 2000);
+      }
+
+      document.querySelectorAll('[data-copy-value]').forEach((button) => {
+        button.addEventListener('click', () => {
+          copyToClipboard(button.dataset.copyValue, button);
+        });
+      });
+
       if (copyUpiBtn) {
-        copyUpiBtn.onclick = () => {
-          navigator.clipboard.writeText(DEFAULT_UPI_CONFIG.upiId);
-          copyUpiBtn.textContent = 'Copied!';
-          setTimeout(() => {
-            copyUpiBtn.textContent = 'Copy';
-          }, 2000);
-        };
+        copyUpiBtn.onclick = () => copyToClipboard(DEFAULT_UPI_CONFIG.upiId, copyUpiBtn);
       }
 
       // চ্যানেল সুইচিং লজিক
@@ -461,10 +582,48 @@ const GATEWAY_SURCHARGE_PERCENT = 2.36;
           e.preventDefault();
           errorBox.classList.add('hidden');
 
+          // ইনপুটগুলো ফর্মের বাইরে থাকায় native validation এড়িয়ে যেতে পারে,
+          // তাই এখানে স্পষ্টভাবে যাচাই করে নিচ্ছি।
+          const missing = [];
+          if (!nameInput.value.trim()) missing.push('full name');
+          if (!emailInput.value.trim()) missing.push('billing email');
+          if (!phoneInput.value.trim()) missing.push('phone number');
+          if (!purposeInput.value.trim()) missing.push('purpose');
+
+          if (missing.length > 0) {
+            errorMsg.textContent = `Please fill in: ${missing.join(', ')}.`;
+            errorBox.classList.remove('hidden');
+            missing[0].split(' ')[0] === 'full'
+              ? nameInput.focus()
+              : missing[0].split(' ')[0] === 'billing'
+                ? emailInput.focus()
+                : missing[0].split(' ')[0] === 'phone'
+                  ? phoneInput.focus()
+                  : purposeInput.focus();
+            return;
+          }
+
+          const emailValue = emailInput.value.trim();
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+            errorMsg.textContent = 'Please enter a valid billing email address.';
+            errorBox.classList.remove('hidden');
+            emailInput.focus();
+            return;
+          }
+
+          const phoneDigits = phoneInput.value.replace(/[^\d+]/g, '');
+          if (phoneDigits.replace('+', '').length < 10) {
+            errorMsg.textContent = 'Please enter a valid phone number (at least 10 digits).';
+            errorBox.classList.remove('hidden');
+            phoneInput.focus();
+            return;
+          }
+
           const parsedAmount = parseFloat(amountInput.value);
           if (isNaN(parsedAmount) || parsedAmount <= 0) {
             errorMsg.textContent = 'Please enter a valid amount greater than zero.';
             errorBox.classList.remove('hidden');
+            amountInput.focus();
             return;
           }
 
@@ -491,7 +650,25 @@ const GATEWAY_SURCHARGE_PERCENT = 2.36;
               body: JSON.stringify(payload)
             });
 
-            const data = await res.json();
+            // PHP ফেইল করলে 500 + খালি body ফেরত দেয়; res.json() সেটাতে SyntaxError
+            // ছুঁড়ে দেয়, যা ভুলভাবে "network failure" বলে দেখাত। তাই আগে HTTP স্টেটাস দেখি।
+            let data = null;
+            let parseFailed = false;
+            try {
+              data = await res.json();
+            } catch (parseErr) {
+              parseFailed = true;
+            }
+
+            if (!res.ok || parseFailed) {
+              errorMsg.textContent = `Gateway unreachable (HTTP ${res.status}${
+                parseFailed ? ', empty response' : ''
+              }). Please try again or use the direct UPI rail.`;
+              errorBox.classList.remove('hidden');
+              submitBtn.disabled = false;
+              btnText.textContent = 'Proceed to PayU Gateway';
+              return;
+            }
 
             if (data.status === 'success') {
               btnText.textContent = 'Redirecting to Gateway...';

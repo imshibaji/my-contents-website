@@ -6,6 +6,7 @@ const pathname = new URL(Astro.request.url).pathname;
 const currentPath = pathname.replace(/\/$/, "");
 
 const navItems = [
+  { name: "Free Tools", href: "/tools" },
   { name: "Case Studies", href: "/case-studies" },
   { name: "Courses", href: "/courses" },
   { name: "Experience", href: "/experience" },

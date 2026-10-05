@@ -1,23 +1,25 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
 
 // Google Ads Purchase Conversion Credentials
-const GOOGLE_ADS_ID = 'AW-16766094351'; // 👈 আপনার Ads ID বসান
-const ADS_PURCHASE_CONVERSION_LABEL = 'Purchased'; // 👈 Ads Purchase Conversion Label বসান
+const GOOGLE_ADS_ID = 'AW-16766094351';
+const ADS_PURCHASE_CONVERSION_LABEL = 'Purchased';
 
-// URL ডেটা
-const urlData = new URL(Astro.url);
-let txnid = urlData.searchParams.get('txn_id');
-let amount = urlData.searchParams.get('amount') || urlData.searchParams.get('price');
-let course = urlData.searchParams.get('course');
-
-// URL ডেটা by Post Request
-if (Astro.request.method === 'POST') {
-  const data = await Astro.request.formData();
-  txnid = data.get('txn_id')?.toString() || null;
-  amount = (data.get('amount') || data.get('price'))?.toString() || null;
-  course = data.get('course')?.toString() || null;
+// স্লাগ -> ডিসপ্লে টাইটেল ম্যাপ (slug পাঠানো হয়, ইউজার টাইটেল দেখুন)
+const courses = await getCollection('courses');
+const COURSE_TITLES: Record<string, string> = {};
+for (const c of courses) {
+  COURSE_TITLES[c.id.replace(/\.md$/, '')] = c.data.title;
 }
+
+// এই পেজটি static build, তাই build সময়ে query string পাওয়া যায় না।
+// runtime-এ URL param পড়া হয় (script-এ), নিচের server-side মানগুলো শুধু fallback।
+const urlData = new URL(Astro.url);
+const serverTxnid = urlData.searchParams.get('txnid') || urlData.searchParams.get('txn_id');
+const serverAmount = urlData.searchParams.get('amount') || urlData.searchParams.get('price');
+const serverCourse = urlData.searchParams.get('course');
+const isFreeEnrollment = urlData.searchParams.get('free') === '1';
 ---
 
 <Layout title="Enrollment Confirmed | Shibaji Debnath" description="Payment successfully verified.">
@@ -40,21 +42,25 @@ if (Astro.request.method === 'POST') {
 
       <!-- Dynamic Transaction Details Card -->
       <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-[#0b1222] border border-slate-200 dark:border-slate-800/80 text-xs font-mono text-left space-y-2 text-slate-700 dark:text-slate-300">
-        <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800/60">
-          <span class="text-slate-500 dark:text-slate-400">Enrolled Program:</span>
-          <span id="display-course-name" class="font-bold text-slate-900 dark:text-white truncate max-w-[200px]">Technical Cohort</span>
+        <div class="flex justify-between items-start gap-3 py-1 border-b border-slate-200 dark:border-slate-800/60">
+          <span class="text-slate-500 dark:text-slate-400 shrink-0">Enrolled Program:</span>
+          <span id="display-course-name" class="font-bold text-slate-900 dark:text-white text-right break-words">Awaiting confirmation…</span>
         </div>
-        <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800/60">
-          <span class="text-slate-500 dark:text-slate-400">Transaction ID:</span>
-          <span id="display-txn-id" class="font-bold text-slate-800 dark:text-slate-200">--</span>
+        <div class="flex justify-between items-center gap-3 py-1 border-b border-slate-200 dark:border-slate-800/60">
+          <span class="text-slate-500 dark:text-slate-400 shrink-0">Transaction ID:</span>
+          <span id="display-txn-id" class="font-bold text-slate-800 dark:text-slate-200 break-all text-right">--</span>
         </div>
-        <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800/60">
-          <span class="text-slate-500 dark:text-slate-400">Amount Paid:</span>
-          <span id="display-amount" class="font-bold text-emerald-600 dark:text-emerald-400">₹0.00</span>
+        <div class="flex justify-between items-center gap-3 py-1 border-b border-slate-200 dark:border-slate-800/60">
+          <span class="text-slate-500 dark:text-slate-400 shrink-0">Amount Paid:</span>
+          <span id="display-amount" class="font-bold text-emerald-600 dark:text-emerald-400 shrink-0">₹0.00</span>
+        </div>
+        <div class="flex justify-between items-center gap-3 py-1 border-b border-slate-200 dark:border-slate-800/60">
+          <span class="text-slate-500 dark:text-slate-400 shrink-0">Payment Mode:</span>
+          <span class="text-slate-800 dark:text-slate-200 font-medium text-right">Online Gateway</span>
         </div>
         <div class="flex justify-between items-center pt-1">
-          <span class="text-slate-500 dark:text-slate-400">Status:</span>
-          <span class="text-emerald-600 dark:text-emerald-400 font-bold uppercase">Active / Verified</span>
+          <span class="text-slate-500 dark:text-slate-400 shrink-0">Status:</span>
+          <span id="display-status" class="text-emerald-600 dark:text-emerald-400 font-bold uppercase text-right">Active / Verified</span>
         </div>
       </div>
 
@@ -72,24 +78,34 @@ if (Astro.request.method === 'POST') {
   </div>
 
   <!-- Dynamic Parameter Resolution & Purchase Conversion Tracking -->
-  <script is:inline define:vars={{ GOOGLE_ADS_ID, ADS_PURCHASE_CONVERSION_LABEL, txnid, amount, course }}>
+  <script is:inline define:vars={{ GOOGLE_ADS_ID, ADS_PURCHASE_CONVERSION_LABEL, COURSE_TITLES, serverTxnid, serverAmount, serverCourse, isFreeEnrollment }}>
     function initConfirmedEnrollment() {
       const params = new URLSearchParams(window.location.search);
-      const txnid = txnid || params.get('txnid') || params.get('txn_id') || `TXN_${Date.now()}`;
-      const amount = amount || parseFloat(params.get('amount') || '0');
-      const course = course || params.get('course') || 'Technical Architecture Cohort';
+
+      // define:vars ভ্যারিয়েবলের নাম আর local const-এর নাম সেম হলে TDZ error হয়,
+      // তাই এখানে আলাদা নাম ব্যবহার করা হয়েছে।
+      const resolvedTxnid = serverTxnid || params.get('txnid') || params.get('txn_id') || '--';
+      const rawAmount = serverAmount || params.get('amount') || params.get('price') || '0';
+      const parsedAmount = parseFloat(rawAmount) || 0;
+      const rawCourse = serverCourse || params.get('course') || '';
+      const isFree = isFreeEnrollment || params.get('free') === '1';
+
+      // স্লাগ পাঠালে ডিসপ্লে টাইটেল দেখাও, না পারলে slug-ই দেখাও
+      const courseLabel = (rawCourse && (COURSE_TITLES[rawCourse] || rawCourse)) || 'Program Enrollment';
 
       // UI আপডেট
       const txnEl = document.getElementById('display-txn-id');
       const amtEl = document.getElementById('display-amount');
       const courseEl = document.getElementById('display-course-name');
+      const statusEl = document.getElementById('display-status');
 
-      if (txnEl) txnEl.textContent = txnid;
-      if (amtEl) amtEl.textContent = `₹${amount.toLocaleString('en-IN')}`;
-      if (courseEl) courseEl.textContent = course;
+      if (txnEl) txnEl.textContent = resolvedTxnid;
+      if (amtEl) amtEl.textContent = isFree ? '₹0 (Free)' : `₹${parsedAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      if (courseEl) courseEl.textContent = courseLabel;
+      if (statusEl && isFree) statusEl.textContent = 'Free Enrollment / Active';
 
       // ডুপ্লিকেট কনভার্সন রিলোড রোধে sessionStorage চেক
-      const conversionStorageKey = `converted_${txnid}`;
+      const conversionStorageKey = `converted_${resolvedTxnid}`;
       if (sessionStorage.getItem(conversionStorageKey)) {
         return;
       }
@@ -98,26 +114,24 @@ if (Astro.request.method === 'POST') {
       // Purchase Conversion Dispatch (GA4 & Google Ads)
       // ==========================================
       if (typeof window.gtag === 'function') {
-        // ১. GA4 E-Commerce Purchase Event
         window.gtag('event', 'purchase', {
-          transaction_id: txnid,
-          value: amount,
+          transaction_id: resolvedTxnid,
+          value: parsedAmount,
           currency: 'INR',
           items: [{
-            item_name: course,
+            item_name: courseLabel,
             item_category: 'Course Enrollment',
-            price: amount,
+            price: parsedAmount,
             quantity: 1
           }]
         });
 
-        // ২. Google Ads Conversion Event
         if (GOOGLE_ADS_ID && ADS_PURCHASE_CONVERSION_LABEL && ADS_PURCHASE_CONVERSION_LABEL !== 'YOUR_PURCHASE_CONVERSION_LABEL') {
           window.gtag('event', 'conversion', {
             send_to: `${GOOGLE_ADS_ID}/${ADS_PURCHASE_CONVERSION_LABEL}`,
-            value: amount,
+            value: parsedAmount,
             currency: 'INR',
-            transaction_id: txnid
+            transaction_id: resolvedTxnid
           });
         }
 

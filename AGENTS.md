@@ -28,11 +28,17 @@ astro dev stop
 Run concurrently to serve `/api/enquiry.php` and `/api/payu/`:
 
 ```bash
-php -S localhost:8000
+# Docroot MUST be public/ - the endpoints live at public/api/**, so serving the
+# repo root makes every /api/*.php request 404.
+php -S localhost:8000 -t public
 
+# Preferred (matches package.json "dev:php")
+npm run dev
 ```
 
-> **Note:** For frontend-to-backend API routing in dev mode, ensure requests to `/api/*` reach the PHP server or are proxied appropriately.
+> **Note**: `php -S localhost:8000` without `-t public` serves the repo root and
+> returns **404 for `/api/enquiry.php` and `/api/payu/*`**, which looks exactly
+> like a broken payment gateway.
 
 ### 3. Build & Cache Invalidation
 
@@ -42,10 +48,53 @@ Astro caches content collection queries aggressively. If updates in `contents/co
 # Clear build and loader caches
 rm -rf .astro dist node_modules/.vite
 
-# Production build
+# Production build (also runs verify:deploy — see below)
 npm run build
 
 ```
+
+### 4. Deploy Verification
+
+`npm run build` runs `verify:deploy` automatically. **Do not upload `dist/` unless it
+passes.** A partial upload is what broke production before: `init.php` and
+`response.php` reached the server while `config.php` did not, so every payment
+returned a blank HTTP 500 that the frontend could only report as
+"Network communication failure".
+
+```bash
+npm run verify:deploy            # check ./dist
+node scripts/verify-deploy.mjs ./public
+```
+
+It asserts that every required PHP endpoint is present, non-empty, syntactically
+PHP, free of a stray closing `?>`, that `config.php` does not contain the
+unparenthesised `?? ... ===` precedence bug, that the catalog JSON parses, and
+that the redirect targets exist.
+
+### 5. Uploading `dist/`
+
+* Upload **the entire `dist/` tree**, including `dist/.htaccess` and
+  `dist/api/payu/config.php`. Missing files surface as a redirect to `/`
+  (HTTP 302) because of the `.htaccess` rewrite rule, not as a 404.
+* `.env` is gitignored and must be configured on the host as real environment
+  variables (hPanel → PHP → Configuration, or a `.env` above the web root).
+  Never place a `.env` inside the document root.
+
+### 6. Required Environment Variables
+
+| Variable | Purpose |
+|---|---|
+| `PAYU_MERCHANT_KEY` | Merchant key. Required — the API refuses to run without it. |
+| `PAYU_MERCHANT_SALT` | Salt for the SHA-512 hash. Required. |
+| `PAYU_MODE` | `TEST` or `PROD`. `TEST` sends customers to test.payu.in and moves no money. |
+| `SITE_URL` | Origin for PayU `surl`/`furl`. Production: `https://shibajidebnath.com`. A trailing slash is stripped automatically. |
+| `ADMIN_EMAIL` | Recipient of payment notifications. |
+
+`config.php` resolves `.env` by searching `__DIR__`-relative paths,
+`DOCUMENT_ROOT`, its parent, and `getcwd()`. If credentials are still missing it
+returns HTTP 500 with `"code":"payu_config_incomplete"` and logs the paths it
+tried, rather than silently hashing with an empty salt and letting PayU reject
+the payment.
 
 ---
 
@@ -64,12 +113,18 @@ npm run build
 │           ├── [...slug].astro  # Dynamic course details & plan selection
 │           ├── enquiry.astro    # Step 1: Candidate intake form -> POST /api/enquiry.php
 │           └── checkout.astro   # Step 2: Verified payment terminal -> POST /api/payu/init.php
-└── api/
-    ├── enquiry.php              # Lead capture & dual email dispatch (Admin + Student)
-    └── payu/
-        ├── config.php           # Merchant keys, COURSE_CATALOG pricing, and mailer helper
-        ├── init.php             # Price determination, SHA-512 hash calculation, lead email
-        └── response.php         # PayU return verification & enrollment completion
+└── public/                      # PHP dev server docroot (-t public)
+    └── api/
+        ├── enquiry.php          # Lead capture & dual email dispatch (Admin + Student)
+        ├── course_catalog.json  # Server-side price source of truth (price_full / price_installment)
+        └── payu/
+            ├── config.php       # .env loading, PayU credentials, catalog resolver, mailer helper
+            ├── init.php         # Price determination, SHA-512 hash calculation, lead email
+            └── response.php     # PayU return verification & enrollment completion
+
+> `dist/` is the deployable build output and contains a **copy** of `public/api/**`.
+> After changing any PHP endpoint, either run `npm run build` or copy the file into
+> `dist/api/` — otherwise production keeps serving the stale broken copy.
 
 ```
 
@@ -107,7 +162,8 @@ When modifying or generating files under `contents/courses/`:
 
 
 * **Pricing Catalog Synchronization**:
-* Whenever a course's `price` or `installmentPrice` changes in `contents/courses/<slug>.md`, **you must update `$COURSE_CATALOG` in `api/payu/config.php**` to prevent payment amount tampering.
+* Server-side prices come from `public/api/course_catalog.json` (`price_full` / `price_installment`), **not** from a hardcoded PHP array. Whenever a course's `price` or `installmentPrice` changes in `contents/courses/<slug>.md`, **you must update the matching entry in `public/api/course_catalog.json`** to prevent payment amount tampering.
+* Any slug present in the markdown but missing from the catalog silently falls through to the `custom-payment` branch in `init.php`, which trusts a client-supplied `amount`.
 
 
 

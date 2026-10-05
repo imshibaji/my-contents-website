@@ -2,7 +2,26 @@
 // public/api/payu/response.php
 declare(strict_types=1);
 
-require_once __DIR__ . '/config.php';
+// config.php না থাকলে require_once fatal error দেয়, ফলে খালি 500 body আসে এবং
+// কোনো redirect হয় না — কাস্টমার browser-এ খালি সাদা পেজ দেখায়। তাই ফাইলটি
+// আগে পরীক্ষা করে নিজে থেকেই redirect করে দেওয়া হচ্ছে।
+$payuConfigPath = __DIR__ . '/config.php';
+if (!is_file($payuConfigPath)) {
+    error_log('[PayU] Missing required file: ' . $payuConfigPath);
+    $fallbackCourse = isset($_POST['udf1']) ? (string)$_POST['udf1'] : '';
+    $fallbackPlan   = isset($_POST['udf2']) ? (string)$_POST['udf2'] : 'full';
+    $fallbackAmount = isset($_POST['amount']) ? (string)$_POST['amount'] : '0';
+    $fallbackTxn    = isset($_POST['txnid']) ? (string)$_POST['txnid'] : '';
+
+    header('Location: ' . (defined('SITE_URL') ? SITE_URL : 'https://shibajidebnath.com')
+        . '/courses/payment-failed?txnid=' . urlencode($fallbackTxn)
+        . '&course=' . urlencode($fallbackCourse)
+        . '&plan=' . urlencode($fallbackPlan)
+        . '&amount=' . urlencode($fallbackAmount)
+        . '&reason=' . urlencode('Payment gateway unavailable'), true, 302);
+    exit;
+}
+require_once $payuConfigPath;
 
 // PayU থেকে আসা POST ডেটা রিসিভ করা
 $status      = $_POST['status'] ?? '';
@@ -16,11 +35,14 @@ $email       = $_POST['email'] ?? '';
 $phone       = $_POST['phone'] ?? '';
 $udf1        = $_POST['udf1'] ?? ''; // course_slug
 $udf2        = $_POST['udf2'] ?? 'full'; // plan
+$udf3        = $_POST['udf3'] ?? '';
+$udf4        = $_POST['udf4'] ?? '';
+$udf5        = $_POST['udf5'] ?? '';
 $errorMsg    = $_POST['error_Message'] ?? $_POST['unmappedstatus'] ?? 'Transaction was declined or cancelled.';
 
 // রিভার্স হ্যাশ ভ্যালিডেশন
 // Formula: sha512(SALT|status||||||udf5|udf4|udf3|udf2|udf1|email|firstname|productinfo|amount|txnid|key)
-$reverseSequence = PAYU_MERCHANT_SALT . '|' . $status . '||||||' . $udf2 . '|' . $udf1 . '|' . $email . '|' . $firstname . '|' . $productinfo . '|' . $amount . '|' . $txnid . '|' . $key;
+$reverseSequence = PAYU_MERCHANT_SALT . '|' . $status . '||||||' . $udf5 . '|' . $udf4 . '|' . $udf3 . '|' . $udf2 . '|' . $udf1 . '|' . $email . '|' . $firstname . '|' . $productinfo . '|' . $amount . '|' . $txnid . '|' . $key;
 $calculatedHash = strtolower(hash('sha512', $reverseSequence));
 
 $isValid = ($calculatedHash === strtolower($postedHash));

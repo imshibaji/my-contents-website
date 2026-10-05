@@ -1,5 +1,13 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+// স্লাগ -> ডিসপ্লে টাইটেল ম্যাপ
+const courses = await getCollection('courses');
+const COURSE_TITLES: Record<string, string> = {};
+for (const c of courses) {
+  COURSE_TITLES[c.id.replace(/\.md$/, '')] = c.data.title;
+}
 ---
 
 <Layout title="Payment Incomplete | Shibaji Debnath" description="The transaction could not be completed.">
@@ -22,21 +30,25 @@ import Layout from '../../layouts/Layout.astro';
 
       <!-- Transaction Context Box -->
       <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-[#0b1222] border border-slate-200 dark:border-slate-800/80 text-xs font-mono text-left space-y-2 text-slate-700 dark:text-slate-300">
-        <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800/60">
-          <span class="text-slate-500 dark:text-slate-400">Target Cohort:</span>
-          <span id="fail_course" class="font-bold text-slate-900 dark:text-white truncate max-w-[200px]">Technical Program</span>
+        <div class="flex justify-between items-start gap-3 py-1 border-b border-slate-200 dark:border-slate-800/60">
+          <span class="text-slate-500 dark:text-slate-400 shrink-0">Target Cohort:</span>
+          <span id="fail_course" class="font-bold text-slate-900 dark:text-white text-right break-words">Program Enrollment</span>
+        </div>
+        <div class="flex justify-between items-center gap-3 py-1 border-b border-slate-200 dark:border-slate-800/60">
+          <span class="text-slate-500 dark:text-slate-400 shrink-0">Transaction ID:</span>
+          <span id="fail_txnid" class="font-bold text-slate-800 dark:text-slate-200 break-all text-right">--</span>
+        </div>
+        <div class="flex justify-between items-center gap-3 py-1 border-b border-slate-200 dark:border-slate-800/60">
+          <span class="text-slate-500 dark:text-slate-400 shrink-0">Amount Attempted:</span>
+          <span id="fail_amount" class="font-bold text-slate-800 dark:text-slate-200 shrink-0">₹0.00</span>
         </div>
         <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800/60">
-          <span class="text-slate-500 dark:text-slate-400">Transaction ID:</span>
-          <span id="fail_txnid" class="font-bold text-slate-800 dark:text-slate-200">--</span>
+          <span class="text-slate-500 dark:text-slate-400 shrink-0">Status:</span>
+          <span class="text-rose-500 font-bold uppercase shrink-0">Declined / Incomplete</span>
         </div>
-        <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800/60">
-          <span class="text-slate-500 dark:text-slate-400">Status:</span>
-          <span class="text-rose-500 font-bold uppercase">Declined / Incomplete</span>
-        </div>
-        <div class="flex justify-between items-center pt-1">
-          <span class="text-slate-500 dark:text-slate-400">Reason:</span>
-          <span id="fail_reason" class="text-slate-600 dark:text-slate-400 truncate max-w-[200px]">Cancelled</span>
+        <div class="flex justify-between items-start gap-3 pt-1">
+          <span class="text-slate-500 dark:text-slate-400 shrink-0">Reason:</span>
+          <span id="fail_reason" class="text-slate-600 dark:text-slate-400 text-right break-words">Transaction was declined or cancelled.</span>
         </div>
       </div>
 
@@ -60,21 +72,24 @@ import Layout from '../../layouts/Layout.astro';
     </div>
   </div>
 
-  <script is:inline>
+  <script is:inline define:vars={{ COURSE_TITLES }}>
     function initFailedPayment() {
       const params = new URLSearchParams(window.location.search);
-      const txnid = params.get('txnid') || '--';
+      const txnid = params.get('txnid') || params.get('txn_id') || '--';
       const course = params.get('course') || '';
       const plan = params.get('plan') || 'full';
-      const reason = params.get('reason') || 'Transaction was declined or cancelled.';
+      const amount = parseFloat(params.get('amount') || '0') || 0;
+      const reason = params.get('reason') || params.get('error_Message') || 'Transaction was declined or cancelled.';
 
       const txnEl = document.getElementById('fail_txnid');
       const courseEl = document.getElementById('fail_course');
+      const amountEl = document.getElementById('fail_amount');
       const reasonEl = document.getElementById('fail_reason');
       const retryBtn = document.getElementById('retry_btn');
 
       if (txnEl) txnEl.textContent = txnid;
-      if (courseEl && course) courseEl.textContent = course;
+      if (courseEl) courseEl.textContent = (course && (COURSE_TITLES[course] || course)) || 'Program Enrollment';
+      if (amountEl) amountEl.textContent = `₹${amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
       if (reasonEl) reasonEl.textContent = reason;
 
       // রি-ট্রাই বাটনে ক্লিক করলে আগের কোর্স ও প্ল্যানসহ চেকআউট পেজে ফিরিয়ে নিয়ে যাওয়া

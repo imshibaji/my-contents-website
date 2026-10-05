@@ -1,0 +1,99 @@
+<?php
+// public/api/tool-lead.php
+declare(strict_types=1);
+header('Content-Type: application/json; charset=UTF-8');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    exit(0);
+}
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(['success'=>false,'error'=>'Method Not Allowed']);
+    exit;
+}
+
+// Load .env file
+$dotenvPath = dirname(__DIR__, 2) . '/.env';
+if (file_exists($dotenvPath)) {
+    $lines = file($dotenvPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos(trim($line), '#') === 0) continue;
+        if (strpos($line, '=') !== false) {
+            [$key, $value] = explode('=', $line, 2);
+            putenv(trim($key) . '=' . trim($value));
+        }
+    }
+}
+
+require_once __DIR__ . '/send-mail.php';
+
+$raw = file_get_contents('php://input');
+$input = json_decode($raw, true) ?? [];
+
+$email = filter_var(trim($input['email'] ?? ''), FILTER_VALIDATE_EMAIL);
+$tool  = trim(htmlspecialchars($input['tool'] ?? 'VPS & Docker Readiness Checker', ENT_QUOTES));
+$name  = trim(htmlspecialchars($input['name'] ?? 'Anonymous', ENT_QUOTES));
+$ip    = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+
+if (!$email) {
+    http_response_code(422);
+    echo json_encode(['success'=>false,'error'=>'Valid email required']);
+    exit;
+}
+
+// Insert into Supabase
+$SUPABASE_URL = getenv('PUBLIC_SUPABASE_URL') ?: 'https://ojmfrxteuirqqexnheta.supabase.co';
+// TODO: Replace with your service_role key (starts with sb_secret_)
+$SUPABASE_KEY = getenv('SUPABASE_SERVICE_KEY') ?: $_ENV['SUPABASE_SERVICE_KEY'] ?? '';
+
+if (strlen($SUPABASE_KEY) < 10) {
+    error_log('[tool-lead] Service key not configured properly');
+}
+
+$ch = curl_init($SUPABASE_URL . '/rest/v1/tool_leads?select=id');
+curl_setopt_array($ch, [
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_POST => true,
+    CURLOPT_HTTPHEADER => [
+        'apikey: ' . $SUPABASE_KEY,
+        'Authorization: Bearer ' . $SUPABASE_KEY,
+        'Content-Type: application/json',
+        'Prefer: return=representation'
+    ],
+    CURLOPT_POSTFIELDS => json_encode([
+        'email' => $email,
+        'name' => $name,
+        'tool' => $tool,
+        'step' => 0
+    ]),
+    CURLOPT_TIMEOUT => 15
+]);
+$response = curl_exec($ch);
+$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+curl_close($ch);
+
+if ($httpCode !== 201 && $httpCode !== 200) {
+    error_log('[tool-lead] Supabase insert failed: ' . $response);
+    echo json_encode(['success'=>false,'error'=>'Database error']);
+    exit;
+}
+
+$adminSubject = "[Tool Lead] {$name} — {$tool}";
+$adminBody = "Hi Shibaji,\n\nNew lead from Developer Tools:\n\nName: {$name}\nEmail: {$email}\nTool: {$tool}\nIP: {$ip}\nTime: " . date('c') . "\n\nView dashboard to follow up.";
+
+$sent = sendViaGmailSMTP(SMTP_GMAIL_USER, $adminSubject, $adminBody, $email, $name);
+
+if ($sent) {
+    // Optionally send confirmation to user
+    $clientSubject = "Thanks for trying {$tool}";
+    $clientBody = "Hi {$name},\n\nThanks for using the {$tool} free tool.\n\nI'll send you the 5-part 'Deploy to $5 VPS' mini course shortly.\n\nBest,\nShibaji Debnath\nhttps://shibajidebnath.com";
+    @sendViaGmailSMTP($email, $clientSubject, $clientBody, SMTP_GMAIL_USER, 'Shibaji Debnath');
+    echo json_encode(['success'=>true]);
+} else {
+    http_response_code(500);
+    echo json_encode(['success'=>false,'error'=>'Failed to send email']);
+}

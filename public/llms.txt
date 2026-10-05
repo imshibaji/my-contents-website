@@ -22,6 +22,8 @@
 - Pay: https://shibajidebnath.com/pay
 - Privacy Policy & Data Architecture: https://shibajidebnath.com/privacy
 - Terms of Service & Advisory Governance: https://shibajidebnath.com/terms
+- Tools: https://shibajidebnath.com/tools
+- Vps Checker: https://shibajidebnath.com/tools/vps-checker
 
 ## Published Architectural Blueprints & Articles
 - [Architecting High-Throughput TypeScript APIs with NestJS and Fastify](https://shibajidebnath.com/articles/architecting-high-throughput-typescript-apis-nestjs-fastify): Eliminating V8 serialization bottlenecks and event-loop lag by replacing default Express runtimes with Fastify, schema-compiled JSON serialization, and zero-allocation routing in NestJS.

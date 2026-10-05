@@ -16,6 +16,18 @@ export default defineConfig({
     '/mentors': '/courses',
     '/online-training': '/courses',
     '/trainings/react-native-app-development/': '/courses/mobile-app-engineering-react-native',
+    '/trainings/master-in-nodejs-expressjs-mongodb/': '/courses/enterprise-nestjs-cqrs-architecture/',
+    '/trainings/master-in-agentic-ai/': '/courses/autonomous-agentic-ai-mcp-architecture/',
+    '/trainings/advanced-flutter-training-course/': '/courses/production-flutter-dart-engineering/',
+    '/trainings/mean-stack-training/': '/courses/enterprise-nestjs-cqrs-architecture/',
+    
+    // This is for the old URL structure
+    '/trainings/master-in-laravel-app-development/': 'https://cms.shibajidebnath.com/trainings/master-in-laravel-app-development/',
+    '/trainings/master-in-wordpress-development-training/': 'https://cms.shibajidebnath.com/trainings/master-in-wordpress-development-training/',
+    '/trainings/master-in-python-programming/': 'https://cms.shibajidebnath.com/trainings/master-in-python-programming/',
+    '/trainings/mern-stack-course/': 'https://cms.shibajidebnath.com/trainings/mern-stack-course/',
+    '/trainings/master-in-website-designing-training/': 'https://cms.shibajidebnath.com/trainings/master-in-website-designing-training/',
+    '/trainings/master-in-advanced-javascript/': 'https://cms.shibajidebnath.com/trainings/master-in-advanced-javascript/',
   },
   
   markdown: {

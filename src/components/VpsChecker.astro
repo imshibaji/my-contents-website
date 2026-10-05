@@ -1,0 +1,97 @@
+---
+---
+
+<div class="max-w-3xl mx-auto px-6 py-16">
+  <header class="mb-10 flex items-start justify-between gap-4">
+    <div>
+      <a href="https://shibajidebnath.com" class="text-xs uppercase tracking-widest text-zinc-500 dark:text-zinc-400">shibajidebnath.com</a>
+      <h1 class="text-3xl md:text-4xl font-semibold tracking-tight mt-3">VPS & Docker Readiness Checker</h1>
+      <p class="text-zinc-600 dark:text-zinc-400 mt-2">Paste your docker-compose.yml. Get an instant production-readiness scan. Free tool by Shibaji Debnath.</p>
+    </div>
+  </header>
+
+  <div class="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 p-6 shadow-xl">
+    <textarea id="input" class="w-full h-72 bg-white dark:bg-black/60 border border-zinc-300 dark:border-zinc-800 rounded-xl p-4 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" placeholder="version: '3.8'
+services:
+  web:
+    image: node:18
+    environment:
+      - DB_PASS=secret
+    volumes:
+      - ./data:/app/data
+  db:
+    image: postgres"></textarea>
+    <div class="mt-4 flex items-center justify-between">
+      <button id="scanBtn" class="px-5 py-2.5 rounded-xl bg-zinc-900 text-white dark:bg-zinc-100 dark:text-black font-medium hover:opacity-90 transition">Scan</button>
+      <span class="text-xs text-zinc-500">No data leaves your browser</span>
+    </div>
+    <div id="out" class="mt-6"></div>
+  </div>
+
+  <div class="mt-8 rounded-2xl border border-sky-200 dark:border-sky-900/40 bg-sky-50 dark:bg-sky-950/30 p-6">
+    <strong class="text-sky-700 dark:text-sky-300">What you'll learn in the course</strong>
+    <p class="text-zinc-700 dark:text-zinc-300 mt-2 text-sm">These fixes are covered live in Full-Stack Docker, VPS & Production Deployment Crash Course, Session 5-6. 4 weeks, live deployment lab, ₹1,000.</p>
+    <a href="https://shibajidebnath.com/courses/fullstack-docker-vps-deployment-crash-course/" class="inline-block mt-4 px-4 py-2 rounded-lg bg-sky-500 text-white font-medium">Reserve your seat →</a>
+  </div>
+</div>
+
+<script client:load>
+  const toggle = document.getElementById('themeToggle');
+  const html = document.documentElement;
+  const saved = localStorage.getItem('theme');
+  if (saved === 'light') html.classList.remove('dark');
+  
+  toggle?.addEventListener('click', () => {
+    html.classList.toggle('dark');
+    localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+  });
+
+  const scanBtn = document.getElementById('scanBtn');
+  scanBtn?.addEventListener('click', scan);
+
+  async function submitLead(e){
+    e.preventDefault();
+    const form = e.target;
+    const email = form.querySelector('input[type="email"]').value;
+    
+    try {
+      const res = await fetch('/api/tool-lead.php', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({email, name:'', tool:'VPS & Docker Readiness Checker'})
+      });
+      const data = await res.json();
+      const msg = document.getElementById('leadMsg');
+      if(msg) msg.textContent = data.success 
+        ? 'Thanks! Check your inbox for Day 1 email.' 
+        : 'Error submitting. Please try again.';
+    } catch(err) {
+      const msg = document.getElementById('leadMsg');
+      if(msg) msg.textContent = 'Network error. Please try again.';
+    }
+  }
+
+  function scan(){
+    const txt = document.getElementById('input').value;
+    if(!txt) return alert('Please paste your compose file first');
+    const issues = [];
+    if (/environment:/.test(txt) && /DB_PASS|SECRET|KEY/.test(txt)) issues.push('❌ Secrets in plain text in environment – use a .env file');
+    if (!/volumes:/.test(txt)) issues.push('⚠️ No volume mounts – data will be lost on container restart');
+    if (/ports:/.test(txt) && /:80|:443|0.0.0.0/.test(txt)) issues.push('⚠️ Ports exposed publicly – use Nginx reverse proxy');
+    if (!/restart:/.test(txt)) issues.push('⚠️ No restart policy – containers won’t auto-recover on crash');
+    if (/image: node|python|nginx/.test(txt)) issues.push('ℹ️ Use slim/alpine base images for smaller size – Multi-stage builds in Session 4');
+    
+    const out = document.getElementById('out');
+    const resultText = issues.length ? issues.join('\n') : '✅ Basic checks passed. Learn advanced security and zero-downtime setups in the course.';
+    out.innerHTML = `
+      <div class="mt-6 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-black/40 p-4 text-sm whitespace-pre-wrap">${resultText}</div>
+      <div class="mt-4 text-xs text-zinc-500">Free Tool • Lead Magnet • Built by Shibaji Debnath</div>
+      <p class="mt-4 text-sm">Enter your email to get the 5-part “Deploy to $5 VPS” mini course.</p>
+      <form onsubmit="submitLead(event)" class="mt-3 flex gap-2">
+        <input type="email" required placeholder="your@email.com" class="flex-1 px-3 py-2 rounded-lg bg-white dark:bg-black border border-zinc-300 dark:border-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
+        <button type="submit" class="px-4 py-2 rounded-lg bg-sky-500 text-white font-medium">Join</button>
+      </form>
+      <div id="leadMsg" class="mt-2 text-sm text-sky-600 dark:text-sky-300"></div>
+    `;
+  }
+</script>

@@ -1,0 +1,43 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout
+  title="Tools - Shibaji Debnath"
+  description="Free developer tools for Docker, VPS deployment and production readiness."
+>
+  <section class="max-w-5xl mx-auto px-6 py-20">
+    <header class="mb-12">
+      <h1 class="text-4xl md:text-5xl font-semibold tracking-tight">Developer Tools</h1>
+      <p class="text-zinc-600 dark:text-zinc-400 mt-3 max-w-2xl">
+        Free, client-side utilities built for engineers. No data leaves your browser.
+      </p>
+    </header>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <!-- VPS Checker -->
+      <a href="/tools/vps-checker" class="group rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-6 hover:border-sky-500 transition">
+        <div class="flex items-start justify-between">
+          <div>
+            <h3 class="text-xl font-semibold group-hover:text-sky-500">VPS & Docker Readiness Checker</h3>
+            <p class="text-sm text-zinc-600 dark:text-zinc-400 mt-1">Scan docker-compose.yml for secrets, volumes, ports and restart policies.</p>
+          </div>
+          <span class="text-xs px-2 py-1 rounded-lg bg-zinc-100 dark:bg-zinc-800">Free</span>
+        </div>
+        <div class="mt-4 text-xs text-zinc-500">Built for Full-Stack Docker Course</div>
+      </a>
+
+      <!-- Placeholder tools -->
+      <div class="rounded-2xl border border-dashed border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900/30 p-6">
+        <h3 class="text-xl font-semibold text-zinc-400">Coming Soon</h3>
+        <p class="text-sm text-zinc-500 mt-1">Docker Image Size Analyzer, Nginx Config Validator, VPS Cost Calculator</p>
+      </div>
+    </div>
+
+    <div class="mt-12 rounded-2xl border border-sky-200 dark:border-sky-900/40 bg-sky-50 dark:bg-sky-950/30 p-6">
+      <strong class="text-sky-700 dark:text-sky-300">Have a tool request?</strong>
+      <p class="text-zinc-700 dark:text-zinc-300 mt-2 text-sm">Suggest a free utility you want built for devops and Docker workflows.</p>
+      <a href="https://shibajidebnath.com/contact" class="inline-block mt-4 px-4 py-2 rounded-lg bg-sky-500 text-white font-medium">Contact</a>
+    </div>
+  </section>
+</Layout>
