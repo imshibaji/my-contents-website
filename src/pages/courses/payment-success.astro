@@ -79,41 +79,89 @@ const isFreeEnrollment = urlData.searchParams.get('free') === '1';
 
   <!-- Dynamic Parameter Resolution & Purchase Conversion Tracking -->
   <script is:inline define:vars={{ GOOGLE_ADS_ID, ADS_PURCHASE_CONVERSION_LABEL, COURSE_TITLES, serverTxnid, serverAmount, serverCourse, isFreeEnrollment }}>
-    function initConfirmedEnrollment() {
-      const params = new URLSearchParams(window.location.search);
+    // এই ফাংশনটি async, তাই একই পেজে দুইবার কল হলে দুটো fetch একসাথে চলতে পারে।
+    // তাই ফ্লাইটে সেট হয়ে যায়।
+    let initInFlight = false;
 
-      // define:vars ভ্যারিয়েবলের নাম আর local const-এর নাম সেম হলে TDZ error হয়,
-      // তাই এখানে আলাদা নাম ব্যবহার করা হয়েছে।
-      const resolvedTxnid = serverTxnid || params.get('txnid') || params.get('txn_id') || '--';
-      const rawAmount = serverAmount || params.get('amount') || params.get('price') || '0';
-      const parsedAmount = parseFloat(rawAmount) || 0;
-      const rawCourse = serverCourse || params.get('course') || '';
-      const isFree = isFreeEnrollment || params.get('free') === '1';
+    async function initConfirmedEnrollment() {
+      if (initInFlight) return;
+      initInFlight = true;
 
-      // স্লাগ পাঠালে ডিসপ্লে টাইটেল দেখাও, না পারলে slug-ই দেখাও
-      const courseLabel = (rawCourse && (COURSE_TITLES[rawCourse] || rawCourse)) || 'Program Enrollment';
+      try {
+        const params = new URLSearchParams(window.location.search);
 
-      // UI আপডেট
-      const txnEl = document.getElementById('display-txn-id');
-      const amtEl = document.getElementById('display-amount');
-      const courseEl = document.getElementById('display-course-name');
-      const statusEl = document.getElementById('display-status');
+        // define:vars ভ্যারিয়েবলের নাম আর local const-এর নাম সেম হলে TDZ error হয়,
+        // তাই এখানে আলাদা নাম ব্যবহার করা হয়েছে।
+        const resolvedTxnid = serverTxnid || params.get('txnid') || params.get('txn_id') || '--';
+        const rawAmount = serverAmount || params.get('amount') || params.get('price') || '0';
+        const parsedAmount = parseFloat(rawAmount) || 0;
+        const rawCourse = serverCourse || params.get('course') || '';
+        const isFree = isFreeEnrollment || params.get('free') === '1';
+        const token = params.get('token') || '';
 
-      if (txnEl) txnEl.textContent = resolvedTxnid;
-      if (amtEl) amtEl.textContent = isFree ? '₹0 (Free)' : `₹${parsedAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-      if (courseEl) courseEl.textContent = courseLabel;
-      if (statusEl && isFree) statusEl.textContent = 'Free Enrollment / Active';
+        const txnEl = document.getElementById('display-txn-id');
+        const amtEl = document.getElementById('display-amount');
+        const courseEl = document.getElementById('display-course-name');
+        const statusEl = document.getElementById('display-status');
 
-      // ডুপ্লিকেট কনভার্সন রিলোড রোধে sessionStorage চেক
-      const conversionStorageKey = `converted_${resolvedTxnid}`;
-      if (sessionStorage.getItem(conversionStorageKey)) {
-        return;
-      }
+        // ─────────────────────────────────────────────────────────────
+        // সার্ভার-সাইড যাচাই। URL param ই চিহ্নে বিশ্বাস করা যায় না — যে কেউ
+        // নিজে URL বানিয়ে যেকোনো পরিমাণ "কনফার্মড" দেখাতে পারে। response.php
+        // HMAC টোকেন যাচাই করে, তাই ভুল URL-এ verified:false আসে।
+        // ─────────────────────────────────────────────────────────────
+        let verified = false;
+        try {
+          const qs = new URLSearchParams({
+            txnid: resolvedTxnid,
+            amount: rawAmount,
+            course: rawCourse,
+            token: token
+          });
+          const res = await fetch('/api/payu/response.php?' + qs.toString(), {
+            headers: { 'Accept': 'application/json' }
+          });
+          if (res.ok) {
+            const check = await res.json();
+            verified = check.verified === true;
+          }
+        } catch (err) {
+          // নেটওয়ার্ক ব্যর্থতায় verified ধরে নেওয়া হয় না — নিরাপদ দিক।
+          console.error('[payment-success] verification request failed', err);
+        }
 
-      // ==========================================
-      // Purchase Conversion Dispatch (GA4 & Google Ads)
-      // ==========================================
-      if (typeof window.gtag === 'function') {
+        if (!verified) {
+          if (statusEl) {
+            statusEl.textContent = 'Awaiting Confirmation';
+            statusEl.classList.add('text-amber-400');
+          }
+          if (txnEl) txnEl.textContent = resolvedTxnid;
+          if (courseEl && rawCourse) courseEl.textContent = COURSE_TITLES[rawCourse] || rawCourse;
+          // পরিমাণ দেখানো হয় না, আর conversion-ও পাঠানো হয় না।
+          if (amtEl) amtEl.textContent = '—';
+          return;
+        }
+
+        // স্লাগ পাঠালে ডিসপ্লে টাইটেল দেখাও, না পারলে slug-ই দেখাও
+        const courseLabel = (rawCourse && (COURSE_TITLES[rawCourse] || rawCourse)) || 'Program Enrollment';
+
+        // UI আপডেট
+        if (txnEl) txnEl.textContent = resolvedTxnid;
+        if (amtEl) amtEl.textContent = isFree ? '₹0 (Free)' : `₹${parsedAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        if (courseEl) courseEl.textContent = courseLabel;
+        if (statusEl && isFree) statusEl.textContent = 'Free Enrollment / Active';
+
+        // ডুপ্লিকেট কনভার্সন রিলোড রোধে sessionStorage চেক
+        const conversionStorageKey = `converted_${resolvedTxnid}`;
+        if (sessionStorage.getItem(conversionStorageKey)) {
+          return;
+        }
+
+        // ==========================================
+        // Purchase Conversion Dispatch (GA4 & Google Ads)
+        // যাচাই সফল হওয়ার পরেই — নইলে যে কেউ চাইলেই ভুল URL দিয়ে
+        // বিজ্ঞাপনের হিসাব নষ্ট করতে পারত।
+        // ==========================================
+        if (typeof window.gtag === 'function') {
         window.gtag('event', 'purchase', {
           transaction_id: resolvedTxnid,
           value: parsedAmount,
@@ -136,6 +184,11 @@ const isFreeEnrollment = urlData.searchParams.get('free') === '1';
         }
 
         sessionStorage.setItem(conversionStorageKey, 'true');
+        }
+      } catch (err) {
+        console.error('[payment-success] init failed', err);
+      } finally {
+        initInFlight = false;
       }
     }
 

@@ -1,6 +1,16 @@
 <?php
 // public/api/tool-lead.php
 declare(strict_types=1);
+
+// env-loader.php না থাকলে require_once fatal error দেয়, ফলে পুরো API খালি 500 হয়ে
+// যায় এবং কারণটা ব্রাউজারে দেখা যায় না। তাই আগে ফাইলটি আছে কি না যাচাই করা হচ্ছে।
+if (!is_file($envLoader = __DIR__ . '/env-loader.php')) {
+    error_log('[Env Loader] Missing required file: ' . $envLoader);
+    http_response_code(500);
+    header('Content-Type: application/json; charset=UTF-8');
+    exit('{"status":"error","code":"env_loader_missing","message":"Server configuration is incomplete."}');
+}
+require_once $envLoader;
 header('Content-Type: application/json; charset=UTF-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
@@ -14,19 +24,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['success'=>false,'error'=>'Method Not Allowed']);
     exit;
-}
-
-// Load .env file
-$dotenvPath = dirname(__DIR__, 2) . '/.env';
-if (file_exists($dotenvPath)) {
-    $lines = file($dotenvPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    foreach ($lines as $line) {
-        if (strpos(trim($line), '#') === 0) continue;
-        if (strpos($line, '=') !== false) {
-            [$key, $value] = explode('=', $line, 2);
-            putenv(trim($key) . '=' . trim($value));
-        }
-    }
 }
 
 require_once __DIR__ . '/send-mail.php';
@@ -45,13 +42,24 @@ if (!$email) {
     exit;
 }
 
-// Insert into Supabase
-$SUPABASE_URL = getenv('PUBLIC_SUPABASE_URL') ?: 'https://ojmfrxteuirqqexnheta.supabase.co';
-// TODO: Replace with your service_role key (starts with sb_secret_)
-$SUPABASE_KEY = getenv('SUPABASE_SERVICE_KEY') ?: $_ENV['SUPABASE_SERVICE_KEY'] ?? '';
+// Insert into Supabase.
+// The service_role key bypasses row-level security, so it must come from
+// api/credential.php or a host variable — never a literal here. Refuse to run
+// without it rather than making an unauthenticated request that Supabase
+// rejects with a confusing error.
+$SUPABASE_URL = env('PUBLIC_SUPABASE_URL', '');
+$SUPABASE_KEY = env('SUPABASE_SERVICE_KEY', '');
 
-if (strlen($SUPABASE_KEY) < 10) {
-    error_log('[tool-lead] Service key not configured properly');
+if ($SUPABASE_URL === '' || strlen($SUPABASE_KEY) < 10) {
+    error_log('[tool-lead] PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_KEY is not set.');
+    http_response_code(500);
+    header('Content-Type: application/json; charset=UTF-8');
+    echo json_encode([
+        'success' => false,
+        'code'    => 'supabase_config_incomplete',
+        'error'   => 'Lead capture is not configured on the server.',
+    ]);
+    exit;
 }
 
 $ch = curl_init($SUPABASE_URL . '/rest/v1/tool_leads?select=id');

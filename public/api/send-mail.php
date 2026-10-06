@@ -1,6 +1,16 @@
 <?php
 declare(strict_types=1);
 
+// env-loader.php না থাকলে require_once fatal error দেয়, ফলে পুরো API খালি 500 হয়ে
+// যায় এবং কারণটা ব্রাউজারে দেখা যায় না। তাই আগে ফাইলটি আছে কি না যাচাই করা হচ্ছে।
+if (!is_file($envLoader = __DIR__ . '/env-loader.php')) {
+    error_log('[Env Loader] Missing required file: ' . $envLoader);
+    http_response_code(500);
+    header('Content-Type: application/json; charset=UTF-8');
+    exit('{"status":"error","code":"env_loader_missing","message":"Server configuration is incomplete."}');
+}
+require_once $envLoader;
+
 // Error suppression from polluting JSON
 error_reporting(0);
 ini_set('display_errors', '0');
@@ -21,10 +31,10 @@ if (session_status() === PHP_SESSION_NONE) {
 // SMTP Credentials & Global Config
 // ==========================================
 if (!defined('SMTP_GMAIL_USER')) {
-    define('SMTP_GMAIL_USER', getenv('SMTP_GMAIL_USER') ?: 'imshibaji@gmail.com');
+    define('SMTP_GMAIL_USER', env('SMTP_GMAIL_USER', 'imshibaji@gmail.com'));
 }
 if (!defined('SMTP_GMAIL_PASS')) {
-    define('SMTP_GMAIL_PASS', getenv('SMTP_GMAIL_PASS') ?: '');
+    define('SMTP_GMAIL_PASS', env('SMTP_GMAIL_PASS', ''));
 }
 
 /**

@@ -82,19 +82,55 @@ that the redirect targets exist.
 
 ### 6. Required Environment Variables
 
-| Variable | Purpose |
-|---|---|
-| `PAYU_MERCHANT_KEY` | Merchant key. Required — the API refuses to run without it. |
-| `PAYU_MERCHANT_SALT` | Salt for the SHA-512 hash. Required. |
-| `PAYU_MODE` | `TEST` or `PROD`. `TEST` sends customers to test.payu.in and moves no money. |
-| `SITE_URL` | Origin for PayU `surl`/`furl`. Production: `https://shibajidebnath.com`. A trailing slash is stripped automatically. |
-| `ADMIN_EMAIL` | Recipient of payment notifications. |
+| Variable | Consumer | Purpose |
+|---|---|---|
+| `PAYU_MERCHANT_KEY` | `payu/config.php` | Merchant key. Required — the API refuses to run without it. |
+| `PAYU_MERCHANT_SALT` | `payu/config.php` | Salt for the SHA-512 hash. Required. |
+| `PAYU_MODE` | `payu/config.php` | `TEST` or `PROD`. If unset it is **inferred from `SITE_URL`**: a local host becomes `TEST`, anything else `PROD`. Set it explicitly on a staging domain, otherwise staging charges real cards. |
+| `SITE_URL` | `payu/config.php`, `payu/response.php` | Origin for PayU `surl`/`furl` and the failure redirect. Production: `https://shibajidebnath.com`. A trailing slash is stripped automatically. |
+| `ADMIN_EMAIL` | `payu/config.php` | Recipient of payment notifications. |
+| `SMTP_GMAIL_USER` | `send-mail.php` | SMTP account used for enquiry/payment email. |
+| `SMTP_GMAIL_PASS` | `send-mail.php` | SMTP app password. Without it, mail silently fails. |
+| `PUBLIC_SUPABASE_URL` | `tool-lead.php`, `tool-sequence-supabase.php` | Supabase project URL. |
+| `SUPABASE_SERVICE_KEY` | `tool-lead.php`, `tool-sequence-supabase.php` | Supabase `service_role` key. Without it, tool leads are dropped. |
+| `DB_HOST` | `enquiry.php` | Postgres host. Previously read from `$_ENV`, which this server never populates — always fell back to `127.0.0.1`. |
+| `DB_PORT` | `enquiry.php` | Postgres port, default `5432`. |
+| `DB_NAME` | `enquiry.php` | Postgres database name. |
+| `DB_USER` | `enquiry.php` | Postgres user. |
+| `DB_PASSWORD` | `enquiry.php` | Postgres password. |
+
+**How these are read.** `public/api/env-loader.php` is the only parser. Every endpoint
+that touches configuration does `require_once __DIR__ . '/env-loader.php'` and reads
+values through `env()` / `envInt()` / `envBool()`. Never `getenv()` and never
+`$_ENV[...]` directly — `verify:deploy` fails the build on either.
+
+Two behaviours matter on this host:
+
+* `variables_order=GPCS`, so PHP never populates `$_ENV` from host variables.
+  `env-loader.php` writes **both** `putenv()` and `$_ENV[]` so `variables_order`
+  cannot silently break a reader.
+* A host-level value always beats `.env`. A stale `.env` on the server cannot
+  override a value you corrected in hPanel.
+
+Every PayU session logs the resolved mode and gateway:
+
+```
+[PayU] mode=PROD (inferred from SITE_URL) gateway=https://secure.payu.in/_payment
+```
+
+If revenue stops arriving, that log line is the first thing to check.
 
 `config.php` resolves `.env` by searching `__DIR__`-relative paths,
 `DOCUMENT_ROOT`, its parent, and `getcwd()`. If credentials are still missing it
-returns HTTP 500 with `"code":"payu_config_incomplete"` and logs the paths it
-tried, rather than silently hashing with an empty salt and letting PayU reject
-the payment.
+returns HTTP 500 with `"code":"payu_config_incomplete"` and names the missing
+variables, rather than silently hashing with an empty salt and letting PayU
+reject the payment.
+
+### 7. Files That Must Not Be Committed
+
+`.env` is gitignored. `.env.fixed` is **tracked** and must not be — it is a
+placeholder template that looks like real config. Prefer a committed
+`.env.example` containing placeholders only, and untrack the `.fixed` variant.
 
 ---
 

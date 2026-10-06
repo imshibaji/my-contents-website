@@ -673,20 +673,42 @@ const GATEWAY_SURCHARGE_PERCENT = 2.36;
             if (data.status === 'success') {
               btnText.textContent = 'Redirecting to Gateway...';
 
-              const payuForm = document.createElement('form');
-              payuForm.method = 'POST';
-              payuForm.action = data.action;
-
-              for (const [key, val] of Object.entries(data.params)) {
-                const hidden = document.createElement('input');
-                hidden.type = 'hidden';
-                hidden.name = key;
-                hidden.value = String(val);
-                payuForm.appendChild(hidden);
+              // ফ্রি/ফ্রি-কোর্স ফ্লো
+              if (data.is_free && data.redirect_url) {
+                window.location.href = data.redirect_url;
+                return;
               }
 
-              document.body.appendChild(payuForm);
-              payuForm.submit();
+              // Checkout v2: server HMAC-সই করে PayU-কে JSON কল করে transaction
+              // খুলে ফেলে, ফিরিয়ে দেয় checkoutUrl। ফর্ম লাগে না, শুধু redirect।
+              if (data.redirect_url) {
+                window.location.href = data.redirect_url;
+                return;
+              }
+
+              // Legacy: hidden form বানিয়ে submit
+              if (data.action && data.params) {
+                const payuForm = document.createElement('form');
+                payuForm.method = 'POST';
+                payuForm.action = data.action;
+
+                for (const [key, val] of Object.entries(data.params)) {
+                  const hidden = document.createElement('input');
+                  hidden.type = 'hidden';
+                  hidden.name = key;
+                  hidden.value = String(val);
+                  payuForm.appendChild(hidden);
+                }
+
+                document.body.appendChild(payuForm);
+                payuForm.submit();
+                return;
+              }
+
+              // কোনো redirect বা form payload নেই — এটি আপসা। আগে এখানে
+              // Object.entries(undefined) ছিল, যা catch ব্লকে গিয়ে ভুলভাবে
+              // "backend PHP service" বলে দেখাত, আসলে সমস্যা ছিল payload-এ।
+              throw new Error('no redirect or form payload in response');
             } else {
               errorMsg.textContent = data.message || 'Payment initiation failed.';
               errorBox.classList.remove('hidden');
@@ -694,7 +716,10 @@ const GATEWAY_SURCHARGE_PERCENT = 2.36;
               btnText.textContent = 'Proceed to PayU Gateway';
             }
           } catch (err) {
-            errorMsg.textContent = 'Network communication failure. Please check backend PHP service.';
+            // এই বার্তা আগে অনেক ভুল কারণ দেখাত, কারণ payload সমস্যা ও
+            // network সমস্যা একই catch-এ পড়ত। এখন আলাদা করা হয়েছে।
+            console.error('[pay] initiation failed', err);
+            errorMsg.textContent = 'Could not reach the payment gateway. Check your connection, or use the Direct UPI / NetBanking rail below.';
             errorBox.classList.remove('hidden');
             submitBtn.disabled = false;
             btnText.textContent = 'Proceed to PayU Gateway';

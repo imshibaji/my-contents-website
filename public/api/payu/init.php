@@ -130,10 +130,18 @@ if ($basePrice <= 0.00) {
     ";
     dispatchNotificationMail($email, $studentSub, $studentBody);
 
+    // ফ্রি কোর্সেও টোকেন যোগ হচ্ছে, নইলে সাকসেস পেজ verification-এ fail করে
+    // ভুলভাবে "unverified" দেখাত।
     echo json_encode([
         'status'       => 'success',
         'is_free'      => true,
-        'redirect_url' => SITE_URL . '/courses/payment-success?txnid=' . urlencode($txnid) . '&course=' . urlencode($courseSlug) . '&amount=0&free=1'
+        'redirect_url' => SITE_URL . '/courses/payment-success?' . http_build_query([
+            'txnid'  => $txnid,
+            'course' => $courseSlug,
+            'amount' => '0',
+            'free'   => '1',
+            'token'  => enrollmentToken($txnid, '0', $courseSlug),
+        ])
     ]);
     exit;
 }
@@ -165,26 +173,144 @@ $udf3 = '';
 $udf4 = '';
 $udf5 = '';
 
+// ─────────────────────────────────────────────────────────────────────────
+// Checkout v2 পথ।
+//
+// আলাদা এন্ডপয়েন্ট (JSON API) এবং আলাদা অথেন্টিকেশন (HMAC)। ফর্ম পোস্ট নয়,
+// সরাসরি JSON POST হয় এবং উত্তরে checkoutUrl আসে — ক্রেতাকে সেখানে redirect
+// করতে হয়। legacy পথের SHA-512 hash এখানে কোনো কাজে লাগে না।
+// ─────────────────────────────────────────────────────────────────────────
+if (PAYU_API_VERSION === 'v2') {
+    $v2Body = json_encode([
+        'accountId' => PAYU_MERCHANT_KEY,
+        'txnId'     => $txnid,
+        'currency'  => PAYU_TRANSACTION_CURRENCY,
+        'order' => [
+            'productInfo' => $productinfo,
+            'paymentChargeSpecification' => ['price' => (float)$amount],
+            'userDefinedFields' => ['udf1' => $udf1, 'udf2' => $udf2],
+        ],
+        'billingDetails' => array_merge(PAYU_BILLING_ADDRESS, [
+            'firstName' => $firstname,
+            'email'     => $email,
+            'phone'     => $phone,
+        ]),
+        'callBackActions' => [
+            'successAction' => PAYU_SUCCESS_URL,
+            'failureAction' => PAYU_FAILURE_URL,
+            'cancelAction'  => PAYU_FAILURE_URL,
+        ],
+        'additionalInfo' => [
+            'txnFlow'     => 'nonseamless',
+            'createOrder' => true,
+            'orderId'     => $txnid,
+        ],
+    ]);
+
+    // Hash: sha512(<body> + '|' + <date> + '|' + merchant_secret)
+    // date অবশ্যই UTC এবং GMT আঁতরা দিয়ে (RFC 2822)।
+    $v2Date = gmdate('D, d M Y H:i:s \G\M\T');
+    $v2Hash = hash('sha512', $v2Body . '|' . $v2Date . '|' . PAYU_MERCHANT_SALT);
+
+    $v2Auth = 'hmac username="' . PAYU_MERCHANT_KEY . '", '
+        . 'algorithm="sha512", headers="date", signature="' . $v2Hash . '"';
+
+    $v2Ch = curl_init(PAYU_V2_ENDPOINT);
+    curl_setopt_array($v2Ch, [
+        CURLOPT_POST           => true,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT        => 25,
+        CURLOPT_HTTPHEADER     => [
+            'date: ' . $v2Date,
+            'authorization: ' . $v2Auth,
+            'content-type: application/json',
+        ],
+        CURLOPT_POSTFIELDS => $v2Body,
+    ]);
+    $v2Raw  = curl_exec($v2Ch);
+    $v2Err  = curl_error($v2Ch);
+    $v2Code = (int)curl_getinfo($v2Ch, CURLINFO_HTTP_CODE);
+    curl_close($v2Ch);
+
+    if ($v2Raw === false) {
+        error_log('[PayU v2] transport failure: ' . $v2Err);
+        http_response_code(502);
+        echo json_encode(['status' => 'error', 'code' => 'payu_v2_unreachable',
+            'message' => 'Could not reach the payment gateway. Please try again.']);
+        exit;
+    }
+
+    $v2Json = json_decode((string)$v2Raw, true);
+
+    // 401 এখানে বেশিরভাগ সময় salt ভুল হওয়ার কারণে আসে, তাই আলাদা করে বলা হচ্ছে।
+    if ($v2Code === 401) {
+        error_log('[PayU v2] 401 from ' . PAYU_V2_ENDPOINT . ': ' . substr((string)$v2Raw, 0, 300));
+        http_response_code(502);
+        echo json_encode(['status' => 'error', 'code' => 'payu_v2_auth_failed',
+            'message' => 'Payment gateway rejected the server credentials.']);
+        exit;
+    }
+
+    if ($v2Code !== 200 || !is_array($v2Json) || empty($v2Json['result']['checkoutUrl'])) {
+        error_log('[PayU v2] HTTP ' . $v2Code . ': ' . substr((string)$v2Raw, 0, 300));
+        http_response_code(502);
+        echo json_encode([
+            'status'  => 'error',
+            'code'    => 'payu_v2_failed',
+            'message' => 'Payment gateway rejected the transaction.',
+            'detail'  => $v2Json['message'] ?? 'unknown error',
+        ]);
+        exit;
+    }
+
+    echo json_encode([
+        'status'       => 'success',
+        'is_free'      => false,
+        'api_version'  => 'v2',
+        // v2 তে redirect_url ফর্ম action-এর বদলে।
+        'redirect_url' => $v2Json['result']['checkoutUrl'],
+        'txnid'        => $txnid,
+    ]);
+    exit;
+}
+
+// ── Legacy পথ ──
 $hashSequence = PAYU_MERCHANT_KEY . '|' . $txnid . '|' . $amount . '|' . $productinfo . '|' . $firstname . '|' . $email . '|' . $udf1 . '|' . $udf2 . '|' . $udf3 . '|' . $udf4 . '|' . $udf5 . '||||||' . PAYU_MERCHANT_SALT;
 $hash = strtolower(hash('sha512', $hashSequence));
+
+// কারেন্সি ফিল্ড বিল্ড করা হয় PAYU_CURRENCY_MODE সুইচ অনুযায়ী (config.php দেখুন)।
+// ফিল্ডটি hash সিকোয়েন্সের অংশ নয়, তাই এটি বদলালে $hash অকার্যকর হয় না।
+$params = [
+    'key'         => PAYU_MERCHANT_KEY,
+    'txnid'       => $txnid,
+    'amount'      => $amount,
+    'productinfo' => $productinfo,
+    'firstname'   => $firstname,
+    'email'       => $email,
+    'phone'       => $phone,
+];
+
+if (PAYU_CURRENCY_MODE === 'transaction') {
+    // PayU পড়ে এমন ক্রমে রাখা হয়েছে: amount-এর পরেই transactionCurrency।
+    $params['transactionCurrency'] = PAYU_TRANSACTION_CURRENCY;
+
+    // charge currency আর account currency আলাদা হলে দুটোই বাধ্যতামূলক।
+    if (PAYU_TRANSACTION_CURRENCY !== PAYU_ACCOUNT_CURRENCY) {
+        $params['amountToBeConverted']    = $amount;
+        $params['usdAsssedValueCurrency'] = PAYU_ACCOUNT_CURRENCY;
+    }
+}
+
+$params['surl'] = PAYU_SUCCESS_URL;
+$params['furl'] = PAYU_FAILURE_URL;
+$params['hash'] = $hash;
+$params['udf1'] = $udf1;
+$params['udf2'] = $udf2;
 
 echo json_encode([
     'status'  => 'success',
     'is_free' => false,
-    'action'  => PAYU_BASE_URL,
-    'params'  => [
-        'key'         => PAYU_MERCHANT_KEY,
-        'txnid'       => $txnid,
-        'amount'      => $amount,
-        'productinfo' => $productinfo,
-        'firstname'   => $firstname,
-        'email'       => $email,
-        'phone'       => $phone,
-        'surl'        => PAYU_SUCCESS_URL,
-        'furl'        => PAYU_FAILURE_URL,
-        'hash'        => $hash,
-        'udf1'        => $udf1,
-        'udf2'        => $udf2,
-    ]
+    'action'  => PAYU_GATEWAY_URL,
+    'params'  => $params,
 ]);
 exit;

@@ -8,6 +8,8 @@
   "scripts": {
     "build": "astro build && npm run verify:deploy",
     "verify:deploy": "node scripts/verify-deploy.mjs",
+    "deploy": "bash scripts/deploy-php.sh",
+    "deploy:site": "bash scripts/deploy-site.sh",
     "preview": "astro preview",
     "astro": "astro",
     "dev:astro": "astro dev",

@@ -23,6 +23,36 @@ if (!is_file($payuConfigPath)) {
 }
 require_once $payuConfigPath;
 
+// ── GET মোড: টোকেন যাচাই ────────────────────────────────────────────────
+// সাকসেস পেজ ফেচ করে এখানে আসে। সঠিক টোকেন ছাড়া কিছু প্রকাশ করা হয় না,
+// শুধু verified:false — তাই ভুল URL বানিয়ে কিছু দেখানো যায় না।
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'GET') {
+    header('Content-Type: application/json; charset=UTF-8');
+    header('Cache-Control: no-store');
+
+    $vTxnid  = (string)($_GET['txnid'] ?? '');
+    $vToken  = (string)($_GET['token'] ?? '');
+    $vAmount = (string)($_GET['amount'] ?? '');
+    $vCourse = (string)($_GET['course'] ?? '');
+
+    $expected = ($vTxnid !== '' && $vAmount !== '' && $vCourse !== '')
+        ? enrollmentToken($vTxnid, $vAmount, $vCourse)
+        : '';
+
+    // hash_equal সময়-আধারিত তুলনা করে, তাই ভুল অনুমান থেকে রক্ষা করে।
+    $ok = $expected !== ''
+        && $vToken !== ''
+        && hash_equals($expected, $vToken);
+
+    echo json_encode([
+        'verified' => $ok,
+        'txnid'    => $ok ? $vTxnid : null,
+        'amount'   => $ok ? $vAmount : null,
+        'course'   => $ok ? $vCourse : null,
+    ]);
+    exit;
+}
+
 // PayU থেকে আসা POST ডেটা রিসিভ করা
 $status      = $_POST['status'] ?? '';
 $firstname   = $_POST['firstname'] ?? '';
@@ -62,12 +92,14 @@ if ($status === 'success' && $isValid) {
     ";
     dispatchNotificationMail(ADMIN_EMAIL, $adminSub, $adminBody);
 
-    // সাকসেস পেজে রিডাইরেক্ট
+    // সাকসেস পেজে রিডাইরেক্ট। টোকেন যোগ করা হচ্ছে যাতে পেজটি প্রকৃত
+    // যাচাইকৃত তথ্য দেখায়, URL থেকে আসা amount/course বিশ্বাস না করে।
     $redirectUrl = SITE_URL . '/courses/payment-success?' . http_build_query([
         'txnid'  => $txnid,
         'amount' => $amount,
         'course' => $udf1,
-        'status' => 'confirmed'
+        'status' => 'confirmed',
+        'token'  => enrollmentToken($txnid, $amount, $udf1),
     ]);
     header("Location: " . $redirectUrl);
     exit;

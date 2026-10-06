@@ -3,6 +3,16 @@
 
 declare(strict_types=1);
 
+// env-loader.php না থাকলে require_once fatal error দেয়, ফলে পুরো API খালি 500 হয়ে
+// যায় এবং কারণটা ব্রাউজারে দেখা যায় না। তাই আগে ফাইলটি আছে কি না যাচাই করা হচ্ছে।
+if (!is_file($envLoader = __DIR__ . '/env-loader.php')) {
+    error_log('[Env Loader] Missing required file: ' . $envLoader);
+    http_response_code(500);
+    header('Content-Type: application/json; charset=UTF-8');
+    exit('{"status":"error","code":"env_loader_missing","message":"Server configuration is incomplete."}');
+}
+require_once $envLoader;
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -41,11 +51,11 @@ $formattedAmount = '₹' . number_format((float)$amount, 2);
 
 // ১. PostgreSQL ডাটাবেজে লিড লগ (কানেকশন ফেইল হলেও ফ্লো চলবে)
 try {
-    $dbHost = $_ENV['DB_HOST'] ?? '127.0.0.1';
-    $dbPort = $_ENV['DB_PORT'] ?? '5432';
-    $dbName = $_ENV['DB_NAME'] ?? 'platform_db';
-    $dbUser = $_ENV['DB_USER'] ?? 'postgres';
-    $dbPass = $_ENV['DB_PASSWORD'] ?? '';
+    $dbHost = env('DB_HOST', '127.0.0.1');
+    $dbPort = envInt('DB_PORT', 5432);
+    $dbName = env('DB_NAME', 'platform_db');
+    $dbUser = env('DB_USER', 'postgres');
+    $dbPass = env('DB_PASSWORD', '');
 
     $dsn = "pgsql:host={$dbHost};port={$dbPort};dbname={$dbName};";
     $pdo = new PDO($dsn, $dbUser, $dbPass, [

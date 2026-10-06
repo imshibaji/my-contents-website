@@ -537,25 +537,43 @@ const courseCatalog = courses.map((c) => ({
             const data = await res.json();
 
             if (data.status === 'success') {
-              if (data.is_free) {
+              // ফ্রি কোর্স: server সরাসরি success page-এ পাঠায়
+              if (data.is_free && data.redirect_url) {
                 window.location.href = data.redirect_url;
                 return;
               }
 
-              const payuForm = document.createElement('form');
-              payuForm.method = 'POST';
-              payuForm.action = data.action;
-
-              for (const [key, val] of Object.entries(data.params)) {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = key;
-                input.value = String(val);
-                payuForm.appendChild(input);
+              // Checkout v2: server HMAC-সই করে PayU-কে JSON কল করে ইতিমধ্যে
+              // transaction খুলে ফেলে, ফিরিয়ে দেয় checkoutUrl। ফর্ম লাগে না,
+              // শুধু redirect।
+              if (data.redirect_url) {
+                btnActionLabel.textContent = 'Redirecting to PayU...';
+                window.location.href = data.redirect_url;
+                return;
               }
 
-              document.body.appendChild(payuForm);
-              payuForm.submit();
+              // Legacy: form action + params দিয়ে hidden form বানিয়ে submit
+              if (data.action && data.params) {
+                const payuForm = document.createElement('form');
+                payuForm.method = 'POST';
+                payuForm.action = data.action;
+
+                for (const [key, val] of Object.entries(data.params)) {
+                  const input = document.createElement('input');
+                  input.type = 'hidden';
+                  input.name = key;
+                  input.value = String(val);
+                  payuForm.appendChild(input);
+                }
+
+                document.body.appendChild(payuForm);
+                payuForm.submit();
+                return;
+              }
+
+              // কোনো ধরনের redirect-ও নেই — এটা একটি আপসা। নীরবে অটানো না
+              // রেখে স্পষ্ট ত্রুটি দেখানো হচ্ছে।
+              throw new Error('no redirect or form payload in response');
             } else {
               if (errorText) errorText.textContent = data.message || 'Payment initiation failed.';
               if (errorBox) errorBox.classList.remove('hidden');
@@ -563,7 +581,8 @@ const courseCatalog = courses.map((c) => ({
               btnActionLabel.textContent = 'Initiate Secure Transaction';
             }
           } catch (err) {
-            if (errorText) errorText.textContent = 'Network error. Please check server status.';
+            console.error('[checkout] initiation failed', err);
+            if (errorText) errorText.textContent = 'Payment initiation failed. Please try again, or contact support if it continues.';
             if (errorBox) errorBox.classList.remove('hidden');
             if (payBtn) payBtn.disabled = false;
             btnActionLabel.textContent = 'Initiate Secure Transaction';

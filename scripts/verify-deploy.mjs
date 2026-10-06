@@ -12,7 +12,7 @@
  *   node scripts/verify-deploy.mjs ./public   # verify another build root
  */
 
-import { existsSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 
 const distRoot = resolve(process.argv[2] ?? 'dist');
@@ -35,11 +35,14 @@ if (!existsSync(distRoot)) {
 
 // ── 2. Required PHP endpoints are present and non-empty ───────────────────
 // config.php is the one that silently went missing, so it is listed explicitly.
+// env-loader.php is the single shared .env loader every other endpoint depends on.
 const REQUIRED_PHP = [
+  'api/env-loader.php',
   'api/payu/config.php',
   'api/payu/init.php',
   'api/payu/response.php',
   'api/enquiry.php',
+  'api/send-mail.php',
 ];
 
 console.log(`Verifying ${distRoot}\n`);
@@ -125,6 +128,61 @@ if (!existsSync(catalogPath)) {
     }
   } catch (err) {
     fail(`INVALID  api/course_catalog.json  — ${err.message}`);
+  }
+}
+
+// ── 7. Exactly one .env loader, and nothing reads $_ENV or calls putenv() ──────
+// The server runs variables_order=GPCS, so PHP never populates $_ENV from the
+// host environment. A second hand-rolled loader, or
+// a direct $_ENV read anywhere else, silently reintroduces the bug where
+// enquiry.php ignored DB_HOST and always dialled 127.0.0.1.
+function walkPhp(dir, acc = []) {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, entry.name);
+    if (entry.isDirectory()) walkPhp(full, acc);
+    else if (entry.name.endsWith('.php')) acc.push(full);
+  }
+  return acc;
+}
+
+const apiDir = join(distRoot, 'api');
+if (existsSync(apiDir)) {
+  const offenders = [];
+
+  for (const file of walkPhp(apiDir)) {
+    const rel = file.slice(distRoot.length + 1);
+    const src = readFileSync(file, 'utf8');
+
+    if (rel !== 'api/env-loader.php' && /file_exists\(\s*\$dotenvPath\s*\)/.test(src)) {
+      offenders.push(`${rel} has its own .env loader — only api/env-loader.php may parse .env`);
+    }
+
+    // Nothing may read $_ENV directly, the loader included. $_SERVER holds
+    // per-request metadata (REQUEST_METHOD, REMOTE_ADDR) and must never route
+    // through env().
+    const reads = src.match(/\$_ENV\s*\[\s*['"][A-Z_]+/g) ?? [];
+    if (reads.length > 0) {
+      offenders.push(
+        `${rel} reads ${[...new Set(reads)].join(', ')} directly — use env() so .env and host ` +
+          'variables both work'
+      );
+    }
+
+    // Hostinger's upload scanner strips any file that calls putenv() or writes
+    // $_ENV — it reads them as credential theft. The loader parses .env into a
+    // static array instead, so neither may reappear anywhere in dist/.
+    if (/putenv\s*\(/.test(src)) {
+      offenders.push(
+        `${rel} calls putenv() — Hostinger's scanner deletes files that use it; ` +
+          'the loader reads .env into a static array instead'
+      );
+    }
+  }
+
+  if (offenders.length > 0) {
+    for (const o of offenders) fail(`ENV      ${o}`);
+  } else {
+    console.log('  ok  single .env loader, no direct $_ENV reads, no putenv()');
   }
 }
 

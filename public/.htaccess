@@ -2,11 +2,26 @@
 RewriteEngine On
 RewriteBase /
 
-# 2. If the requested URL is not an actual existing file
+# 2. Never serve credential files over HTTP, even if PHP stops working.
+# api/credential.php holds live secrets. The 404 below is a second lock: the PHP
+# guard in the file itself handles a direct request, and this handles the case
+# where PHP is disabled, misconfigured, or the file is served as plain text.
+# Anything matching is treated as missing, so the existing rewrite rule below
+# then redirects to the homepage instead.
+<FilesMatch "^(credential\.php|credential\.php\.example|env-loader\.php|csrf\.php|.*\.example)$">
+  Require all denied
+</FilesMatch>
+
+# 3. Protect dotfiles and .env if one is ever placed in the web root
+<FilesMatch "^\.|\.env$">
+  Require all denied
+</FilesMatch>
+
+# 4. If the requested URL is not an actual existing file
 RewriteCond %{REQUEST_FILENAME} !-f
 
-# 3. And the requested URL is not an actual existing folder
+# 5. And the requested URL is not an actual existing folder
 RewriteCond %{REQUEST_FILENAME} !-d
 
-# 4. Redirect to the homepage using a 302 temporary redirect
+# 6. Redirect to the homepage using a 302 temporary redirect
 RewriteRule ^(.*)$ / [R=302,L]

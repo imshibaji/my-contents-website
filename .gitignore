@@ -22,3 +22,9 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Local deploy credentials — never commit
+.deploy.env
+
+# Live secrets — never commit. Only the .example template is tracked.
+public/api/credential.php
