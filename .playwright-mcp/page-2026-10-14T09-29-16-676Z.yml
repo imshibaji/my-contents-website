@@ -1,0 +1,180 @@
+- generic [active] [ref=f11e1]:
+  - banner [ref=f11e2]:
+    - generic [ref=f11e3]:
+      - link [ref=f11e4] [cursor=pointer]:
+        - /url: /
+        - generic [ref=f11e12]:
+          - heading "Shibaji Debnath" [level=1] [ref=f11e13]
+          - heading "System Architect | Mentor" [level=2] [ref=f11e14]
+      - navigation [ref=f11e15]:
+        - link "Free Tools" [ref=f11e16] [cursor=pointer]:
+          - /url: /tools
+        - link "Case Studies" [ref=f11e17] [cursor=pointer]:
+          - /url: /case-studies
+        - link "Courses" [ref=f11e18] [cursor=pointer]:
+          - /url: /courses
+        - link "Experience" [ref=f11e19] [cursor=pointer]:
+          - /url: /experience
+        - link "Articles" [ref=f11e20] [cursor=pointer]:
+          - /url: /articles
+      - generic [ref=f11e21]:
+        - button "Toggle theme" [ref=f11e22] [cursor=pointer]
+        - link "Book Advisory Call" [ref=f11e25] [cursor=pointer]:
+          - /url: /contact
+  - main [ref=f11e26]:
+    - main [ref=f11e27]:
+      - generic [ref=f11e28]:
+        - link "← Return to Central Portfolio" [ref=f11e29] [cursor=pointer]:
+          - /url: /
+        - heading "Custom Retainer & Payment Terminal" [level=1] [ref=f11e30]
+        - paragraph [ref=f11e31]: Direct clearance channel for bespoke architecture advisory, fractional CTO sprints, or personalized fee settlements.
+      - generic [ref=f11e32]:
+        - generic [ref=f11e33]:
+          - generic [ref=f11e34]:
+            - generic [ref=f11e35]:
+              - generic [ref=f11e36]: Client Billing Dossier
+              - generic [ref=f11e38]: Step 1 of 2
+            - generic [ref=f11e39]:
+              - generic [ref=f11e40]: Full Name / Entity *
+              - textbox "Full Name / Entity *" [ref=f11e41]:
+                - /placeholder: e.g. Shibaji Debnath
+                - text: Local Test
+            - generic [ref=f11e42]:
+              - generic [ref=f11e43]:
+                - generic [ref=f11e44]: Billing Email *
+                - textbox "Billing Email *" [ref=f11e45]:
+                  - /placeholder: client@domain.com
+                  - text: test@example.com
+              - generic [ref=f11e46]:
+                - generic [ref=f11e47]: WhatsApp / Phone *
+                - textbox "WhatsApp / Phone *" [ref=f11e48]:
+                  - /placeholder: "8981009499"
+                  - text: "9876543210"
+            - generic [ref=f11e49]:
+              - generic [ref=f11e50]:
+                - generic [ref=f11e51]: Purpose / Reference *
+                - textbox "Purpose / Reference *" [ref=f11e52]:
+                  - /placeholder: e.g. Architecture Sprint
+                  - text: Architecture Sprint
+              - generic [ref=f11e53]:
+                - generic [ref=f11e54]: Amount (INR ₹) *
+                - generic [ref=f11e55]:
+                  - generic [ref=f11e56]: ₹
+                  - spinbutton "Amount (INR ₹) *" [ref=f11e57]: "500"
+          - generic [ref=f11e58]:
+            - generic [ref=f11e59]:
+              - text: Select Settlement Rail
+              - generic [ref=f11e60]:
+                - button "PayU Gateway" [ref=f11e61] [cursor=pointer]
+                - button "Direct UPI" [ref=f11e62] [cursor=pointer]
+                - button "Pay By QR" [ref=f11e63] [cursor=pointer]
+                - button "NetBanking" [ref=f11e64] [cursor=pointer]
+            - generic [ref=f11e66]:
+              - generic [ref=f11e67]:
+                - generic [ref=f11e68]:
+                  - generic [ref=f11e69]: ⚡
+                  - generic [ref=f11e70]:
+                    - heading "Direct PayU Gateway" [level=4] [ref=f11e71]
+                    - paragraph [ref=f11e72]: Cards, UPI (GPay/PhonePe), NetBanking & EMI
+                - generic [ref=f11e73]: Automated
+              - button "Proceed to PayU Gateway ₹511.8 →" [ref=f11e74] [cursor=pointer]:
+                - generic [ref=f11e75]: Proceed to PayU Gateway
+                - generic [ref=f11e76]: ₹511.8
+                - generic [ref=f11e77]: →
+            - generic [ref=f11e78]:
+              - generic [ref=f11e79]: 🔒 256-Bit SSL
+              - generic [ref=f11e80]: 🛡️ SHA-512 Signed
+              - generic [ref=f11e81]: ⚡ Instant Invoicing
+        - generic [ref=f11e82]:
+          - generic [ref=f11e83]:
+            - text: Order Dossier
+            - heading "Architecture Sprint" [level=2] [ref=f11e84]
+            - generic [ref=f11e85]: Ad-hoc Invoice
+          - generic [ref=f11e86]:
+            - generic [ref=f11e87]:
+              - generic [ref=f11e88]: "Billed Party:"
+              - generic [ref=f11e89]: Local Test
+            - generic [ref=f11e90]:
+              - generic [ref=f11e91]: "Recipient:"
+              - generic [ref=f11e92]: Shibaji Debnath
+            - generic [ref=f11e93]:
+              - generic [ref=f11e94]: "Base Principal:"
+              - generic [ref=f11e95]: ₹500
+            - generic [ref=f11e96]:
+              - generic [ref=f11e97]: Gateway Fee (2.36%)
+              - generic [ref=f11e98]: +₹11.80
+          - generic [ref=f11e99]:
+            - generic [ref=f11e100]:
+              - generic [ref=f11e101]: Net Remittance
+              - text: Includes PayU surcharge
+            - generic [ref=f11e102]:
+              - text: ₹511.8
+              - generic [ref=f11e103]: INR
+          - generic [ref=f11e104]: Supports Credit/Debit Cards, UPI (Google Pay, PhonePe, Paytm), and Corporate NetBanking. Official receipt is dispatched directly to the billing email.
+  - contentinfo [ref=f11e105]:
+    - generic [ref=f11e106]:
+      - generic [ref=f11e107]:
+        - generic [ref=f11e108]:
+          - link "S Shibaji Debnath" [ref=f11e109] [cursor=pointer]:
+            - /url: /
+            - generic [ref=f11e110]: S
+            - text: Shibaji Debnath
+          - paragraph [ref=f11e111]: Chief Technology Officer & Senior System Architect specializing in distributed systems, high-concurrency microservices, and autonomous agentic workflows.
+          - generic [ref=f11e112]:
+            - link "LinkedIn" [ref=f11e113] [cursor=pointer]:
+              - /url: https://linkedin.com/in/shibaji
+            - link "GitHub" [ref=f11e114] [cursor=pointer]:
+              - /url: https://github.com/imshibaji
+        - generic [ref=f11e115]:
+          - paragraph [ref=f11e116]: Navigation
+          - list [ref=f11e117]:
+            - listitem [ref=f11e118]:
+              - link "Overview" [ref=f11e119] [cursor=pointer]:
+                - /url: /
+            - listitem [ref=f11e120]:
+              - link "Experience" [ref=f11e121] [cursor=pointer]:
+                - /url: /experience
+            - listitem [ref=f11e122]:
+              - link "Case Studies" [ref=f11e123] [cursor=pointer]:
+                - /url: /case-studies
+            - listitem [ref=f11e124]:
+              - link "Articles" [ref=f11e125] [cursor=pointer]:
+                - /url: /articles
+            - listitem [ref=f11e126]:
+              - link "Contact" [ref=f11e127] [cursor=pointer]:
+                - /url: /contact
+        - generic [ref=f11e128]:
+          - paragraph [ref=f11e129]: Legal & System Feeds
+          - list [ref=f11e130]:
+            - listitem [ref=f11e131]:
+              - link "Privacy Policy" [ref=f11e132] [cursor=pointer]:
+                - /url: /privacy
+            - listitem [ref=f11e133]:
+              - link "Terms of Service" [ref=f11e134] [cursor=pointer]:
+                - /url: /terms
+            - listitem [ref=f11e135]:
+              - link "llms.txt (AI Direct)" [ref=f11e136] [cursor=pointer]:
+                - /url: /llms.txt
+            - listitem [ref=f11e137]:
+              - link "Sitemap" [ref=f11e138] [cursor=pointer]:
+                - /url: /sitemap-index.xml
+      - generic [ref=f11e139]:
+        - paragraph [ref=f11e140]: © 2026 Shibaji Debnath. Engineered for Low Latency & High Scalability.
+        - generic [ref=f11e141]: Systems Operational
+  - dialog "Cookie consent management":
+    - generic:
+      - generic:
+        - generic: 🛡️
+        - generic:
+          - heading "Privacy & Data Telemetry" [level=3]
+          - text: Google Consent Mode v2
+      - paragraph: We utilize anonymous telemetry to assess application latency, course engagement, and optimize architectural advisory experiences.
+      - generic:
+        - button "Accept All"
+        - button "Reject Non-Essential"
+        - button "Customize"
+  - generic [ref=f11e146]:
+    - button [ref=f11e147]
+    - button [ref=f11e153]
+    - button [ref=f11e157]
+    - button [ref=f11e162]

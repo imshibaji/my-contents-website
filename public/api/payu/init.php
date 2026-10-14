@@ -67,7 +67,10 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 }
 
 // ৩. ক্যাটালগ ভ্যালিডেশন এবং কাস্টম পেমেন্ট ফলব্যাক
+$isCustomPayment = false;
+$customPurpose   = '';
 if ($courseSlug === 'custom-payment' || !isset($COURSE_CATALOG[$courseSlug])) {
+    $isCustomPayment = true;
     $clientAmount = (float)($data['amount'] ?? 0.00);
     $customPurpose = trim((string)($data['course_title'] ?? $data['purpose'] ?? 'Custom Advisory Settlement'));
 
@@ -169,7 +172,10 @@ dispatchNotificationMail(ADMIN_EMAIL, $leadSub, $leadBody);
 
 $udf1 = $courseSlug;
 $udf2 = $paymentPlan;
-$udf3 = '';
+// custom-payment-এ udf1 থাকে "custom-payment" — রসিদে ওই স্লাগ দেখানো উচিত নয়।
+// তাই পেয়ারের লেখা purpose-টা udf3-তে নিয়ে যাওয়া হচ্ছে; PayU ঘুরে
+// v2-response.php ও response.php সেটা success URL-এ title হিসেবে যোগ করে।
+$udf3 = $isCustomPayment ? $customPurpose : '';
 $udf4 = '';
 $udf5 = '';
 
@@ -181,6 +187,12 @@ $udf5 = '';
 // করতে হয়। legacy পথের SHA-512 hash এখানে কোনো কাজে লাগে না।
 // ─────────────────────────────────────────────────────────────────────────
 if (PAYU_API_VERSION === 'v2') {
+    // udf3 কেবল custom payment-এ পাঠানো হয়, তাই খালি হলে বাদ।
+    $v2Udf = ['udf1' => $udf1, 'udf2' => $udf2];
+    if ($udf3 !== '') {
+        $v2Udf['udf3'] = $udf3;
+    }
+
     $v2Body = json_encode([
         'accountId' => PAYU_MERCHANT_KEY,
         'txnId'     => $txnid,
@@ -188,7 +200,7 @@ if (PAYU_API_VERSION === 'v2') {
         'order' => [
             'productInfo' => $productinfo,
             'paymentChargeSpecification' => ['price' => (float)$amount],
-            'userDefinedFields' => ['udf1' => $udf1, 'udf2' => $udf2],
+            'userDefinedFields' => $v2Udf,
         ],
         'billingDetails' => array_merge(PAYU_BILLING_ADDRESS, [
             'firstName' => $firstname,
@@ -196,8 +208,11 @@ if (PAYU_API_VERSION === 'v2') {
             'phone'     => $phone,
         ]),
         'callBackActions' => [
-            'successAction' => PAYU_SUCCESS_URL,
-            'failureAction' => PAYU_FAILURE_URL,
+            // v2 আসে v2-response.php-এ, যেটা verify_payment কলে টাকা যাচাই করে
+            // তারপর টোকেন যোগ করে static পেজে পাঠায়। সরাসরি static পেজে
+            // পাঠালে কিছুই যাচাই হয় না (কোনো reverse-hash আসে না)।
+            'successAction' => PAYU_V2_SUCCESS_URL,
+            'failureAction' => PAYU_V2_FAILURE_URL,
             'cancelAction'  => PAYU_FAILURE_URL,
         ],
         'additionalInfo' => [
@@ -306,6 +321,9 @@ $params['furl'] = PAYU_FAILURE_URL;
 $params['hash'] = $hash;
 $params['udf1'] = $udf1;
 $params['udf2'] = $udf2;
+if ($udf3 !== '') {
+    $params['udf3'] = $udf3;
+}
 
 echo json_encode([
     'status'  => 'success',

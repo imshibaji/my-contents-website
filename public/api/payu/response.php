@@ -79,6 +79,8 @@ $isValid = ($calculatedHash === strtolower($postedHash));
 
 if ($status === 'success' && $isValid) {
     // ১. সফল পেমেন্ট ইমেইল
+    // custom payment-এ udf1 স্লাগ; রসিদে আসল purpose (udf3) দেখানো হয়।
+    $displayTitle = $udf3 !== '' ? $udf3 : $udf1;
     $adminSub = "✅ [Payment Verified] ₹{$amount} - {$firstname}";
     $adminBody = "
         <div style='font-family: monospace; background:#070e1c; color:#fff; padding:20px; border-radius:10px;'>
@@ -86,21 +88,49 @@ if ($status === 'success' && $isValid) {
             <p><strong>Txn ID:</strong> {$txnid}</p>
             <p><strong>Candidate:</strong> {$firstname} ({$email})</p>
             <p><strong>WhatsApp:</strong> {$phone}</p>
-            <p><strong>Course:</strong> {$udf1}</p>
+            <p><strong>Course:</strong> " . htmlspecialchars($displayTitle) . "</p>
             <p><strong>Amount:</strong> ₹{$amount}</p>
         </div>
     ";
     dispatchNotificationMail(ADMIN_EMAIL, $adminSub, $adminBody);
 
+    // স্টুডেন্টকে পেমেন্ট নিশ্চিতকরণ রসিদ (v2-response.php-র সাথে সমরূপ)।
+    if ($email !== '' && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $studentSub = "Payment Confirmed: " . htmlspecialchars($displayTitle) . " (₹{$amount})";
+        $studentBody = "
+            <div style='font-family: sans-serif; background:#ffffff; color:#1e293b; padding:28px; border:1px solid #e2e8f0; border-radius:12px;'>
+                <h2 style='color:#0284c7; margin-top:0;'>Payment Received — Thank You!</h2>
+                <p>Hi " . htmlspecialchars($firstname) . ",</p>
+                <p>We have received and verified your payment. Your seat is confirmed.</p>
+                <table style='border-collapse:collapse; margin:16px 0;'>
+                    <tr><td style='padding:4px 12px 4px 0; color:#64748b;'>Program</td><td style='padding:4px 0;'><strong>" . htmlspecialchars($displayTitle) . "</strong></td></tr>
+                    <tr><td style='padding:4px 12px 4px 0; color:#64748b;'>Amount Paid</td><td style='padding:4px 0;'><strong>₹{$amount}</strong></td></tr>
+                    <tr><td style='padding:4px 12px 4px 0; color:#64748b;'>Transaction ID</td><td style='padding:4px 0;'><code>{$txnid}</code></td></tr>
+                </table>
+                <p>Your admission invoice and sandbox access details will follow shortly.</p>
+                <p style='margin-bottom:0;'>Best regards,<br><strong>Shibaji Debnath</strong><br>CTO | Senior System Architect</p>
+            </div>
+        ";
+        dispatchNotificationMail($email, $studentSub, $studentBody);
+    }
+
     // সাকসেস পেজে রিডাইরেক্ট। টোকেন যোগ করা হচ্ছে যাতে পেজটি প্রকৃত
     // যাচাইকৃত তথ্য দেখায়, URL থেকে আসা amount/course বিশ্বাস না করে।
-    $redirectUrl = SITE_URL . '/courses/payment-success?' . http_build_query([
+    $successQuery = [
         'txnid'  => $txnid,
         'amount' => $amount,
         'course' => $udf1,
         'status' => 'confirmed',
         'token'  => enrollmentToken($txnid, $amount, $udf1),
-    ]);
+    ];
+
+    // custom payment-এ udf1 স্লাগ ("custom-payment"); আসল purpose আসে udf3-তে।
+    $customTitle = trim((string)$udf3);
+    if ($customTitle !== '') {
+        $successQuery['title'] = $customTitle;
+    }
+
+    $redirectUrl = SITE_URL . '/courses/payment-success?' . http_build_query($successQuery);
     header("Location: " . $redirectUrl);
     exit;
 } else {

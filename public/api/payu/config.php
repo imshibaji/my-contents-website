@@ -112,7 +112,7 @@ define('PAYU_GATEWAY_URL', rtrim((string)env(
 // সমাধান: Checkout v2 JSON API, যেটা আলাদা এন্ডপয়েন্ট ও HMAC অথেন্টিকেশন ব্যবহার
 // করে। apitest.payu.in-এ কী 59xiPf গ্রহণ করা হয় (401 Unauthorized মানে সিগনেচার
 // যাচাই পর্যন্ত পৌঁছেছে), তাই টেস্টে এটাই কাজ করার কথা।
-define('PAYU_API_VERSION', strtolower(env('PAYU_API_VERSION', 'legacy')));
+define('PAYU_API_VERSION', strtolower(env('PAYU_API_VERSION', 'v2')));
 
 define('PAYU_V2_ENDPOINT', rtrim((string)env(
     'PAYU_V2_ENDPOINT',
@@ -120,6 +120,23 @@ define('PAYU_V2_ENDPOINT', rtrim((string)env(
         ? 'https://api.payu.in/v2/payments'
         : 'https://apitest.payu.in/v2/payments'
 ), '/'));
+
+// v2 non-seamless-এ পেমেন্ট যাচাই করার আলাদা ধাপ আছে: ক্রেতা ফিরে আসার পর
+// verify_payment API কল না করলে "টাকা গেছে কি না" জানা যায় না। legacy-র মতো
+// POST reverse-hash এখানে আসে না, তাই response.php দিয়ে যাচাই হয় না।
+// v3/transaction এন্ডপয়েন্ট ও Info-Command: verify_payment বাধ্যতামূলক।
+define('PAYU_V2_VERIFY_ENDPOINT', rtrim((string)env(
+    'PAYU_V2_VERIFY_ENDPOINT',
+    PAYU_MODE === 'PROD'
+        ? 'https://info.payu.in/v3/transaction'
+        : 'https://test.payu.in/v3/transaction'
+), '/'));
+
+// v2-র callBackActions এই হ্যান্ডলারে আসে। PayU এখানে শুধু txnid ফেরত দেয়,
+// কোনো hash নয় — তাই v2-response.php নিজে verify_payment API কলে টাকা যাচাই
+// করে, তারপর টোকেন বানিয়ে সাকসেস/ফেইল পেজে পাঠায়।
+define('PAYU_V2_SUCCESS_URL', SITE_URL . '/api/payu/v2-response.php');
+define('PAYU_V2_FAILURE_URL', SITE_URL . '/api/payu/v2-response.php?status=failure');
 
 // v2-তে billingDetails-এর address1 বাধ্যতামূলক, কিন্তু enquiry ফর্মে ঠিকানা
 // জিজ্ঞেস করা হয় না। তাই ডিফল্ট হিসেবে ব্যবসার নিজের ঠিকানা বসানো হলো।
@@ -221,8 +238,49 @@ function loadCourseCatalog(): array {
 
 $COURSE_CATALOG = loadCourseCatalog();
 
-// ৫. লাইটওয়েট ইমেইল নোটিফিকেশন ডিসপ্যাচার
+// ৫. ইমেইল নোটিফিকেশন ডিসপ্যাচার
+//
+// আগে এখানে PHP-র mail() ছিল। এই হোস্টে কোনো MTA চালু নেই, তাই mail() নীরবে
+// false ফেরত দিত — পেমেন্ট সফল হত কিন্তু অ্যাডমিন বা স্টুডেন্ট কেউই মেইল পেত না।
+// এখন enquiry.php-র মতো একই Gmail SMTP ড্রাইভার (send-mail.php) ব্যবহার করা হয়।
 function dispatchNotificationMail(string $to, string $subject, string $htmlBody): bool {
+    // send-mail.php নিজেই env-loader require করে ও sendViaGmailSMTP() define করে;
+    // অন্য ফাইল থেকে include করলে তার নিচের কন্টাক্ট-ফর্ম অংশ return করে থেমে যায়।
+    if (!function_exists('sendViaGmailSMTP')) {
+        $smtpHelper = __DIR__ . '/../send-mail.php';
+        if (is_file($smtpHelper)) {
+            require_once $smtpHelper;
+        }
+    }
+
+    if (function_exists('sendViaGmailSMTP')
+        && defined('SMTP_GMAIL_USER')
+        && defined('SMTP_GMAIL_PASS')
+        && SMTP_GMAIL_PASS !== ''
+    ) {
+        try {
+            $sent = sendViaGmailSMTP(
+                $to,
+                $subject,
+                $htmlBody,
+                ADMIN_EMAIL,
+                'Shibaji Debnath',
+                SMTP_GMAIL_USER,
+                SMTP_GMAIL_PASS,
+                true // HTML body
+            );
+            if (!$sent) {
+                error_log('[PayU Mail] SMTP returned failure for: ' . $to . ' | ' . $subject);
+            }
+            return $sent;
+        } catch (\Throwable $e) {
+            error_log('[PayU Mail] SMTP dispatch threw: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    // SMTP ক্রেডেনশিয়াল না থাকলে শেষ ভরসা হিসেবে লোকাল MTA / mail()।
+    error_log('[PayU Mail] SMTP credentials missing — falling back to PHP mail() for: ' . $to);
     $headers  = "MIME-Version: 1.0\r\n";
     $headers .= "Content-type: text/html; charset=UTF-8\r\n";
     $headers .= "From: Shibaji Debnath Advisory <no-reply@shibajidebnath.com>\r\n";

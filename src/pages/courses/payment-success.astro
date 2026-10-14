@@ -98,6 +98,9 @@ const isFreeEnrollment = urlData.searchParams.get('free') === '1';
         const rawCourse = serverCourse || params.get('course') || '';
         const isFree = isFreeEnrollment || params.get('free') === '1';
         const token = params.get('token') || '';
+        // custom payment-এ course param টা স্লাগ ("custom-payment")। তখন init.php
+        // থেকে আসা আসল purpose এই title-এ থাকে, তাই স্লাগের বদলে সেটাই দেখানো হয়।
+        const customTitle = params.get('title') || '';
 
         const txnEl = document.getElementById('display-txn-id');
         const amtEl = document.getElementById('display-amount');
@@ -135,14 +138,17 @@ const isFreeEnrollment = urlData.searchParams.get('free') === '1';
             statusEl.classList.add('text-amber-400');
           }
           if (txnEl) txnEl.textContent = resolvedTxnid;
-          if (courseEl && rawCourse) courseEl.textContent = COURSE_TITLES[rawCourse] || rawCourse;
+          if (courseEl && (customTitle || rawCourse)) courseEl.textContent = customTitle || COURSE_TITLES[rawCourse] || rawCourse;
           // পরিমাণ দেখানো হয় না, আর conversion-ও পাঠানো হয় না।
           if (amtEl) amtEl.textContent = '—';
           return;
         }
 
-        // স্লাগ পাঠালে ডিসপ্লে টাইটেল দেখাও, না পারলে slug-ই দেখাও
-        const courseLabel = (rawCourse && (COURSE_TITLES[rawCourse] || rawCourse)) || 'Program Enrollment';
+        // custom payment-এ customTitle (purpose) আগে, তারপর স্লাগের ডিসপ্লে টাইটেল,
+        // শেষে কাঁচা স্লাগ — কোনোভাবেই যেন "custom-payment" দেখানো না হয়।
+        const courseLabel = customTitle
+          || (rawCourse && (COURSE_TITLES[rawCourse] || rawCourse))
+          || 'Program Enrollment';
 
         // UI আপডেট
         if (txnEl) txnEl.textContent = resolvedTxnid;

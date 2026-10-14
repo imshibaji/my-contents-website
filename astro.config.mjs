@@ -40,6 +40,16 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
     server: {
+      // Vite ডেভ সার্ভার শুধু চেনা Host হেডার গ্রহণ করে। টানেল (cloudflared/ngrok)
+      // নিজের হোস্টনেম পাঠায়, ফলে "Blocked request. This host is not allowed."
+      // আসে। শুরুতে ডট (`.`) দিলে ওই ডোমেইন ও তার সব সাবডোমেইন অনুমোদিত হয়,
+      // তাই প্রতিবার নতুন trycloudflare হোস্টনেম বদলালেও সমস্যা হয় না।
+      allowedHosts: [
+        '.trycloudflare.com',
+        '.ngrok-free.app',
+        '.ngrok.io',
+        '.loca.lt',
+      ],
       // লোকাল ডেভেলপমেন্টে /api/* রিকোয়েস্টগুলো PHP সার্ভারে (localhost:8000) প্রক্সি করবে
       proxy: {
         '/api': {

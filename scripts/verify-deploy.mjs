@@ -41,6 +41,7 @@ const REQUIRED_PHP = [
   'api/payu/config.php',
   'api/payu/init.php',
   'api/payu/response.php',
+  'api/payu/v2-response.php',
   'api/enquiry.php',
   'api/send-mail.php',
 ];
