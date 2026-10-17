@@ -20,6 +20,14 @@ pnpm-debug.log*
 # macOS-specific files
 .DS_Store
 
+# test / tooling artifacts — never commit
+.playwright-mcp/
+.openchamber/
+
+# stale placeholder config that looks like real credentials.
+# Use public/api/credential.php.example instead.
+.env.fixed
+
 # jetbrains setting folder
 .idea/
 
